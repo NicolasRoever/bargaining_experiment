@@ -1,0 +1,116 @@
+{{ block title }}
+Sliders
+{{ endblock }}
+{{ block content }}
+
+<style>
+    .mgslider-wrapper {
+        border-spacing: 10px;
+    }
+
+    .mgslider-limit {
+        width: 10%;
+        min-width: 75px;
+        height: 40px;
+        margin: 100px;
+        text-align: center;
+        background: #eee;
+        border: 1px solid #888;
+    }
+
+    .mgslider-limit, .mgslider-value {
+        font-variant-numeric: tabular-nums;
+    }
+
+    .mgslider-before {
+        height: 16px;
+        width: 100%;
+        background: #1e5bff;
+    }
+
+    .mgslider-feedback {
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .slider-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .mgslider-wrapper {
+        width: 95%;
+        height: 50%; /* Adjust height as needed */
+    }
+
+    #submit {
+        position: absolute; /* Position button absolutely */
+        top: 16.6%; /* Adjust bottom spacing as needed */
+        left: 75%; /* Position horizontally centered */
+        transform: translateX(-50%); /* Center horizontally */
+    }
+
+    button#submit {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-left: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button#submit:hover {
+        background-color: #45a049; /* Darker Green */
+    }
+
+</style>
+
+{{ formfield_errors 'offer' }}
+
+<p>
+    You are the {{ player.role }}.
+    Please negotiate with the {{ other_role }} below.
+</p>
+
+<p>Click the blue bars to reveal the sliders.</p>
+
+
+
+<div class="slider-container">
+    <div class="mgslider-wrapper" id="sliders_here"></div>
+    <button id='submit' onclick="slider1.submit();return false" >Submit</button>
+</div>
+
+
+
+{{ next_button }}
+
+<script src="{{ static 'mgslider.js' }}"></script>
+
+<script>
+
+    $(document).ready(function (event) {
+        slider1 = new mgslider("offer", 0, 10, 0.1);
+        slider1.print(document.getElementById("sliders_here"));
+        //slider1.recall(); // Optional line to remember value across errors
+        //slider2 = new mgslider("number", 0, 10, 0.1);
+        //slider2.print(document.getElementById("sliders_here"));
+        //slider2.recall(); // Optional line to remember value across errors
+    });
+
+    function sendOffer() {
+        slider1.submit() 
+        return false;
+        //liveSend({'type': 'propose', 'amount': my_offer.value})
+        //my_offer.value = '';
+    }
+
+</script>
+
+{{ endblock }}
