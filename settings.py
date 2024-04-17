@@ -19,6 +19,11 @@ SESSION_CONFIGS = [
         num_demo_participants=2,
     ),
     dict(
+    name = "bargain_example_multiple",
+    app_sequence = ["bargain_example_multiple"],
+    num_demo_participants=2,
+    ),
+    dict(
     name = "bargain_example_orig2",
     app_sequence = ["bargain_example_orig2"],
     num_demo_participants=2,
