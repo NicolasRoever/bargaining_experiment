@@ -1,4 +1,5 @@
 from otree.api import *
+import json
 
 
 doc = """
@@ -29,6 +30,8 @@ class Subsession(BaseSubsession):
 class Group(BaseGroup):
     deal_price = models.CurrencyField()
     is_finished = models.BooleanField(initial=False)
+
+    proposals = models.StringField()
 
 
 class Player(BasePlayer):
@@ -74,13 +77,20 @@ class Bargain(Page):
             #    print(player.id_in_group)
 
 
-        proposals = []
+        proposals = player.group.field_maybe_none('proposals')
+        if proposals is not None: 
+            proposals = json.loads(proposals)
+        else:
+            proposals = []
         for p in [player, other]:
             amount_proposed = p.field_maybe_none('amount_proposed')
             latest_offer_by = p.field_maybe_none('latest_offer_by')
-            if amount_proposed is not None:
+
+            if amount_proposed is not None and latest_offer_by == p.id_in_group:
                 proposals.append([p.id_in_group, amount_proposed, latest_offer_by])
                 print(proposals)
+            player.group.proposals = json.dumps(proposals)
+        #group.save()
         return {0: dict(proposals=proposals)}
             
 
