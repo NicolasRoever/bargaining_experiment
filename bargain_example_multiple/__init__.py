@@ -1,5 +1,6 @@
 from otree.api import *
 import json
+import random
 
 
 doc = """
@@ -43,10 +44,20 @@ class Player(BasePlayer):
 
     amount_proposed_list = models.StringField()
 
+    valuation = models.IntegerField()
+    current_payoff_accept = models.IntegerField()
+
     
+# FUNCTIONS
+def creating_session(subsession):
+    for player in subsession.get_players():
+        player.valuation = random.randint(0, 10)
+
 
 
 class Bargain(Page):
+    #timeout_seconds = 300
+
     @staticmethod
     def vars_for_template(player: Player):
         return dict(other_role=player.get_others_in_group()[0].role)
@@ -84,16 +95,27 @@ class Bargain(Page):
                 player.amount_proposed = amount
                 player.group.latest_proposal_by = data['latest_proposal_by']
                 amount_proposed_list.append(amount)
+
+                if other.role == "Buyer":
+                    other.current_payoff_accept = other.valuation - player.amount_proposed
+                elif other.role == "Seller":
+                    other.current_payoff_accept = player.amount_proposed - other.valuation
+                #print(other.current_payoff_accept)
             
             player.amount_proposed_list = json.dumps(amount_proposed_list)
 
 
         current_proposals = []
+        current_payoffs_accept = []
         for p in [player, other]:
             amount_proposed = p.field_maybe_none('amount_proposed')
+            current_payoff_accept = p.field_maybe_none('current_payoff_accept')
             if amount_proposed is not None:
                 current_proposals.append([p.id_in_group, amount_proposed])
+            if current_payoff_accept is not None:
+                current_payoffs_accept.append([p.id_in_group, current_payoff_accept])
             #print(current_proposals)
+            #print(current_payoffs_accept)
 
         all_proposals = player.group.field_maybe_none('all_proposals')
         if all_proposals is not None: 
@@ -110,20 +132,38 @@ class Bargain(Page):
 
             latest_proposal_by = latest_proposal[0]
 
-           # print(all_proposals)
-           # print(latest_proposal_by)
- 
             if len(all_proposals) < 2:
                 group.first_proposal_by = data['latest_proposal_by']
         
         player.group.all_proposals = json.dumps(all_proposals)
-        
-        
 
-        #group.save()
+        # Define current payoffs in case of accepting other's offer
+        # buyer gets v - p
+        # seller gets p - v
+        #for p in [player, other]:
+        #    try: 
+        #        int(other.amount_proposed)
+        #    except Exception:
+        #        print("No offer yet")
+        #    if p.role == "Buyer":
+        #        current_payoff = p.valuation - other.amount_proposed
+        #    elif p.role == "Seller":
+        #        current_payoff = other.amount_proposed - p.valuation
+        #    print(current_payoff)
+
+
+        # Define current payoffs in case of terminating bargaining
+
+        
         return {0: {#'all_proposals':all_proposals, 
                 'current_proposals':current_proposals, 
-                'latest_proposal_by':latest_proposal_by}
+                'latest_proposal_by':latest_proposal_by,
+                'current_payoffs_accept':current_payoffs_accept,}
+                #'payoff_buyer_accept':},
+                #player.get_others_in_group(latest_proposal_by): {
+                #    'current_payoff_accept':player.field_maybe_none('current_payoff_accept'),
+                #    }
+                
                 }
             
 

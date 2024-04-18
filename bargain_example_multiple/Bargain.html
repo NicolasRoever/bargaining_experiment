@@ -4,13 +4,11 @@ Make a deal
 {{ block content }}
 
 <p>
-    This is a 2-player game. A seller and a buyer are negotiating for the price of
-    [insert item here].
-</p>
-<p>
     You are the {{ player.role }}.
     Please negotiate with the {{ other_role }} below.
 </p>
+
+<p>Your valuation for the object is {{ player.valuation }}. </p>
 
 <table class="table">
     <tr>
@@ -28,7 +26,12 @@ Make a deal
             <button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: none">Accept</button>
         </td>
     </tr>
+    <tr>
+        <td>If you accept the current proposal by the {{ other_role }}, your payoff will be <div id ="my_payoff_accept"></div>.</td>
+    </tr>
 </table>
+
+
 
 <script>
    
@@ -37,6 +40,7 @@ Make a deal
     let msgOtherProposal = document.getElementById('other-proposal');
     let msgMyProposal = document.getElementById('my-proposal');
     let btnOffer = document.getElementById('btn-offer');
+    let msgMyPayoffAccept = document.getElementById('my_payoff_accept')
 
     let otherProposal;
 
@@ -61,44 +65,38 @@ Make a deal
 
     function liveRecv(data) {
         if ('current_proposals' in data) {
-            //let last_proposal = data.proposals[data.proposals.length -1];
-
-            //let [id_in_group, proposal, latest_offer_by] = last_proposal;
 
             for (let [id_in_group, proposal] of data.current_proposals) {
 
                 if (id_in_group === js_vars.my_id) {
                     msgMyProposal.innerHTML = cu(proposal);
-                    //btnOffer.style.display = 'block';
-                    //btnOffer.disabled = true;
-                    //if (latest_offer_by === js_vars.my_id) {
-                    //   btnOffer.disabled = true;
-                    //} else {
-                    //    btnOffer.disabled = false;
-                    //}
+            
                 } else {
                     msgOtherProposal.innerHTML = cu(proposal);
                     otherProposal = proposal;
                     btnAccept.style.display = 'block';
-                    //btnOffer.disabled = false;
-                    //if (latest_offer_by === js_vars.my_id) {
-                    //   btnOffer.disabled = true;
-                    //} else {
-                    //    btnOffer.disabled = false;
-                    //}
+                    
                 }
                 
             }
             
-            //let last_proposal = data.all_proposals[data.all_proposals.length -1];
-
-            //for (let [id_in_group, proposal, latest_offer_by] of last_proposal) {
-
             if (data['latest_proposal_by'] === js_vars.my_id) {
                 btnOffer.disabled = true;
             } else {
                 btnOffer.disabled = false;
             }
+            //print(data['current_payoff_accept'])
+        }
+
+        if ('current_payoffs_accept' in data) {
+
+            for (let [id_in_group, current_payoff_accept] of data.current_payoffs_accept){
+
+                if (id_in_group === js_vars.my_id){
+                    msgMyPayoffAccept.innerHTML = cu(current_payoff_accept)
+                }
+            }
+
         }
 
         if ('finished' in data) {
