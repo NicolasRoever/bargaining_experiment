@@ -34,12 +34,14 @@ class Group(BaseGroup):
 
     all_proposals = models.StringField()
     first_proposal_by = models.IntegerField()
-    latest_offer_by = models.IntegerField()
+    latest_proposal_by = models.IntegerField()
 
 
 class Player(BasePlayer):
     amount_proposed = models.IntegerField()
     amount_accepted = models.IntegerField()
+
+    amount_proposed_list = models.StringField()
 
     
 
@@ -59,6 +61,12 @@ class Bargain(Page):
         group = player.group
         [other] = player.get_others_in_group()
 
+        amount_proposed_list = player.field_maybe_none('amount_proposed_list')
+        if amount_proposed_list is not None:
+            amount_proposed_list = json.loads(amount_proposed_list)
+        else:
+            amount_proposed_list = []
+
         if 'amount' in data:
             try:
                 amount = int(data['amount'])
@@ -74,11 +82,11 @@ class Bargain(Page):
                     return {0: dict(finished=True)}
             if data['type'] == 'propose':
                 player.amount_proposed = amount
-                player.group.latest_offer_by = data['latest_offer_by']
+                player.group.latest_proposal_by = data['latest_proposal_by']
+                amount_proposed_list.append(amount)
+            
+            player.amount_proposed_list = json.dumps(amount_proposed_list)
 
-            #if data['latest_offer_by'] == player.id_in_group:
-            #    print("I made an offer")
-            #    print(player.id_in_group)
 
         current_proposals = []
         for p in [player, other]:
@@ -86,38 +94,36 @@ class Bargain(Page):
             if amount_proposed is not None:
                 current_proposals.append([p.id_in_group, amount_proposed])
             #print(current_proposals)
-        #return {0: dict(current_proposals=current_proposals)}
 
         all_proposals = player.group.field_maybe_none('all_proposals')
         if all_proposals is not None: 
             all_proposals = json.loads(all_proposals)
         else:
             all_proposals = []
-        #for p in [player, other]:
-        
-        amount_proposed = player.field_maybe_none('amount_proposed')
-        latest_offer_by = player.group.field_maybe_none('latest_offer_by')
 
-        if amount_proposed is not None and latest_offer_by == player.id_in_group:
+        amount_proposed = player.field_maybe_none('amount_proposed')
+        latest_proposal_by = player.group.field_maybe_none('latest_proposal_by')
+
+        if amount_proposed is not None and latest_proposal_by == player.id_in_group:
             latest_proposal = [player.id_in_group, amount_proposed]
             all_proposals.append(latest_proposal)
 
-            latest_offer_by = latest_proposal[0]
+            latest_proposal_by = latest_proposal[0]
 
-            print(all_proposals)
-            print(latest_offer_by)
+           # print(all_proposals)
+           # print(latest_proposal_by)
  
             if len(all_proposals) < 2:
-                group.first_proposal_by = data['latest_offer_by']
+                group.first_proposal_by = data['latest_proposal_by']
         
         player.group.all_proposals = json.dumps(all_proposals)
         
         
 
         #group.save()
-        return {0: {'all_proposals':all_proposals, 
+        return {0: {#'all_proposals':all_proposals, 
                 'current_proposals':current_proposals, 
-                'latest_offer_by':latest_offer_by}
+                'latest_proposal_by':latest_proposal_by}
                 }
             
 

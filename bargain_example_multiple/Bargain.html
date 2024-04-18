@@ -47,7 +47,7 @@ Make a deal
     //});
 
     function sendOffer() {
-        liveSend({'type': 'propose', 'amount': my_offer.value, 'latest_offer_by': js_vars.my_id})
+        liveSend({'type': 'propose', 'amount': my_offer.value, 'latest_proposal_by': js_vars.my_id})
         my_offer.value = '';
     }
 
@@ -94,7 +94,7 @@ Make a deal
 
             //for (let [id_in_group, proposal, latest_offer_by] of last_proposal) {
 
-            if (data['latest_offer_by'] === js_vars.my_id) {
+            if (data['latest_proposal_by'] === js_vars.my_id) {
                 btnOffer.disabled = true;
             } else {
                 btnOffer.disabled = false;
