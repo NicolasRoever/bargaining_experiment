@@ -94,7 +94,7 @@ Make a deal
 
             //for (let [id_in_group, proposal, latest_offer_by] of last_proposal) {
 
-            if (latest_offer_by === js_vars.my_id) {
+            if (data['latest_offer_by'] === js_vars.my_id) {
                 btnOffer.disabled = true;
             } else {
                 btnOffer.disabled = false;
