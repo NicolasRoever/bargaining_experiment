@@ -104,6 +104,10 @@ class Bargain(Page):
             
             player.amount_proposed_list = json.dumps(amount_proposed_list)
 
+        elif 'terminated_by' in data:
+            group.is_finished = True
+            group.deal_price = 0
+            return {0: dict(finished=True)}
 
         current_proposals = []
         current_payoffs_accept = []

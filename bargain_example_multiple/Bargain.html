@@ -27,9 +27,12 @@ Make a deal
         </td>
     </tr>
     <tr>
-        <td>If you accept the current proposal by the {{ other_role }}, your payoff will be <div id ="my_payoff_accept"></div>.</td>
+        <td id="my_payoff_accept_text" style="display: none">If you accept the current proposal by the {{ other_role }}, your payoff will be <div id ="my_payoff_accept"></div>.</td>
     </tr>
 </table>
+
+
+<button type="button" id="btn-terminate" onclick="sendTerminate()">Terminate</button>
 
 
 
@@ -57,6 +60,10 @@ Make a deal
 
     function sendAccept() {
         liveSend({'type': 'accept', 'amount': otherProposal, 'accepted_by': js_vars.my_id})
+    }
+
+    function sendTerminate() {
+        liveSend({'type': 'terminate', 'terminated_by': js_vars.my_id})
     }
 
     function cu(amount) {
@@ -93,6 +100,7 @@ Make a deal
             for (let [id_in_group, current_payoff_accept] of data.current_payoffs_accept){
 
                 if (id_in_group === js_vars.my_id){
+                    document.getElementById('my_payoff_accept_text').style.display = 'block';
                     msgMyPayoffAccept.innerHTML = cu(current_payoff_accept)
                 }
             }
