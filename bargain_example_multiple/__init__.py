@@ -32,13 +32,15 @@ class Group(BaseGroup):
     is_finished = models.BooleanField(initial=False)
 
     all_proposals = models.StringField()
+    latest_proposal = models.StringField()
+    latest_offer_by = models.IntegerField()
 
 
 class Player(BasePlayer):
     amount_proposed = models.IntegerField()
     amount_accepted = models.IntegerField()
 
-    latest_offer_by = models.IntegerField()
+    
 
 
 class Bargain(Page):
@@ -70,7 +72,7 @@ class Bargain(Page):
                     return {0: dict(finished=True)}
             if data['type'] == 'propose':
                 player.amount_proposed = amount
-                player.latest_offer_by = data['latest_offer_by']
+                player.group.latest_offer_by = data['latest_offer_by']
             
             #if data['latest_offer_by'] == player.id_in_group:
             #    print("I made an offer")
@@ -81,7 +83,8 @@ class Bargain(Page):
             amount_proposed = p.field_maybe_none('amount_proposed')
             if amount_proposed is not None:
                 current_proposals.append([p.id_in_group, amount_proposed])
-        return {0: dict(current_proposals=current_proposals)}
+            #print(current_proposals)
+        #return {0: dict(current_proposals=current_proposals)}
 
         all_proposals = player.group.field_maybe_none('all_proposals')
         if all_proposals is not None: 
@@ -91,14 +94,23 @@ class Bargain(Page):
         #for p in [player, other]:
         
         amount_proposed = player.field_maybe_none('amount_proposed')
-        latest_offer_by = player.field_maybe_none('latest_offer_by')
+        latest_offer_by = player.group.field_maybe_none('latest_offer_by')
 
-        if amount_proposed is not None and latest_offer_by == p.id_in_group:
-            all_proposals.append([p.id_in_group, amount_proposed, latest_offer_by])
+        if amount_proposed is not None and latest_offer_by == player.id_in_group:
+            latest_proposal = [player.id_in_group, amount_proposed, latest_offer_by]
+            all_proposals.append(latest_proposal)
+
+            latest_offer_by = latest_proposal[-1]
+
             print(all_proposals)
+            print(latest_offer_by)
         player.group.all_proposals = json.dumps(all_proposals)
+        
         #group.save()
-        return {0: dict(all_proposals=all_proposals)}
+        return {0: {'all_proposals':all_proposals, 
+                'current_proposals':current_proposals, 
+                'latest_offer_by':latest_offer_by}
+                }
             
 
     @staticmethod
