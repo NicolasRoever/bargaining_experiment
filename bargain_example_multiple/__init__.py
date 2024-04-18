@@ -33,7 +33,7 @@ class Group(BaseGroup):
     accepted_by = models.IntegerField()
 
     all_proposals = models.StringField()
-    latest_proposal = models.StringField()
+    first_proposal_by = models.IntegerField()
     latest_offer_by = models.IntegerField()
 
 
@@ -75,7 +75,7 @@ class Bargain(Page):
             if data['type'] == 'propose':
                 player.amount_proposed = amount
                 player.group.latest_offer_by = data['latest_offer_by']
-            
+
             #if data['latest_offer_by'] == player.id_in_group:
             #    print("I made an offer")
             #    print(player.id_in_group)
@@ -106,8 +106,14 @@ class Bargain(Page):
 
             print(all_proposals)
             print(latest_offer_by)
+ 
+            if len(all_proposals) < 2:
+                group.first_proposal_by = data['latest_offer_by']
+        
         player.group.all_proposals = json.dumps(all_proposals)
         
+        
+
         #group.save()
         return {0: {'all_proposals':all_proposals, 
                 'current_proposals':current_proposals, 
