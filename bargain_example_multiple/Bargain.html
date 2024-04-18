@@ -60,32 +60,32 @@ Make a deal
     }
 
     function liveRecv(data) {
-        if ('proposals' in data) {
-            let last_proposal = data.proposals[data.proposals.length -1];
+        if ('current_proposals' in data) {
+            //let last_proposal = data.proposals[data.proposals.length -1];
 
-            let [id_in_group, proposal, latest_offer_by] = last_proposal;
+            //let [id_in_group, proposal, latest_offer_by] = last_proposal;
 
-            //for (let [id_in_group, proposal, latest_offer_by] of data.proposals) {
+            for (let [id_in_group, proposal, latest_offer_by] of data.current_proposals) {
 
                 if (id_in_group === js_vars.my_id) {
                     msgMyProposal.innerHTML = cu(proposal);
                     //btnOffer.style.display = 'block';
                     //btnOffer.disabled = true;
-                    if (latest_offer_by === js_vars.my_id) {
-                       btnOffer.disabled = true;
-                    } else {
-                        btnOffer.disabled = false;
-                    }
+                    //if (latest_offer_by === js_vars.my_id) {
+                    //   btnOffer.disabled = true;
+                    //} else {
+                    //    btnOffer.disabled = false;
+                    //}
                 } else {
                     msgOtherProposal.innerHTML = cu(proposal);
                     otherProposal = proposal;
                     btnAccept.style.display = 'block';
                     //btnOffer.disabled = false;
-                    if (latest_offer_by === js_vars.my_id) {
-                       btnOffer.disabled = true;
-                    } else {
-                        btnOffer.disabled = false;
-                    }
+                    //if (latest_offer_by === js_vars.my_id) {
+                    //   btnOffer.disabled = true;
+                    //} else {
+                    //    btnOffer.disabled = false;
+                    //}
                 }
                 
             }
@@ -93,7 +93,7 @@ Make a deal
         if ('finished' in data) {
             document.getElementById('form').submit();
         }
-    //}
+    }
 
     window.addEventListener('DOMContentLoaded', (event) => {
         liveSend({});
