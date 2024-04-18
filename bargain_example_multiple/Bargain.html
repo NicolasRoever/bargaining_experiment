@@ -52,7 +52,7 @@ Make a deal
     }
 
     function sendAccept() {
-        liveSend({'type': 'accept', 'amount': otherProposal})
+        liveSend({'type': 'accept', 'amount': otherProposal, 'accepted_by': js_vars.my_id})
     }
 
     function cu(amount) {
@@ -101,11 +101,10 @@ Make a deal
             }
         }
 
-        }
         if ('finished' in data) {
             document.getElementById('form').submit();
         }
-    //}
+    }
 
     window.addEventListener('DOMContentLoaded', (event) => {
         liveSend({});

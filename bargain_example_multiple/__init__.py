@@ -30,6 +30,7 @@ class Subsession(BaseSubsession):
 class Group(BaseGroup):
     deal_price = models.CurrencyField()
     is_finished = models.BooleanField(initial=False)
+    accepted_by = models.IntegerField()
 
     all_proposals = models.StringField()
     latest_proposal = models.StringField()
@@ -69,6 +70,7 @@ class Bargain(Page):
                     player.amount_accepted = amount
                     group.deal_price = amount
                     group.is_finished = True
+                    group.accepted_by = data['accepted_by']
                     return {0: dict(finished=True)}
             if data['type'] == 'propose':
                 player.amount_proposed = amount
@@ -97,10 +99,10 @@ class Bargain(Page):
         latest_offer_by = player.group.field_maybe_none('latest_offer_by')
 
         if amount_proposed is not None and latest_offer_by == player.id_in_group:
-            latest_proposal = [player.id_in_group, amount_proposed, latest_offer_by]
+            latest_proposal = [player.id_in_group, amount_proposed]
             all_proposals.append(latest_proposal)
 
-            latest_offer_by = latest_proposal[-1]
+            latest_offer_by = latest_proposal[0]
 
             print(all_proposals)
             print(latest_offer_by)
