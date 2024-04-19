@@ -22,19 +22,18 @@ Make a deal
     <tr>
         <th>{{ other_role }} proposal</th>
         <td id="other-proposal">(none)</td>
-        <td>
-            <button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: none">Accept</button>
-        </td>
-    </tr>
-    <tr>
-        <td id="my_payoff_accept_text" style="display: none">If you accept the current proposal by the {{ other_role }}, your payoff will be <div id ="my_payoff_accept"></div>.</td>
     </tr>
 </table>
 
 
+<p id="my_payoff_accept_text" style="display: none">If you accept the current proposal by the {{ other_role }}, your payoff will be <div style="display: inline" id ="my_payoff_accept"></div></p>
+<button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: none">Accept {{other_role}}'s offer</button>
+
+
+
+
+<p style="margin-top:2cm;">If you terminate the negotiation, there will be no deal.</p>
 <button type="button" id="btn-terminate" onclick="sendTerminate()">Terminate</button>
-
-
 
 <script>
    
@@ -100,7 +99,7 @@ Make a deal
             for (let [id_in_group, current_payoff_accept] of data.current_payoffs_accept){
 
                 if (id_in_group === js_vars.my_id){
-                    document.getElementById('my_payoff_accept_text').style.display = 'block';
+                    document.getElementById('my_payoff_accept_text').style.display = 'inline';
                     msgMyPayoffAccept.innerHTML = cu(current_payoff_accept)
                 }
             }
