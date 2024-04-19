@@ -4,15 +4,6 @@ import random
 
 
 doc = """
-For oTree beginners, it would be simpler to implement this as a discrete-time game 
-by using multiple rounds, e.g. 10 rounds, where in each round both players can make a new proposal,
-or accept the value from the previous round.
-
-However, the discrete-time version has more limitations
-(fixed communication structure, limited number of iterations).
-
-Also, the continuous-time version works smoother & faster, 
-and is less resource-intensive since it all takes place in 1 page.
 """
 
 
@@ -22,6 +13,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 1
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
+    TA_COSTS = 0.1
 
 
 class Subsession(BaseSubsession):
@@ -29,7 +21,7 @@ class Subsession(BaseSubsession):
 
 
 class Group(BaseGroup):
-    deal_price = models.CurrencyField()
+    deal_price = models.IntegerField()
     is_finished = models.BooleanField(initial=False)
     accepted_by = models.IntegerField()
 
@@ -48,21 +40,24 @@ class Player(BasePlayer):
 
     valuation = models.IntegerField()
     current_payoff_accept = models.IntegerField()
+    current_payoff_terminate = models.IntegerField()
 
     
 # FUNCTIONS
 def creating_session(subsession):
     for player in subsession.get_players():
-        player.valuation = random.randint(0, 10)
+        player.valuation = random.randint(0, 1000)
 
 
 
 class Bargain(Page):
-    #timeout_seconds = 300
+    timeout_seconds = 300
 
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(other_role=player.get_others_in_group()[0].role)
+        return dict(other_role=player.get_others_in_group()[0].role, 
+                    valuation = cu(player.valuation/100),
+                    )
 
     @staticmethod
     def js_vars(player: Player):
@@ -81,19 +76,27 @@ class Bargain(Page):
             amount_proposed_list = []
 
         if 'amount' in data:
-            try:
-                amount = int(data['amount'])
-            except Exception:
-                print('Invalid message received', data)
-                return
+            
             if data['type'] == 'accept':
+                try:
+                    amount = int(data['amount'])
+                except Exception:
+                    print('Invalid message received', data)
+                    return
                 if amount == other.amount_proposed:
                     player.amount_accepted = amount
                     group.deal_price = amount
                     group.is_finished = True
                     group.accepted_by = data['accepted_by']
-                    return {0: dict(finished=True)}
+
+                return {0: dict(finished=True)}
+                
             if data['type'] == 'propose':
+                try:
+                    amount = int(float(data['amount']) * 100)
+                except Exception:
+                    print('Invalid message received', data)
+                    return
                 player.amount_proposed = amount
                 player.group.latest_proposal_by = data['latest_proposal_by']
                 amount_proposed_list.append(amount)
@@ -111,6 +114,7 @@ class Bargain(Page):
             group.terminated = True
             group.terminated_by = data['terminated_by']
             group.deal_price = 0
+
             return {0: dict(finished=True)}
 
 
@@ -119,11 +123,13 @@ class Bargain(Page):
         for p in [player, other]:
             amount_proposed = p.field_maybe_none('amount_proposed')
             current_payoff_accept = p.field_maybe_none('current_payoff_accept')
+            
             if amount_proposed is not None:
                 current_proposals.append([p.id_in_group, amount_proposed])
             if current_payoff_accept is not None:
                 current_payoffs_accept.append([p.id_in_group, current_payoff_accept])
             #print(current_proposals)
+            #print(other.field_maybe_none('amount_proposed'))
             #print(current_payoffs_accept)
 
         amount_proposed = player.field_maybe_none('amount_proposed')
@@ -140,7 +146,9 @@ class Bargain(Page):
 
         
         # Define current payoffs in case of terminating bargaining
-
+        if 'time_left' in data:
+            print(data['time_left'])
+        
         
         return {0: {
                 'current_proposals':current_proposals, 
@@ -164,7 +172,11 @@ class Bargain(Page):
 
 
 class Results(Page):
-    pass
+    
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(deal_price = cu(player.group.deal_price/100),
+                    )
 
 
 page_sequence = [Bargain, Results]

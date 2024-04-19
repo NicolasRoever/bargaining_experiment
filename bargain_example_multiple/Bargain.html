@@ -3,12 +3,18 @@ Make a deal
 {{ endblock }}
 {{ block content }}
 
+<style>
+    .otree-timer {
+        display: none;
+    }
+</style>
+
 <p>
     You are the {{ player.role }}.
     Please negotiate with the {{ other_role }} below.
 </p>
 
-<p>Your valuation for the object is {{ player.valuation }}. </p>
+<p>Your valuation for the object is {{ valuation }}. </p>
 
 <table class="table">
     <tr>
@@ -37,11 +43,13 @@ Make a deal
 
 <script>
    
+    let btnOffer = document.getElementById('btn-offer');
     let my_offer = document.getElementById('my_offer');
-    let btnAccept = document.getElementById('btn-accept');
+    
     let msgOtherProposal = document.getElementById('other-proposal');
     let msgMyProposal = document.getElementById('my-proposal');
-    let btnOffer = document.getElementById('btn-offer');
+    
+    let btnAccept = document.getElementById('btn-accept');
     let msgMyPayoffAccept = document.getElementById('my_payoff_accept')
 
     let otherProposal;
@@ -65,9 +73,10 @@ Make a deal
         liveSend({'type': 'terminate', 'terminated_by': js_vars.my_id})
     }
 
-    function cu(amount) {
-        return `${amount} points`;
-    }
+    let USDollar = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    });
 
     function liveRecv(data) {
         if ('current_proposals' in data) {
@@ -75,10 +84,10 @@ Make a deal
             for (let [id_in_group, proposal] of data.current_proposals) {
 
                 if (id_in_group === js_vars.my_id) {
-                    msgMyProposal.innerHTML = cu(proposal);
+                    msgMyProposal.innerHTML = USDollar.format(proposal/100);
             
                 } else {
-                    msgOtherProposal.innerHTML = cu(proposal);
+                    msgOtherProposal.innerHTML = USDollar.format(proposal/100);
                     otherProposal = proposal;
                     btnAccept.style.display = 'block';
                     
@@ -100,7 +109,7 @@ Make a deal
 
                 if (id_in_group === js_vars.my_id){
                     document.getElementById('my_payoff_accept_text').style.display = 'inline';
-                    msgMyPayoffAccept.innerHTML = cu(current_payoff_accept)
+                    msgMyPayoffAccept.innerHTML = USDollar.format(current_payoff_accept/100)
                 }
             }
 
@@ -114,6 +123,17 @@ Make a deal
     window.addEventListener('DOMContentLoaded', (event) => {
         liveSend({});
     });
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+        $('.otree-timer__time-left').on('update.countdown', function (event) {
+            //if (event.offset.totalSeconds === 10) {
+            //    $('.otree-timer').show();
+            //}
+            liveSend({'time_left': event.offset.totalSeconds})
+            console.log('time left:', event.offset.totalSeconds)
+        });
+    });
+    
 
 </script>
 
