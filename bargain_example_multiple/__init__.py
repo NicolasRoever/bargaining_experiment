@@ -33,9 +33,11 @@ class Group(BaseGroup):
     is_finished = models.BooleanField(initial=False)
     accepted_by = models.IntegerField()
 
-    all_proposals = models.StringField()
     first_proposal_by = models.IntegerField()
     latest_proposal_by = models.IntegerField()
+
+    terminated = models.BooleanField(initial=False)
+    terminated_by = models.IntegerField()
 
 
 class Player(BasePlayer):
@@ -106,8 +108,11 @@ class Bargain(Page):
 
         elif 'terminated_by' in data:
             group.is_finished = True
+            group.terminated = True
+            group.terminated_by = data['terminated_by']
             group.deal_price = 0
             return {0: dict(finished=True)}
+
 
         current_proposals = []
         current_payoffs_accept = []
@@ -121,53 +126,26 @@ class Bargain(Page):
             #print(current_proposals)
             #print(current_payoffs_accept)
 
-        all_proposals = player.group.field_maybe_none('all_proposals')
-        if all_proposals is not None: 
-            all_proposals = json.loads(all_proposals)
-        else:
-            all_proposals = []
-
         amount_proposed = player.field_maybe_none('amount_proposed')
+        other_amount_proposed = other.field_maybe_none('amount_proposed')
         latest_proposal_by = player.group.field_maybe_none('latest_proposal_by')
+
+        if amount_proposed is not None and other_amount_proposed is None:
+            group.first_proposal_by = data['latest_proposal_by']
 
         if amount_proposed is not None and latest_proposal_by == player.id_in_group:
             latest_proposal = [player.id_in_group, amount_proposed]
-            all_proposals.append(latest_proposal)
 
             latest_proposal_by = latest_proposal[0]
 
-            if len(all_proposals) < 2:
-                group.first_proposal_by = data['latest_proposal_by']
         
-        player.group.all_proposals = json.dumps(all_proposals)
-
-        # Define current payoffs in case of accepting other's offer
-        # buyer gets v - p
-        # seller gets p - v
-        #for p in [player, other]:
-        #    try: 
-        #        int(other.amount_proposed)
-        #    except Exception:
-        #        print("No offer yet")
-        #    if p.role == "Buyer":
-        #        current_payoff = p.valuation - other.amount_proposed
-        #    elif p.role == "Seller":
-        #        current_payoff = other.amount_proposed - p.valuation
-        #    print(current_payoff)
-
-
         # Define current payoffs in case of terminating bargaining
 
         
-        return {0: {#'all_proposals':all_proposals, 
+        return {0: {
                 'current_proposals':current_proposals, 
                 'latest_proposal_by':latest_proposal_by,
                 'current_payoffs_accept':current_payoffs_accept,}
-                #'payoff_buyer_accept':},
-                #player.get_others_in_group(latest_proposal_by): {
-                #    'current_payoff_accept':player.field_maybe_none('current_payoff_accept'),
-                #    }
-                
                 }
             
 

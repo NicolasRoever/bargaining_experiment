@@ -4,9 +4,19 @@
 
 {{ block content }}
 
-    <p>
-        Congratulations, you made a deal at the price of {{ group.deal_price }}.
-    </p>
+{% if group.terminated == False %}
+<p>
+    Congratulations, you made a deal at the price of {{ group.deal_price }}.
+</p>
+
+{% elif group.terminated == True %}
+
+<p>
+    The bargaining was terminated and no deal has been made.
+</p>
+
+{% endif %}
+
 
 {{ endblock }}
 
