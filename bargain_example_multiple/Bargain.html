@@ -11,7 +11,10 @@ Make a deal
 
 <p>Your valuation for the object is {{ valuation }}. </p>
 
-<p style="display:inline">Your current transaction costs for the negotiation are <div style="display: inline" id ="TA_costs"></div> per 10 seconds.</p>
+<p style="display:inline">Your current transaction costs per 10 seconds for the negotiation are <div style="display: inline" id ="TA_costs"></div>.</p>
+
+<p style="display:inline">And your cumulated total transaction costs for the negotiation are <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
+
 
 <table class="table">
     <tr>
@@ -78,6 +81,10 @@ Make a deal
     function liveRecv(data) {
         if ('current_TA_costs' in data) {
             document.getElementById('TA_costs').innerHTML = USDollar.format(data.current_TA_costs/100)
+        }
+
+        if ('cumulated_TA_costs' in data) {
+            document.getElementById('cumulated_TA_costs').innerHTML = USDollar.format(data.cumulated_TA_costs/100)
         }
 
         if ('current_proposals' in data) {

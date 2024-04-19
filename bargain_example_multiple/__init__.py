@@ -33,8 +33,6 @@ class Group(BaseGroup):
     terminated_by = models.IntegerField()
 
     bargain_start_time = models.FloatField()
-    current_TA_costs = models.IntegerField(initial = 10)
-    cumulated_TA_costs = models.IntegerField(initial = 10)
 
 
 class Player(BasePlayer):
@@ -46,6 +44,9 @@ class Player(BasePlayer):
     valuation = models.IntegerField()
     current_payoff_accept = models.IntegerField()
     current_payoff_terminate = models.IntegerField()
+
+    current_TA_costs = models.IntegerField(initial = 10)
+    cumulated_TA_costs = models.IntegerField(initial = 10)
 
     
 # FUNCTIONS
@@ -90,13 +91,14 @@ class Bargain(Page):
 
         bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
         
-        group.current_TA_costs = (bargaining_time_elapsed // 10 + 1) * 10
-        if bargaining_time_elapsed % 10 == 0:
-            group.cumulated_TA_costs += group.current_TA_costs
+        if bargaining_time_elapsed > 0 and bargaining_time_elapsed % 10 == 0:
+            player.cumulated_TA_costs += player.current_TA_costs
+        
+        player.current_TA_costs = (bargaining_time_elapsed // 10 + 1) * 10
     
-        print("Time elapsed", bargaining_time_elapsed)
-        print("Current costs", group.current_TA_costs)
-        print("Cumulated costs", group.cumulated_TA_costs)
+        #print("Time elapsed", bargaining_time_elapsed)
+        #print("Current costs", player.current_TA_costs)
+        #print("Cumulated costs", player.cumulated_TA_costs)
 
 
         amount_proposed_list = player.field_maybe_none('amount_proposed_list')
@@ -184,7 +186,8 @@ class Bargain(Page):
                 'current_proposals':current_proposals, 
                 'latest_proposal_by':latest_proposal_by,
                 'current_payoffs_accept':current_payoffs_accept,
-                'current_TA_costs':group.current_TA_costs,}
+                'current_TA_costs':player.current_TA_costs,
+                'cumulated_TA_costs':player.cumulated_TA_costs,}
                 }
             
 
