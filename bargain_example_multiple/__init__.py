@@ -1,6 +1,7 @@
 from otree.api import *
 import json
 import random
+import time
 
 
 doc = """
@@ -31,6 +32,8 @@ class Group(BaseGroup):
     terminated = models.BooleanField(initial=False)
     terminated_by = models.IntegerField()
 
+    bargain_start_time = models.FloatField()
+
 
 class Player(BasePlayer):
     amount_proposed = models.IntegerField()
@@ -49,8 +52,17 @@ def creating_session(subsession):
         player.valuation = random.randint(0, 1000)
 
 
+# PAGES
+
+class BargainWaitPage(WaitPage):
+    @staticmethod
+    def after_all_players_arrive(group):
+        group.bargain_start_time = time.time()
+        print(group.bargain_start_time)
+
 
 class Bargain(Page):
+
     timeout_seconds = 300
 
     @staticmethod
@@ -58,6 +70,7 @@ class Bargain(Page):
         return dict(other_role=player.get_others_in_group()[0].role, 
                     valuation = cu(player.valuation/100),
                     )
+
 
     @staticmethod
     def js_vars(player: Player):
@@ -68,6 +81,16 @@ class Bargain(Page):
 
         group = player.group
         [other] = player.get_others_in_group()
+
+        #for p in [player, other]:
+        bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+        if bargaining_time_elapsed < 10:
+            current_TA_costs = 10
+        elif bargaining_time_elapsed >= 10:
+            current_TA_costs = 20
+        print(bargaining_time_elapsed)
+        print(current_TA_costs)
+
 
         amount_proposed_list = player.field_maybe_none('amount_proposed_list')
         if amount_proposed_list is not None:
@@ -145,15 +168,16 @@ class Bargain(Page):
             latest_proposal_by = latest_proposal[0]
 
         
-        # Define current payoffs in case of terminating bargaining
-        if 'time_left' in data:
-            print(data['time_left'])
-        
+        # Print time spent on this page
+        #if 'time_left' in data:
+        #    print(data['time_left'])
+        #print(time.time())
         
         return {0: {
                 'current_proposals':current_proposals, 
                 'latest_proposal_by':latest_proposal_by,
-                'current_payoffs_accept':current_payoffs_accept,}
+                'current_payoffs_accept':current_payoffs_accept,
+                'current_TA_costs':current_TA_costs,}
                 }
             
 
@@ -179,4 +203,4 @@ class Results(Page):
                     )
 
 
-page_sequence = [Bargain, Results]
+page_sequence = [BargainWaitPage, Bargain, Results]
