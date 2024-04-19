@@ -84,9 +84,11 @@ class Bargain(Page):
 
         #for p in [player, other]:
         bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+        #while bargaining_time_elapsed <= 300:
+        #    current_TA_costs = (bargaining_time_elapsed // 10 + 1) * 10
         if bargaining_time_elapsed < 10:
             current_TA_costs = 10
-        elif bargaining_time_elapsed >= 10:
+        elif bargaining_time_elapsed >= 10 and bargaining_time_elapsed < 20:
             current_TA_costs = 20
         print(bargaining_time_elapsed)
         print(current_TA_costs)
