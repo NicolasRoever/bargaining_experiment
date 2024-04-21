@@ -91,10 +91,11 @@ class Bargain(Page):
 
         bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
         
+        player.current_TA_costs = (bargaining_time_elapsed // 10 + 1) * 10
+
         if bargaining_time_elapsed > 0 and bargaining_time_elapsed % 10 == 0:
             player.cumulated_TA_costs += player.current_TA_costs
-        
-        player.current_TA_costs = (bargaining_time_elapsed // 10 + 1) * 10
+    
     
         #print("Time elapsed", bargaining_time_elapsed)
         #print("Current costs", player.current_TA_costs)
