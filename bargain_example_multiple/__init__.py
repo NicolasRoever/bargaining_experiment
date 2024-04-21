@@ -138,6 +138,9 @@ class Bargain(Page):
                 elif other.role == "Seller":
                     other.current_payoff_accept = player.amount_proposed - other.valuation
                 #print(other.current_payoff_accept)
+
+                if other.field_maybe_none('amount_proposed') == None:
+                    group.first_proposal_by = data['latest_proposal_by']
             
             player.amount_proposed_list = json.dumps(amount_proposed_list)
 
@@ -168,8 +171,8 @@ class Bargain(Page):
         other_amount_proposed = other.field_maybe_none('amount_proposed')
         latest_proposal_by = player.group.field_maybe_none('latest_proposal_by')
 
-        if amount_proposed is not None and other_amount_proposed is None:
-            group.first_proposal_by = data['latest_proposal_by']
+        #if amount_proposed is not None and other_amount_proposed is None:
+            
 
         if amount_proposed is not None and latest_proposal_by == player.id_in_group:
             latest_proposal = [player.id_in_group, amount_proposed]
