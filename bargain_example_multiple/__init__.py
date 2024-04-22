@@ -53,8 +53,6 @@ class Player(BasePlayer):
     current_TA_costs = models.IntegerField(initial = 10)
     cumulated_TA_costs = models.IntegerField(initial = 10)
 
-    offer = models.IntegerField()
-
     
 # FUNCTIONS
 def creating_session(subsession):
@@ -73,7 +71,7 @@ class BargainWaitPage(WaitPage):
 
 class Bargain(Page):
 
-    timeout_seconds = 300
+    timeout_seconds = 800
 
     @staticmethod
     def vars_for_template(player: Player):

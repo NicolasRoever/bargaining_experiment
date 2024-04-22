@@ -1,5 +1,5 @@
 {{ block title }}
-Make a deal
+Price Negotiation
 {{ endblock }}
 {{ block content }}
 <style>
@@ -75,39 +75,55 @@ Make a deal
     Please negotiate with the {{ other_role }} below.
 </p>
 
-<p>Your valuation for the object is {{ valuation }}. </p>
-
-<p style="display:inline">Your current transaction costs per 10 seconds for the negotiation are <div style="display: inline" id ="TA_costs"></div>.</p>
-
-<p style="display:inline">And your cumulated total transaction costs for the negotiation are <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
-
-
-<table class="table">
-    <tr>
-        <th>Your current proposal</th>
-        <td id="my-proposal">(none)</td>
-        <td>
-            <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit slider value</button>
-        </td>
-    </tr>
-    <tr>
-        <th>{{ other_role }} proposal</th>
-        <td id="other-proposal">(none)</td>
-    </tr>
-</table>
-
-
-<p id="my_payoff_accept_text" style="display: none">If you accept the current proposal by the {{ other_role }}, your payoff will be <div style="display: inline" id ="my_payoff_accept"></div></p>
-<button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: none">Accept {{other_role}}'s offer</button>
+<p style="border: 2px solid black; padding: 10px">In this match, your value of the object is {{ valuation }}. </p>
 
 
 
 
-<p style="margin-top:3cm;display: inline;">If you terminate the negotiation, there will be no deal and your payoff will be <div style="display: inline" id="my_payoff_terminate" ></div></p>
-<button type="button" id="btn-terminate" onclick="sendTerminate()">Terminate</button>
+
+<div style="background-color: #f2f2f2; padding: 15px">
+    <h4>Please place your current price offer</h4>
+            <div id="my-proposal">(none)</div>
+            
+            <div id="sliders_here"></div>
+
+                <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit Proposal</button>
+
+        
+    <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer</h4>
+            <div id="other-proposal">(none)</div>
+</div>
 
 
-<div id="sliders_here"></div>
+<div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
+    <h5>Transaction Costs</h5>
+
+    <p style="display:inline">Current transaction costs per 10 seconds: <div style="display: inline" id ="TA_costs"></div>.</p>
+
+    <p style="display:inline">Cumulated total transaction costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
+
+</div>
+
+<div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
+    <h5>Delay in Payment</h5>
+
+</div>
+
+
+<div style="display: flex; justify-content: space-between; margin-top: 1cm;">
+    <div style="flex: 0.9; background-color: #f2f2f2; padding: 15px; margin-right: 20px">
+        <button type="button" id="btn-terminate" style="display: block;" onclick="sendTerminate()">Terminate</button>
+        <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
+    </div>
+
+    <div style="flex: 0.9; background-color: #f2f2f2; padding: 15px; margin-left: 20px;">
+        <button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: none">Accept {{other_role}}'s offer</button>
+        <p id="my_payoff_accept_text" style="display: none">Your payoff: <div style="display: inline" id ="my_payoff_accept"></div></p>
+    </div>  
+</div>
+
+
+
 
 <script src="{{ static 'mgslider.js' }}"></script>
 
@@ -117,7 +133,7 @@ Make a deal
     $(document).ready(function (event) {
                     slider1 = new mgslider("offer", 0, 10, 0.1);
                     slider1.print(document.getElementById("sliders_here"));
-                    slider1.addSubmitter(function() {liveSend({'type':'propose', 'amount':slider1.getValue()})} )
+                    //slider1.addSubmitter(function() {liveSend({'type':'propose', 'amount':slider1.getValue()})} )
                     //slider1.recall(); // Optional line to remember value across errors
                     //slider2 = new mgslider("number", 0, 10, 0.1);
                     //slider2.print(document.getElementById("sliders_here"));

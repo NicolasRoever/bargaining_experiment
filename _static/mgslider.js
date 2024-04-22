@@ -40,7 +40,7 @@ function mgslider(field, min, max, step) {
     this.remember = false;
 
     this.prefix = "mgslider_yF5sTZLy";
-    this.yourvalue = "Your value";
+    this.yourvalue = "Your Proposal";
 
     mgsliders.push({field: field, obj: this});
 }
