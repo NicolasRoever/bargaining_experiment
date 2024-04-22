@@ -82,7 +82,7 @@ Price Negotiation
 
 
 <div style="background-color: #f2f2f2; padding: 15px">
-    <h4>Please place your current price offer</h4>
+    <h4>Please place your price offer</h4>
             <div id="my-proposal">(none)</div>
             
             <div id="sliders_here"></div>
@@ -114,11 +114,13 @@ Price Negotiation
     <div style="flex: 0.9; background-color: #f2f2f2; padding: 15px; margin-right: 20px">
         <button type="button" id="btn-terminate" style="display: block;" onclick="sendTerminate()">Terminate</button>
         <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
+        <p>{{ other_role }}'s payoff: ???</p>
     </div>
 
     <div style="flex: 0.9; background-color: #f2f2f2; padding: 15px; margin-left: 20px;">
-        <button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: none">Accept {{other_role}}'s offer</button>
-        <p id="my_payoff_accept_text" style="display: none">Your payoff: <div style="display: inline" id ="my_payoff_accept"></div></p>
+        <button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: block;" disabled>Accept {{other_role}}'s offer</button>
+        <p id="my_payoff_accept_text" style="display: inline">Your payoff: <div style="display: inline" id ="my_payoff_accept">(none)</div></p>
+        <p>{{ other_role }}'s payoff: ???</p>
     </div>  
 </div>
 
@@ -196,7 +198,7 @@ Price Negotiation
                 } else {
                     msgOtherProposal.innerHTML = USDollar.format(proposal/100);
                     otherProposal = proposal;
-                    btnAccept.style.display = 'block';
+                    btnAccept.disabled = false;
                     
                 }
                 

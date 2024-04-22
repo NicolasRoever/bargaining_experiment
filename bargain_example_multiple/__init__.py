@@ -50,14 +50,19 @@ class Player(BasePlayer):
     current_payoff_accept = models.IntegerField()
     current_payoff_terminate = models.IntegerField(initial = -10)
 
-    current_TA_costs = models.IntegerField(initial = 10)
-    cumulated_TA_costs = models.IntegerField(initial = 10)
+    current_TA_costs = models.IntegerField()
+    cumulated_TA_costs = models.IntegerField()
 
     
 # FUNCTIONS
 def creating_session(subsession):
     for player in subsession.get_players():
-        player.valuation = random.randint(0, 1000)
+        valuation_list = list(range(0, 1001, 10))
+        player.valuation = random.choice(valuation_list)
+
+        # Set transaction costs treatment
+        player.current_TA_costs = 10
+        player.cumulated_TA_costs = 10
 
 
 # PAGES
@@ -106,10 +111,8 @@ class Bargain(Page):
             if player.field_maybe_none('current_deal_accept') is not None:
                 player.current_payoff_accept = player.current_deal_accept - player.cumulated_TA_costs
         
-        #if data['latest_proposal'] == player.id_in_group:
-
     
-        print("Time elapsed", bargaining_time_elapsed)
+        #print("Time elapsed", bargaining_time_elapsed)
         #print("Current costs", player.current_TA_costs)
         #print("Cumulated costs", player.cumulated_TA_costs)
 
