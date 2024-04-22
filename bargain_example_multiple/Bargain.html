@@ -85,13 +85,15 @@ Price Negotiation
     <h4>Please place your price offer</h4>
             <div id="my-proposal">(none)</div>
             
-            <div id="sliders_here"></div>
+            <div id="slider1"></div>
 
                 <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit Proposal</button>
 
         
     <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer</h4>
             <div id="other-proposal">(none)</div>
+
+            <div id="slider2"></div>
 </div>
 
 
@@ -107,7 +109,7 @@ Price Negotiation
 <div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
     <h5>Delay in Payment</h5>
 
-    <p style="display:inline">Delay in payment per 10 seconds: 1 day.</p>
+    <p style="display:block">Delay in payment per 10 seconds: 1 day.</p>
 
     <p style="display:inline">Cumulated delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
 
@@ -138,11 +140,11 @@ Price Negotiation
 
     $(document).ready(function (event) {
                     slider1 = new mgslider("offer", 0, 10, 0.1);
-                    slider1.print(document.getElementById("sliders_here"));
+                    slider1.print(document.getElementById("slider1"));
                     //slider1.addSubmitter(function() {liveSend({'type':'propose', 'amount':slider1.getValue()})} )
                     //slider1.recall(); // Optional line to remember value across errors
-                    //slider2 = new mgslider("number", 0, 10, 0.1);
-                    //slider2.print(document.getElementById("sliders_here"));
+                    slider2 = new mgslider("other_offer", 0, 10, 0.1);
+                    slider2.print(document.getElementById("slider2"));
                     //slider2.recall(); // Optional line to remember value across errors
                 });
    
@@ -213,9 +215,11 @@ Price Negotiation
             if (data['latest_proposal_by'] === js_vars.my_id) {
                 btnSliderSubmit.disabled = true;
                 slider1.disable();
+                slider2.disable();
             } else {
                 btnSliderSubmit.disabled = false;
                 slider1.enable();
+                slider2.disable();
             }
             //print(data['current_deal_accept'])
         }
