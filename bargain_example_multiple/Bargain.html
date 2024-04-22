@@ -2,7 +2,73 @@
 Make a deal
 {{ endblock }}
 {{ block content }}
+<style>
+    .mgslider-wrapper {
+        border-spacing: 10px;
+    }
 
+    .mgslider-limit {
+        width: 10%;
+        min-width: 75px;
+        height: 40px;
+        margin: 100px;
+        text-align: center;
+        background: #eee;
+        border: 1px solid #888;
+    }
+
+    .mgslider-limit, .mgslider-value {
+        font-variant-numeric: tabular-nums;
+    }
+
+    .mgslider-before {
+        height: 16px;
+        width: 100%;
+        background: #1e5bff;
+    }
+
+    .mgslider-feedback {
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .slider-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .mgslider-wrapper {
+        width: 95%;
+        height: 50%; /* Adjust height as needed */
+    }
+
+    #submit {
+        position: absolute; /* Position button absolutely */
+        top: 16.6%; /* Adjust bottom spacing as needed */
+        left: 75%; /* Position horizontally centered */
+        transform: translateX(-50%); /* Center horizontally */
+    }
+
+    button#submit {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-left: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button#submit:hover {
+        background-color: #45a049; /* Darker Green */
+    }
+
+</style>
 
 <p>
     You are the {{ player.role }}.
@@ -21,8 +87,7 @@ Make a deal
         <th>Your current proposal</th>
         <td id="my-proposal">(none)</td>
         <td>
-            <input type="number" id="my_offer">
-            <button type="button" onclick="sendOffer()" id="btn-offer">Make new offer</button>
+            <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit slider value</button>
         </td>
     </tr>
     <tr>
@@ -42,9 +107,25 @@ Make a deal
 <button type="button" id="btn-terminate" onclick="sendTerminate()">Terminate</button>
 
 
+<div id="sliders_here"></div>
+
+<script src="{{ static 'mgslider.js' }}"></script>
+
+
 <script>
+
+    $(document).ready(function (event) {
+                    slider1 = new mgslider("offer", 0, 10, 0.1);
+                    slider1.print(document.getElementById("sliders_here"));
+                    slider1.addSubmitter(function() {liveSend({'type':'propose', 'amount':slider1.getValue()})} )
+                    //slider1.recall(); // Optional line to remember value across errors
+                    //slider2 = new mgslider("number", 0, 10, 0.1);
+                    //slider2.print(document.getElementById("sliders_here"));
+                    //slider2.recall(); // Optional line to remember value across errors
+                });
    
     let btnOffer = document.getElementById('btn-offer');
+    let btnSliderSubmit = document.getElementById('btn-offer-slider');
     let my_offer = document.getElementById('my_offer');
     
     let msgOtherProposal = document.getElementById('other-proposal');
@@ -62,7 +143,7 @@ Make a deal
     //});
 
     function sendOffer() {
-        liveSend({'type': 'propose', 'amount': my_offer.value, 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
+        liveSend({'type': 'propose', 'amount': slider1.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
         my_offer.value = '';
     }
 
@@ -106,9 +187,11 @@ Make a deal
             }
             
             if (data['latest_proposal_by'] === js_vars.my_id) {
-                btnOffer.disabled = true;
+                btnSliderSubmit.disabled = true;
+                slider1.disable();
             } else {
-                btnOffer.disabled = false;
+                btnSliderSubmit.disabled = false;
+                slider1.enable();
             }
             //print(data['current_deal_accept'])
         }

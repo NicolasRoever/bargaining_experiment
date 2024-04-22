@@ -53,6 +53,8 @@ class Player(BasePlayer):
     current_TA_costs = models.IntegerField(initial = 10)
     cumulated_TA_costs = models.IntegerField(initial = 10)
 
+    offer = models.IntegerField()
+
     
 # FUNCTIONS
 def creating_session(subsession):

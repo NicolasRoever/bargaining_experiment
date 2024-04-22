@@ -181,6 +181,11 @@ mgslider.prototype.disable = function () {
     document.getElementById(this.id()).disabled = true; // Disable the slider
 };
 
+mgslider.prototype.enable = function () {
+    this.enabled = true;
+    document.getElementById(this.id()).disabled = false; // Enable the slider
+};
+
 mgslider.prototype.submit = function () {
     console.log("Submit button clicked."); // Check if the function is being called
     this.disable(); // Disable the slider
