@@ -62,16 +62,16 @@ Make a deal
     //});
 
     function sendOffer() {
-        liveSend({'type': 'propose', 'amount': my_offer.value, 'offer_time': Date.now() ,'latest_proposal_by': js_vars.my_id})
+        liveSend({'type': 'propose', 'amount': my_offer.value, 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
         my_offer.value = '';
     }
 
     function sendAccept() {
-        liveSend({'type': 'accept', 'amount': otherProposal, 'accepted_by': js_vars.my_id})
+        liveSend({'type': 'accept', 'amount': otherProposal, 'acceptance_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'accepted_by': js_vars.my_id})
     }
 
     function sendTerminate() {
-        liveSend({'type': 'terminate', 'terminated_by': js_vars.my_id})
+        liveSend({'type': 'terminate', 'termination_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'terminated_by': js_vars.my_id})
     }
 
     let USDollar = new Intl.NumberFormat('en-US', {

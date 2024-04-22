@@ -24,12 +24,15 @@ class Subsession(BaseSubsession):
 class Group(BaseGroup):
     deal_price = models.IntegerField()
     is_finished = models.BooleanField(initial=False)
+
+    acceptance_time = models.IntegerField()
     accepted_by = models.IntegerField()
 
     first_proposal_by = models.IntegerField()
     latest_proposal_by = models.IntegerField()
 
     terminated = models.BooleanField(initial=False)
+    termination_time = models.IntegerField()
     terminated_by = models.IntegerField()
 
     bargain_start_time = models.FloatField()
@@ -137,6 +140,7 @@ class Bargain(Page):
                     group.deal_price = amount
                     group.is_finished = True
                     group.accepted_by = data['accepted_by']
+                    group.acceptance_time = data['acceptance_time']
 
                 return {0: dict(finished=True)}
                 
@@ -173,6 +177,7 @@ class Bargain(Page):
         elif 'terminated_by' in data:
             group.is_finished = True
             group.terminated = True
+            group.termination_time = data['termination_time']
             group.terminated_by = data['terminated_by']
             group.deal_price = 0
 
