@@ -41,6 +41,7 @@ Make a deal
 <p style="margin-top:3cm;display: inline;">If you terminate the negotiation, there will be no deal and your payoff will be <div style="display: inline" id="my_payoff_terminate" ></div></p>
 <button type="button" id="btn-terminate" onclick="sendTerminate()">Terminate</button>
 
+
 <script>
    
     let btnOffer = document.getElementById('btn-offer');
@@ -129,19 +130,34 @@ Make a deal
         }
     }
 
-    window.addEventListener('DOMContentLoaded', (event) => {
+
+    // Update live page every second
+    setInterval(
+        function () {
+            //let seconds_left = Math.max(0, js_vars.deadline - Date.now() / 1000);
+            //let frac = seconds_left / js_vars.TIMEOUT_SECONDS;
+            //for (let d of js_vars.RANKS) {
+            //document.getElementById('time_test').innerHTML = seconds_left; //Math.round(frac);
+            //console.log('time left:', seconds_left);
+            //}
+            liveSend({})
+        },
+        1000
+    )
+
+    document.addEventListener('DOMContentLoaded', (event) => {
         liveSend({});
     });
 
-    document.addEventListener("DOMContentLoaded", function (event) {
-        $('.otree-timer__time-left').on('update.countdown', function (event) {
+    //document.addEventListener("DOMContentLoaded", function (event) {
+     //   $('.otree-timer__time-left').on('update.countdown', function (event) {
             //if (event.offset.totalSeconds === 10) {
             //    $('.otree-timer').show();
             //}
-            liveSend({'time_left': event.offset.totalSeconds})
+     //       liveSend({'time_left': event.offset.totalSeconds})
             //console.log('time left:', event.offset.totalSeconds)
-        });
-    });
+    //    });
+    //});
     
 
 </script>

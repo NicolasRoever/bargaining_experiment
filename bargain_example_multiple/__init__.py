@@ -14,7 +14,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 1
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
-    TA_COSTS = 0.1
+    #TA_COSTS = 0.1
 
 
 class Subsession(BaseSubsession):
@@ -78,7 +78,9 @@ class Bargain(Page):
 
     @staticmethod
     def js_vars(player: Player):
-        return dict(my_id=player.id_in_group)
+        return dict(my_id=player.id_in_group, 
+                    start_time=player.group.bargain_start_time, 
+                    )
 
     @staticmethod
     def live_method(player: Player, data):
@@ -97,12 +99,13 @@ class Bargain(Page):
         if bargaining_time_elapsed > 0 and bargaining_time_elapsed % 10 == 0:
             player.cumulated_TA_costs += player.current_TA_costs
             player.current_payoff_terminate = - player.cumulated_TA_costs
-            player.current_payoff_accept = player.current_deal_accept - player.cumulated_TA_costs
+            if player.field_maybe_none('current_deal_accept') is not None:
+                player.current_payoff_accept = player.current_deal_accept - player.cumulated_TA_costs
         
         #if data['latest_proposal'] == player.id_in_group:
 
     
-        #print("Time elapsed", bargaining_time_elapsed)
+        print("Time elapsed", bargaining_time_elapsed)
         #print("Current costs", player.current_TA_costs)
         #print("Cumulated costs", player.cumulated_TA_costs)
 
@@ -201,7 +204,8 @@ class Bargain(Page):
                 'current_payoffs_accept':current_payoffs_accept,
                 'current_TA_costs':player.current_TA_costs,
                 'cumulated_TA_costs':player.cumulated_TA_costs,
-                'current_payoff_terminate':player.current_payoff_terminate,}
+                'current_payoff_terminate':player.current_payoff_terminate,
+                }
                 }
             
 
