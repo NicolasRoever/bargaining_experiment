@@ -143,6 +143,8 @@ class Bargain(Page):
                     other.current_deal_accept = other.valuation - player.amount_proposed
                 elif other.role == "Seller":
                     other.current_deal_accept = player.amount_proposed - other.valuation
+                
+                other.current_payoff_accept = other.current_deal_accept - other.cumulated_TA_costs
                 #print(other.current_deal_accept)
 
                 if other.field_maybe_none('amount_proposed') == None:
@@ -165,12 +167,12 @@ class Bargain(Page):
         current_payoffs_accept = []
         for p in [player, other]:
             amount_proposed = p.field_maybe_none('amount_proposed')
-            current_deal_accept = p.field_maybe_none('current_deal_accept')
+            current_payoff_accept = p.field_maybe_none('current_payoff_accept')
             
             if amount_proposed is not None:
                 current_proposals.append([p.id_in_group, amount_proposed])
-            if current_deal_accept is not None:
-                current_payoffs_accept.append([p.id_in_group, current_deal_accept])
+            if current_payoff_accept is not None:
+                current_payoffs_accept.append([p.id_in_group, current_payoff_accept])
             #print(current_proposals)
             #print(other.field_maybe_none('amount_proposed'))
             #print(current_payoffs_accept)
