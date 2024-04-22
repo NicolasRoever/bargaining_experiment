@@ -40,6 +40,7 @@ class Player(BasePlayer):
     amount_accepted = models.IntegerField()
 
     amount_proposed_list = models.StringField()
+    offer_time_list = models.StringField()
 
     valuation = models.IntegerField()
     current_deal_accept = models.IntegerField()
@@ -115,6 +116,13 @@ class Bargain(Page):
             amount_proposed_list = json.loads(amount_proposed_list)
         else:
             amount_proposed_list = []
+        
+        offer_time_list = player.field_maybe_none('offer_time_list')
+        if offer_time_list is not None:
+            offer_time_list = json.loads(offer_time_list)
+        else:
+            offer_time_list = []
+
 
         if 'amount' in data:
             
@@ -138,9 +146,14 @@ class Bargain(Page):
                 except Exception:
                     print('Invalid message received', data)
                     return
+                
                 player.amount_proposed = amount
-                player.group.latest_proposal_by = data['latest_proposal_by']
                 amount_proposed_list.append(amount)
+
+                offer_time = data['offer_time']
+                offer_time_list.append(offer_time)
+
+                player.group.latest_proposal_by = data['latest_proposal_by']
 
                 if other.role == "Buyer":
                     other.current_deal_accept = other.valuation - player.amount_proposed
@@ -152,8 +165,10 @@ class Bargain(Page):
 
                 if other.field_maybe_none('amount_proposed') == None:
                     group.first_proposal_by = data['latest_proposal_by']
+
             
             player.amount_proposed_list = json.dumps(amount_proposed_list)
+            player.offer_time_list = json.dumps(offer_time_list)
 
         elif 'terminated_by' in data:
             group.is_finished = True

@@ -62,7 +62,7 @@ Make a deal
     //});
 
     function sendOffer() {
-        liveSend({'type': 'propose', 'amount': my_offer.value, 'latest_proposal_by': js_vars.my_id})
+        liveSend({'type': 'propose', 'amount': my_offer.value, 'offer_time': Date.now() ,'latest_proposal_by': js_vars.my_id})
         my_offer.value = '';
     }
 
