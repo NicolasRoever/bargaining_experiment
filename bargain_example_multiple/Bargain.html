@@ -38,7 +38,7 @@ Make a deal
 
 
 
-<p style="margin-top:2cm;">If you terminate the negotiation, there will be no deal.</p>
+<p style="margin-top:3cm;display: inline;">If you terminate the negotiation, there will be no deal and your payoff will be <div style="display: inline" id="my_payoff_terminate" ></div></p>
 <button type="button" id="btn-terminate" onclick="sendTerminate()">Terminate</button>
 
 <script>
@@ -84,7 +84,8 @@ Make a deal
         }
 
         if ('cumulated_TA_costs' in data) {
-            document.getElementById('cumulated_TA_costs').innerHTML = USDollar.format(data.cumulated_TA_costs/100)
+            document.getElementById('cumulated_TA_costs').innerHTML = USDollar.format(data.cumulated_TA_costs/100);
+            document.getElementById('my_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
         }
 
         if ('current_proposals' in data) {
@@ -108,16 +109,16 @@ Make a deal
             } else {
                 btnOffer.disabled = false;
             }
-            //print(data['current_payoff_accept'])
+            //print(data['current_deal_accept'])
         }
 
         if ('current_payoffs_accept' in data) {
 
-            for (let [id_in_group, current_payoff_accept] of data.current_payoffs_accept){
+            for (let [id_in_group, current_deal_accept] of data.current_payoffs_accept){
 
                 if (id_in_group === js_vars.my_id){
                     document.getElementById('my_payoff_accept_text').style.display = 'inline';
-                    msgMyPayoffAccept.innerHTML = USDollar.format(current_payoff_accept/100)
+                    msgMyPayoffAccept.innerHTML = USDollar.format(current_deal_accept/100)
                 }
             }
 
@@ -138,7 +139,7 @@ Make a deal
             //    $('.otree-timer').show();
             //}
             liveSend({'time_left': event.offset.totalSeconds})
-            console.log('time left:', event.offset.totalSeconds)
+            //console.log('time left:', event.offset.totalSeconds)
         });
     });
     
