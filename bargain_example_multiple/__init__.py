@@ -53,6 +53,8 @@ class Player(BasePlayer):
     current_TA_costs = models.IntegerField()
     cumulated_TA_costs = models.IntegerField()
 
+    payment_delay = models.IntegerField()
+
     
 # FUNCTIONS
 def creating_session(subsession):
@@ -61,8 +63,11 @@ def creating_session(subsession):
         player.valuation = random.choice(valuation_list)
 
         # Set transaction costs treatment
-        player.current_TA_costs = 10
-        player.cumulated_TA_costs = 10
+        player.current_TA_costs = 100
+        player.cumulated_TA_costs = 100
+
+        # Set payment delay treament
+        player.payment_delay = 0
 
 
 # PAGES
@@ -103,13 +108,24 @@ class Bargain(Page):
 
         bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
         
-        player.current_TA_costs = (bargaining_time_elapsed // 10 + 1) * 10
-
+        
+        
         if bargaining_time_elapsed > 0 and bargaining_time_elapsed % 10 == 0:
+            # Transaction costs decrease every ten seconds by $0.01
+            player.current_TA_costs = int(player.current_TA_costs - 1) 
             player.cumulated_TA_costs += player.current_TA_costs
+            
+            # Delay in payment increases every ten seconds
+            player.payment_delay += 1
+            
             player.current_payoff_terminate = - player.cumulated_TA_costs
-            if player.field_maybe_none('current_deal_accept') is not None:
-                player.current_payoff_accept = player.current_deal_accept - player.cumulated_TA_costs
+
+            
+        if player.field_maybe_none('current_deal_accept') is not None:
+            player.current_payoff_accept = player.current_deal_accept - player.cumulated_TA_costs
+
+
+        
         
     
         #print("Time elapsed", bargaining_time_elapsed)
@@ -228,6 +244,7 @@ class Bargain(Page):
                 'current_TA_costs':player.current_TA_costs,
                 'cumulated_TA_costs':player.cumulated_TA_costs,
                 'current_payoff_terminate':player.current_payoff_terminate,
+                'payment_delay':player.payment_delay,
                 }
                 }
             

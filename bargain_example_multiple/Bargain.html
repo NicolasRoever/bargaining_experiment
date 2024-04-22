@@ -107,6 +107,10 @@ Price Negotiation
 <div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
     <h5>Delay in Payment</h5>
 
+    <p style="display:inline">Delay in payment per 10 seconds: 1 day.</p>
+
+    <p style="display:inline">Cumulated delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
+
 </div>
 
 
@@ -186,6 +190,8 @@ Price Negotiation
         if ('cumulated_TA_costs' in data) {
             document.getElementById('cumulated_TA_costs').innerHTML = USDollar.format(data.cumulated_TA_costs/100);
             document.getElementById('my_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
+
+            document.getElementById('payment_delay').innerHTML = data.payment_delay
         }
 
         if ('current_proposals' in data) {
