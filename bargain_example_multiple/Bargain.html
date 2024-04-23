@@ -85,7 +85,7 @@ Price Negotiation
     <h4>Please place your price offer</h4>
             <div id="my-proposal">(none)</div>
             
-            <div id="slider1"></div>
+            <div id="my_slider"></div>
 
                 <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit Proposal</button>
 
@@ -93,7 +93,7 @@ Price Negotiation
     <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer</h4>
             <div id="other-proposal">(none)</div>
 
-            <div id="slider2"></div>
+            <div id="slider_other"></div>
 </div>
 
 
@@ -139,13 +139,14 @@ Price Negotiation
 <script>
 
     $(document).ready(function (event) {
-                    slider1 = new mgslider("offer", 0, 10, 0.1);
-                    slider1.print(document.getElementById("slider1"));
-                    //slider1.addSubmitter(function() {liveSend({'type':'propose', 'amount':slider1.getValue()})} )
-                    //slider1.recall(); // Optional line to remember value across errors
-                    slider2 = new mgslider("other_offer", 0, 10, 0.1);
-                    slider2.print(document.getElementById("slider2"));
-                    //slider2.recall(); // Optional line to remember value across errors
+                    my_slider = new mgslider("offer", 0, 10, 0.1);
+                    my_slider.print(document.getElementById("my_slider"));
+                    //my_slider.addSubmitter(function() {liveSend({'type':'propose', 'amount':my_slider.getValue()})} )
+                    //my_slider.recall(); // Optional line to remember value across errors
+                    slider_other = new mgslider("other_offer", 0, 10, 0.1);
+                    slider_other.yourvalue = js_vars.other_role + "'s " + " Proposal";
+                    slider_other.print(document.getElementById("slider_other"));
+                    //slider_other.recall(); // Optional line to remember value across errors
                 });
    
     let btnOffer = document.getElementById('btn-offer');
@@ -167,7 +168,7 @@ Price Negotiation
     //});
 
     function sendOffer() {
-        liveSend({'type': 'propose', 'amount': slider1.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
+        liveSend({'type': 'propose', 'amount': my_slider.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
         my_offer.value = '';
     }
 
@@ -207,21 +208,22 @@ Price Negotiation
                     msgOtherProposal.innerHTML = USDollar.format(proposal/100);
                     otherProposal = proposal;
                     btnAccept.disabled = false;
-                    slider2.set(proposal/100)
+                    slider_other.set(proposal/100);
+                    document.getElementById(slider_other.id("cur")).innerHTML = slider_other.f2s(proposal/100, false);
                 }
                 
             }
             
             if (data['latest_proposal_by'] === js_vars.my_id) {
                 btnSliderSubmit.disabled = true;
-                slider1.submit();
-                slider1.disable();
-                slider2.disable();
+                my_slider.submit();
+                my_slider.disable();
+                slider_other.disable();
             } else if (data['latest_proposal_by'] === js_vars.other_id) {
                 btnSliderSubmit.disabled = false;
-                slider1.enable();
-                slider2.disable();
-                //slider2.set(5)
+                my_slider.enable();
+                slider_other.disable();
+                //slider_other.set(5)
             }
             //print(data['current_deal_accept'])
         }

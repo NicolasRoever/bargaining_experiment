@@ -94,10 +94,10 @@ class Bargain(Page):
 
     @staticmethod
     def js_vars(player: Player):
-        [other] = player.get_others_in_group()
         return dict(my_id=player.id_in_group, 
-                    other_id=other.id_in_group,
+                    other_id=player.get_others_in_group()[0].id_in_group,
                     start_time=player.group.bargain_start_time, 
+                    other_role=player.get_others_in_group()[0].role,
                     )
 
     @staticmethod
