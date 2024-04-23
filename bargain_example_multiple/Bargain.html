@@ -72,6 +72,24 @@ Price Negotiation
     display: none;
     }
 
+    .two_columns_container {
+        display: flex; 
+        justify-content: space-between; 
+        margin-top: 1cm; 
+    }
+
+    .two_columns_left {
+        flex: 1;  
+        margin-right: 0.5cm;
+        padding: 15px;
+    }
+
+    .two_columns_right {
+        flex: 1;  
+        margin-left: 0.5cm;
+        padding: 15px;
+    }
+
 </style>
 
 
@@ -91,58 +109,55 @@ Price Negotiation
         <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
 
         <h4>Please place your price offer:</h4>
-                <div id="my-proposal">(none)</div>
-                
-                <div id="my_slider"></div>
+                <div id="my-proposal" style="display: inline;"> No offer yet.</div>
 
-                    <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit Proposal</button>
+                <div id="my_slider" style="margin-top: 1cm;"></div>
+
+                <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit Proposal</button>
 
             
         <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer:</h4>
-                <div id="other-proposal">(none)</div>
+                <div id="other-proposal"> No offer yet. </div>
 
-                <div id="slider_other"></div>
+                <div id="slider_other" style="margin-top: 1cm;"></div>
     </div>
 
 
-<div style="display: flex; justify-content: space-between; margin-top: 1cm; ">
-    <div style="flex: 1; margin-right: 20px; padding: 15px; ">
-        <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px;"></canvas>
-
-        <div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
+<div class="two_columns_container" >
+    <div class="two_columns_left" style="background-color: #ddedf6; ">
+        
             <h5>Transaction Costs</h5>
         
             <p style="display:inline">Current transaction costs per 10 seconds: <div style="display: inline" id ="TA_costs"></div>.</p>
         
-            <p style="display:inline">Cumulated total transaction costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
+            <p style="display:inline"> Total transaction costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
         
-        </div>
+            <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px;"></canvas>
     </div>
 
-    <div style=" flex: 1; margin-left: 20px; padding: 15px;">
-        <canvas id="delay_chart" style="width: 100%; min-height: 200px;" ></canvas>
+    <div class="two_columns_right" style="background-color: #ddedf6;">
 
-        <div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
-    <h5>Delay in Payment</h5>
+            <h5>Delay in Payment</h5>
 
-    <p style="display:block">Delay in payment per 10 seconds: 1 day.</p>
+            <p style="display:block">Delay in payment per 10 seconds: 1 day.</p>
 
-    <p style="display:inline">Cumulated delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
+            <p style="display:inline">Total delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
 
-</div>
+            <canvas id="delay_chart" style="width: 100%; min-height: 200px;" ></canvas>
+        
     </div>
 </div>
 
 
 
-<div style="display: flex; justify-content: space-between; margin-top: 1cm;">
-    <div style="flex: 0.9; background-color: #f2f2f2; padding: 15px; margin-right: 20px">
+<div class="two_columns_container">
+    <div class="two_columns_left" style="background-color: #f2f2f2;">
         <button type="button" id="btn-terminate" style="display: block;" onclick="sendTerminate()">Terminate</button>
         <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
         <p>{{ other_role }}'s payoff: ???</p>
     </div>
 
-    <div style="flex: 0.9; background-color: #f2f2f2; padding: 15px; margin-left: 20px;">
+    <div class="two_columns_right" style="background-color: #f2f2f2;">
         <button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: block;" disabled>Accept {{other_role}}'s offer</button>
         <p id="my_payoff_accept_text" style="display: inline">Your payoff: <div style="display: inline" id ="my_payoff_accept">(none)</div></p>
         <p>{{ other_role }}'s payoff: ???</p>
@@ -163,23 +178,14 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     var array_cumulated_costs = []
     var array_delay = []
 
-    //var seconds = 0;
-    //function startTimer() {
-    //    setInterval(function() {
-    //        seconds++;
-    //        document.getElementById('timeSpent').innerText = "You've spent " + seconds;
-    //    }, 1000);
-    //}
-    //window.onload = startTimer
-
     $(document).ready(function (event) {
                     my_slider = new mgslider("offer", 0, 10, 0.1);
                     my_slider.print(document.getElementById("my_slider"));
-                    //my_slider.addSubmitter(function() {liveSend({'type':'propose', 'amount':my_slider.getValue()})} )
                     //my_slider.recall(); // Optional line to remember value across errors
                     slider_other = new mgslider("other_offer", 0, 10, 0.1);
                     slider_other.yourvalue = js_vars.other_role + "'s " + " Proposal";
                     slider_other.print(document.getElementById("slider_other"));
+                    //slider_other.disable()
                     //slider_other.recall(); // Optional line to remember value across errors
                 });
    
@@ -195,11 +201,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     let otherProposal;
 
-    //my_offer.addEventListener("keydown", function (event) {
-    //    if (event.key === "Enter") {
-    //        sendOffer();
-    //    }
-    //});
 
     function sendOffer() {
         liveSend({'type': 'propose', 'amount': my_slider.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
@@ -223,7 +224,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         new Chart(chartName, {
         type: "line",
         data: {
-            labels: Array.from({length: 15}, (_, i) => i * 10),
+            labels: Array.from({length: 200}, (_, i) => i * 0.5),
             datasets: [{
                 fill: false,
                 lineTension: 0,
@@ -242,14 +243,22 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             legend: { display: false },
             scales: {
                 yAxes: [{
-                    ticks: {min: yMin, max: yMax},
+                    ticks: {
+                        min: yMin, 
+                        max: yMax
+                    },
                     scaleLabel: {
                         display: true, 
                         labelString: yLabel,
                     },
                 }],
                 xAxes: [{
-                    ticks: {min: 0, max:300},
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 20,
+                        //min: 0, 
+                        //max:200,
+                    },
                     scaleLabel: {
                         display: true, 
                         labelString: "Seconds passed",
@@ -269,14 +278,14 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
             array_time_passed.push(data.bargaining_time_elapsed);
             array_time_passed = Array.from(new Set(array_time_passed))
-            //console.log(array_time_passed)
+            console.log(array_time_passed)
+            
             array_cumulated_costs.push(data.cumulated_TA_costs/100)
-            array_cumulated_costs = Array.from(new Set(array_cumulated_costs))
-            //console.log(array_cumulated_costs)
-            //console.log(data.cumulated_TA_costs)
+            console.log(data.cumulated_TA_costs/100)
+            //array_cumulated_costs = Array.from(new Set(array_cumulated_costs))
 
             array_delay.push(data.payment_delay)
-            array_delay = Array.from(new Set(array_delay))
+            //array_delay = Array.from(new Set(array_delay))
         }
 
         if ('current_TA_costs' in data) {
@@ -317,9 +326,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                 btnSliderSubmit.disabled = false;
                 my_slider.enable();
                 slider_other.disable();
-                //slider_other.set(5)
             }
-            //print(data['current_deal_accept'])
         }
 
         if ('current_payoffs_accept' in data) {
@@ -338,24 +345,18 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             document.getElementById('form').submit();
         }
     
-    
-    //const xValues = Array.from({length: 15}, (_, i) => i * 10); //array_time_passed; //[0, 10, 20, 30] //
+    // Create graphs for transaction costs and payment delay
     const yValues_cost = array_cumulated_costs;
     const yValues_delay = array_delay;
 
-    createChart("TA_cost_chart", array_cumulated_costs, "Total Costs ($)", 2, 20);
+    createChart("TA_cost_chart", array_cumulated_costs, "Total Costs ($)", 0, 20);
     createChart("delay_chart", array_delay, "Total Delay (Days)", 0, 50);
 
     }
+
     // Update live page every second
     setInterval(
         function () {
-            //let seconds_left = Math.max(0, js_vars.deadline - Date.now() / 1000);
-            //let frac = seconds_left / js_vars.TIMEOUT_SECONDS;
-            //for (let d of js_vars.RANKS) {
-            //document.getElementById('time_test').innerHTML = seconds_left; //Math.round(frac);
-            //console.log('time left:', seconds_left);
-            //}
             liveSend({})
         },
         1000
@@ -364,16 +365,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     document.addEventListener('DOMContentLoaded', (event) => {
         liveSend({});
     });
-
-    //document.addEventListener("DOMContentLoaded", function (event) {
-     //   $('.otree-timer__time-left').on('update.countdown', function (event) {
-            //if (event.offset.totalSeconds === 10) {
-            //    $('.otree-timer').show();
-            //}
-     //       liveSend({'time_left': event.offset.totalSeconds})
-            //console.log('time left:', event.offset.totalSeconds)
-    //    });
-    //});
     
 
 </script>

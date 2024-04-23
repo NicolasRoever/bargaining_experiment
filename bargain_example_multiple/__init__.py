@@ -10,11 +10,10 @@ doc = """
 
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining_multiple'
-    PLAYERS_PER_GROUP = None
+    PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 1
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
-    #TA_COSTS = 0.1
 
 
 class Subsession(BaseSubsession):
@@ -68,7 +67,7 @@ def creating_session(subsession):
 
         player.current_payoff_terminate = -100
 
-        # Set payment delay treament
+        # Set payment delay treatment
         player.payment_delay = 0
 
 
@@ -106,35 +105,24 @@ class Bargain(Page):
         group = player.group
         [other] = player.get_others_in_group()
 
-        #cumulated_TA_costs = group.field_maybe_none('cumulated_TA_costs')
-        #if cumulated_TA_costs is not None:
-
-
+        # Adjust total transaction costs after 10 seconds
         bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
         
-        
-        
         if bargaining_time_elapsed > 0 and bargaining_time_elapsed % 10 == 0:
-            # Transaction costs decrease every ten seconds by $0.01
+            # Current transaction costs decrease every ten seconds by $0.01
             player.current_TA_costs = int(player.current_TA_costs - 10) 
             player.cumulated_TA_costs += player.current_TA_costs
+
+            # Termination payoff is just negative transaction costs
+            player.current_payoff_terminate = - player.cumulated_TA_costs
             
-            # Delay in payment increases every ten seconds
+            # Total delay in payment increases every ten seconds by one day
             player.payment_delay += 1
             
-            player.current_payoff_terminate = - player.cumulated_TA_costs
-
-            
+        
+        # Total payoff if other's current proposal is accepted
         if player.field_maybe_none('current_deal_accept') is not None:
             player.current_payoff_accept = player.current_deal_accept - player.cumulated_TA_costs
-
-
-        
-        
-    
-        #print("Time elapsed", bargaining_time_elapsed)
-        #print("Current costs", player.current_TA_costs)
-        #print("Cumulated costs", player.cumulated_TA_costs)
 
 
         amount_proposed_list = player.field_maybe_none('amount_proposed_list')
@@ -188,7 +176,6 @@ class Bargain(Page):
                     other.current_deal_accept = player.amount_proposed - other.valuation
                 
                 other.current_payoff_accept = other.current_deal_accept - other.cumulated_TA_costs
-                #print(other.current_deal_accept)
 
                 if other.field_maybe_none('amount_proposed') == None:
                     group.first_proposal_by = data['latest_proposal_by']
@@ -207,8 +194,6 @@ class Bargain(Page):
             return {0: dict(finished=True)}
 
 
-        
-
         current_proposals = []
         current_payoffs_accept = []
         for p in [player, other]:
@@ -219,27 +204,15 @@ class Bargain(Page):
                 current_proposals.append([p.id_in_group, amount_proposed])
             if current_payoff_accept is not None:
                 current_payoffs_accept.append([p.id_in_group, current_payoff_accept])
-            #print(current_proposals)
-            #print(other.field_maybe_none('amount_proposed'))
-            #print(current_payoffs_accept)
 
         amount_proposed = player.field_maybe_none('amount_proposed')
         other_amount_proposed = other.field_maybe_none('amount_proposed')
         latest_proposal_by = player.group.field_maybe_none('latest_proposal_by')
 
-        #if amount_proposed is not None and other_amount_proposed is None:
-            
-
         if amount_proposed is not None and latest_proposal_by == player.id_in_group:
             latest_proposal = [player.id_in_group, amount_proposed]
 
             latest_proposal_by = latest_proposal[0]
-
-        
-        # Print time spent on this page
-        #if 'time_left' in data:
-        #    print(data['time_left'])
-        #print(time.time())
         
         return {0: {
                 'current_proposals':current_proposals, 
