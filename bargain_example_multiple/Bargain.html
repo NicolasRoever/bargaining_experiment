@@ -104,8 +104,9 @@ Price Negotiation
                 <div id="slider_other"></div>
     </div>
 
-<div style="display: flex; justify-content: space-between; margin-top: 1cm;">
-    <div style="flex: 1; margin-right: 20px; padding: 15px;">
+
+<div style="display: flex; justify-content: space-between; margin-top: 1cm; ">
+    <div style="flex: 1; margin-right: 20px; padding: 15px; ">
         <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px;"></canvas>
 
         <div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
@@ -226,10 +227,10 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             array_time_passed.push(data.bargaining_time_elapsed);
             array_time_passed = Array.from(new Set(array_time_passed))
             //console.log(array_time_passed)
-            array_cumulated_costs.push(data.cumulated_TA_costs)
+            array_cumulated_costs.push(data.cumulated_TA_costs/100)
             array_cumulated_costs = Array.from(new Set(array_cumulated_costs))
             //console.log(array_cumulated_costs)
-            console.log(data.cumulated_TA_costs)
+            //console.log(data.cumulated_TA_costs)
 
             array_delay.push(data.payment_delay)
             array_delay = Array.from(new Set(array_delay))
@@ -294,7 +295,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             document.getElementById('form').submit();
         }
     
-    const xValues = Array.from({length: 10}, (_, i) => i * 10); //array_time_passed; //[0, 10, 20, 30] //
+    const xValues = Array.from({length: 15}, (_, i) => i * 10); //array_time_passed; //[0, 10, 20, 30] //
     const yValues_cost = array_cumulated_costs;
 
     new Chart("TA_cost_chart", {
@@ -302,12 +303,14 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     data: {
         labels: xValues,
         datasets: [{
-        fill: false,
-        lineTension: 0,
-        backgroundColor: "rgba(0,0,255,1.0)",
-        borderColor: "rgba(0,0,255,0.1)",
-        data: yValues_cost, 
-        step: true
+            fill: false,
+            lineTension: 0,
+            backgroundColor: "rgba(0,0,255,1.0)",
+            borderColor: "rgba(0,0,255,0.1)",
+            data: yValues_cost, 
+            step: true,
+            fill: false,
+            pointRadius: 0,
         }]
     },
     options: {
@@ -318,20 +321,22 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         legend: {display: false},
         scales: {
             yAxes: [{
-            ticks: {min: 0, max:500},
+            ticks: {min: 2, max:20},
             scaleLabel: {
                 display: true, 
-                labelString: "Total Costs",
+                labelString: "Total Costs ($)",
             },
             }],
             xAxes: [{
-            //ticks: {min: 0, max:50},
+            ticks: {min: 0, max:300},
             scaleLabel: {
                 display: true, 
                 labelString: "Seconds passed",
             },
             }]
         },
+        maintainAspectRatio: true,
+        aspectRatio: 1,
     }
     });
 
@@ -342,12 +347,14 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     data: {
         labels: xValues,
         datasets: [{
-        fill: false,
-        lineTension: 0,
-        backgroundColor: "rgba(0,0,255,1.0)",
-        borderColor: "rgba(0,0,255,0.1)",
-        data: yValues_delay, 
-        step: true
+            fill: false,
+            lineTension: 0,
+            backgroundColor: "rgba(0,0,255,1.0)",
+            borderColor: "rgba(0,0,255,0.1)",
+            data: yValues_delay, 
+            step: true,
+            fill: false,
+            pointRadius: 0,
         }]
     },
     options: {
@@ -361,7 +368,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             ticks: {min: 0, max:50},
             scaleLabel: {
                 display: true, 
-                labelString: "Total Delay",
+                labelString: "Total Delay (Days)",
             },
             }],
             xAxes: [{
@@ -372,6 +379,8 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             },
             }]
         },
+        maintainAspectRatio: true,
+        aspectRatio: 1,
     }
     });
     

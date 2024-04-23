@@ -63,8 +63,8 @@ def creating_session(subsession):
         player.valuation = random.choice(valuation_list)
 
         # Set transaction costs treatment
-        player.current_TA_costs = 100
-        player.cumulated_TA_costs = 100
+        player.current_TA_costs = 200
+        player.cumulated_TA_costs = 200
 
         player.current_payoff_terminate = -100
 
@@ -116,7 +116,7 @@ class Bargain(Page):
         
         if bargaining_time_elapsed > 0 and bargaining_time_elapsed % 10 == 0:
             # Transaction costs decrease every ten seconds by $0.01
-            player.current_TA_costs = int(player.current_TA_costs - 1) 
+            player.current_TA_costs = int(player.current_TA_costs - 10) 
             player.cumulated_TA_costs += player.current_TA_costs
             
             # Delay in payment increases every ten seconds
