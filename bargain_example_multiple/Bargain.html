@@ -219,6 +219,49 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     currency: 'USD',
     });
 
+    function createChart(chartName, yValues, yLabel, yMin, yMax) {
+        new Chart(chartName, {
+        type: "line",
+        data: {
+            labels: Array.from({length: 15}, (_, i) => i * 10),
+            datasets: [{
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "rgba(0,0,255,1.0)",
+                borderColor: "black",
+                borderWidth: 1.5,
+                data: yValues, 
+                step: true,
+                fill: false,
+                pointRadius: 0,
+            }],
+        },
+        options: {
+            //responsive: true, 
+            animation: { duration: 0 },
+            legend: { display: false },
+            scales: {
+                yAxes: [{
+                    ticks: {min: yMin, max: yMax},
+                    scaleLabel: {
+                        display: true, 
+                        labelString: yLabel,
+                    },
+                }],
+                xAxes: [{
+                    ticks: {min: 0, max:300},
+                    scaleLabel: {
+                        display: true, 
+                        labelString: "Seconds passed",
+                    },
+                }]
+            },
+            maintainAspectRatio: true,
+            aspectRatio: 1,
+        }
+        });
+    }
+
     function liveRecv(data) {
 
         if ('bargaining_time_elapsed' in data) {
@@ -295,98 +338,15 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             document.getElementById('form').submit();
         }
     
-    const xValues = Array.from({length: 15}, (_, i) => i * 10); //array_time_passed; //[0, 10, 20, 30] //
-    const yValues_cost = array_cumulated_costs;
-
-    new Chart("TA_cost_chart", {
-    type: "line",
-    data: {
-        labels: xValues,
-        datasets: [{
-            fill: false,
-            lineTension: 0,
-            backgroundColor: "rgba(0,0,255,1.0)",
-            borderColor: "rgba(0,0,255,0.1)",
-            data: yValues_cost, 
-            step: true,
-            fill: false,
-            pointRadius: 0,
-        }]
-    },
-    options: {
-        //responsive: true, 
-        animation: {
-            duration: 0
-        },
-        legend: {display: false},
-        scales: {
-            yAxes: [{
-            ticks: {min: 2, max:20},
-            scaleLabel: {
-                display: true, 
-                labelString: "Total Costs ($)",
-            },
-            }],
-            xAxes: [{
-            ticks: {min: 0, max:300},
-            scaleLabel: {
-                display: true, 
-                labelString: "Seconds passed",
-            },
-            }]
-        },
-        maintainAspectRatio: true,
-        aspectRatio: 1,
-    }
-    });
-
-    const yValues_delay = array_delay
-
-    new Chart("delay_chart", {
-    type: "line",
-    data: {
-        labels: xValues,
-        datasets: [{
-            fill: false,
-            lineTension: 0,
-            backgroundColor: "rgba(0,0,255,1.0)",
-            borderColor: "rgba(0,0,255,0.1)",
-            data: yValues_delay, 
-            step: true,
-            fill: false,
-            pointRadius: 0,
-        }]
-    },
-    options: {
-        //responsive: true, 
-        animation: {
-            duration: 0
-        },
-        legend: {display: false},
-        scales: {
-            yAxes: [{
-            ticks: {min: 0, max:50},
-            scaleLabel: {
-                display: true, 
-                labelString: "Total Delay (Days)",
-            },
-            }],
-            xAxes: [{
-            //ticks: {min: 0, max:50},
-            scaleLabel: {
-                display: true, 
-                labelString: "Seconds passed",
-            },
-            }]
-        },
-        maintainAspectRatio: true,
-        aspectRatio: 1,
-    }
-    });
     
+    //const xValues = Array.from({length: 15}, (_, i) => i * 10); //array_time_passed; //[0, 10, 20, 30] //
+    const yValues_cost = array_cumulated_costs;
+    const yValues_delay = array_delay;
+
+    createChart("TA_cost_chart", array_cumulated_costs, "Total Costs ($)", 2, 20);
+    createChart("delay_chart", array_delay, "Total Delay (Days)", 0, 50);
+
     }
-
-
     // Update live page every second
     setInterval(
         function () {
