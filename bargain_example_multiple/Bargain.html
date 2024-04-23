@@ -68,6 +68,9 @@ Price Negotiation
         background-color: #45a049; /* Darker Green */
     }
 
+    .otree-timer {
+    display: none;
+}
 </style>
 
 <p>
@@ -82,7 +85,9 @@ Price Negotiation
 
 
 <div style="background-color: #f2f2f2; padding: 15px">
-    <h4>Please place your price offer</h4>
+    <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
+
+    <h4>Please place your price offer:</h4>
             <div id="my-proposal">(none)</div>
             
             <div id="my_slider"></div>
@@ -90,7 +95,7 @@ Price Negotiation
                 <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit Proposal</button>
 
         
-    <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer</h4>
+    <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer:</h4>
             <div id="other-proposal">(none)</div>
 
             <div id="slider_other"></div>
@@ -131,12 +136,19 @@ Price Negotiation
 </div>
 
 
-
-
 <script src="{{ static 'mgslider.js' }}"></script>
 
 
 <script>
+
+    //var seconds = 0;
+    //function startTimer() {
+    //    setInterval(function() {
+    //        seconds++;
+    //        document.getElementById('timeSpent').innerText = "You've spent " + seconds;
+    //    }, 1000);
+    //}
+    //window.onload = startTimer
 
     $(document).ready(function (event) {
                     my_slider = new mgslider("offer", 0, 10, 0.1);
@@ -186,6 +198,11 @@ Price Negotiation
     });
 
     function liveRecv(data) {
+
+        if ('bargaining_time_elapsed' in data) {
+            document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed
+        }
+
         if ('current_TA_costs' in data) {
             document.getElementById('TA_costs').innerHTML = USDollar.format(data.current_TA_costs/100)
         }

@@ -249,6 +249,7 @@ class Bargain(Page):
                 'cumulated_TA_costs':player.cumulated_TA_costs,
                 'current_payoff_terminate':player.current_payoff_terminate,
                 'payment_delay':player.payment_delay,
+                'bargaining_time_elapsed':bargaining_time_elapsed,
                 }
                 }
             
