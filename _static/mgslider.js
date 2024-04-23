@@ -192,13 +192,13 @@ mgslider.prototype.submit = function () {
     // Save the value only when submit button is clicked!
     var value = this.value();
     document.getElementById(this.id("input")).value = value;
-    liveSend(value);
+    //liveSend(value);
 
     // Update the value display of the second slider (slider2)
-    var slider2Value = value;
-    console.log("Slider 2 value:", slider2Value); // Check the value of slider2
-    document.getElementById(slider2.id("cur")).innerHTML = slider2.f2s(slider2Value, false);
-    slider2.set(value);
+    //var slider2Value = value;
+    //console.log("Slider 2 value:", slider2Value); // Check the value of slider2
+    //document.getElementById(slider2.id("cur")).innerHTML = slider2.f2s(slider2Value, false);
+    //slider2.set(value);
 };
 
 

@@ -203,23 +203,25 @@ Price Negotiation
                 if (id_in_group === js_vars.my_id) {
                     msgMyProposal.innerHTML = USDollar.format(proposal/100);
             
-                } else {
+                } else if (id_in_group === js_vars.other_id) {
                     msgOtherProposal.innerHTML = USDollar.format(proposal/100);
                     otherProposal = proposal;
                     btnAccept.disabled = false;
-                    
+                    slider2.set(proposal/100)
                 }
                 
             }
             
             if (data['latest_proposal_by'] === js_vars.my_id) {
                 btnSliderSubmit.disabled = true;
+                slider1.submit();
                 slider1.disable();
                 slider2.disable();
-            } else {
+            } else if (data['latest_proposal_by'] === js_vars.other_id) {
                 btnSliderSubmit.disabled = false;
                 slider1.enable();
                 slider2.disable();
+                //slider2.set(5)
             }
             //print(data['current_deal_accept'])
         }

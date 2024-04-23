@@ -48,7 +48,7 @@ class Player(BasePlayer):
     valuation = models.IntegerField()
     current_deal_accept = models.IntegerField()
     current_payoff_accept = models.IntegerField()
-    current_payoff_terminate = models.IntegerField(initial = -10)
+    current_payoff_terminate = models.IntegerField()
 
     current_TA_costs = models.IntegerField()
     cumulated_TA_costs = models.IntegerField()
@@ -65,6 +65,8 @@ def creating_session(subsession):
         # Set transaction costs treatment
         player.current_TA_costs = 100
         player.cumulated_TA_costs = 100
+
+        player.current_payoff_terminate = -100
 
         # Set payment delay treament
         player.payment_delay = 0
@@ -92,7 +94,9 @@ class Bargain(Page):
 
     @staticmethod
     def js_vars(player: Player):
+        [other] = player.get_others_in_group()
         return dict(my_id=player.id_in_group, 
+                    other_id=other.id_in_group,
                     start_time=player.group.bargain_start_time, 
                     )
 
