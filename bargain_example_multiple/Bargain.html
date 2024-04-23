@@ -70,8 +70,27 @@ Price Negotiation
 
     .otree-timer {
     display: none;
-}
+    }
+
+    .container {
+        display: flex;
+        margin-top: 1cm;
+        margin-bottom: 1cm;
+        margin-left: 1cm;
+        margin-right: 1cm;
+    }
+
+    .side {
+        flex: 0.9;
+        justify-content: space-between;
+    }
+
+    .middle {
+        flex: 0.3;
+    }
 </style>
+
+
 
 <p>
     You are the {{ player.role }}.
@@ -81,37 +100,44 @@ Price Negotiation
 <p style="border: 2px solid black; padding: 10px">In this match, your value of the object is {{ valuation }}. </p>
 
 
+    
 
 
+    <div class="middle" style="background-color: #f2f2f2; padding: 15px">
+        <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
 
-<div style="background-color: #f2f2f2; padding: 15px">
-    <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
+        <h4>Please place your price offer:</h4>
+                <div id="my-proposal">(none)</div>
+                
+                <div id="my_slider"></div>
 
-    <h4>Please place your price offer:</h4>
-            <div id="my-proposal">(none)</div>
+                    <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit Proposal</button>
+
             
-            <div id="my_slider"></div>
+        <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer:</h4>
+                <div id="other-proposal">(none)</div>
 
-                <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit Proposal</button>
+                <div id="slider_other"></div>
+    </div>
 
+<div class="container">
+    <div class="side" style="margin-right: 20px; padding: 15px;">
+        <canvas id="TA_cost_chart" style="width: 100%;"></canvas>
+
+        <div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
+            <h5>Transaction Costs</h5>
         
-    <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer:</h4>
-            <div id="other-proposal">(none)</div>
+            <p style="display:inline">Current transaction costs per 10 seconds: <div style="display: inline" id ="TA_costs"></div>.</p>
+        
+            <p style="display:inline">Cumulated total transaction costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
+        
+        </div>
+    </div>
 
-            <div id="slider_other"></div>
-</div>
+    <div class="side" style="margin-left: 20px; padding: 15px;">
+        <canvas id="delay_chart" style="width: 100%; min-height: 80px;" ></canvas>
 
-
-<div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
-    <h5>Transaction Costs</h5>
-
-    <p style="display:inline">Current transaction costs per 10 seconds: <div style="display: inline" id ="TA_costs"></div>.</p>
-
-    <p style="display:inline">Cumulated total transaction costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
-
-</div>
-
-<div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
+        <div style="margin-top: 1cm; background-color: #A2D5F2; padding: 15px">
     <h5>Delay in Payment</h5>
 
     <p style="display:block">Delay in payment per 10 seconds: 1 day.</p>
@@ -119,6 +145,9 @@ Price Negotiation
     <p style="display:inline">Cumulated delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
 
 </div>
+    </div>
+</div>
+
 
 
 <div style="display: flex; justify-content: space-between; margin-top: 1cm;">
@@ -138,8 +167,16 @@ Price Negotiation
 
 <script src="{{ static 'mgslider.js' }}"></script>
 
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+
 
 <script>
+
+    var array_time_passed = []
+    var array_cumulated_costs = []
+    var array_delay = []
 
     //var seconds = 0;
     //function startTimer() {
@@ -200,7 +237,18 @@ Price Negotiation
     function liveRecv(data) {
 
         if ('bargaining_time_elapsed' in data) {
-            document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed
+            document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed;
+
+            array_time_passed.push(data.bargaining_time_elapsed);
+            array_time_passed = Array.from(new Set(array_time_passed))
+            //console.log(array_time_passed)
+            array_cumulated_costs.push(data.cumulated_TA_costs)
+            array_cumulated_costs = Array.from(new Set(array_cumulated_costs))
+            //console.log(array_cumulated_costs)
+            console.log(data.cumulated_TA_costs)
+
+            array_delay.push(data.payment_delay)
+            array_delay = Array.from(new Set(array_delay))
         }
 
         if ('current_TA_costs' in data) {
@@ -209,6 +257,7 @@ Price Negotiation
 
         if ('cumulated_TA_costs' in data) {
             document.getElementById('cumulated_TA_costs').innerHTML = USDollar.format(data.cumulated_TA_costs/100);
+
             document.getElementById('my_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
 
             document.getElementById('payment_delay').innerHTML = data.payment_delay
@@ -260,6 +309,88 @@ Price Negotiation
         if ('finished' in data) {
             document.getElementById('form').submit();
         }
+    
+    const xValues = Array.from({length: 10}, (_, i) => i * 10); //array_time_passed; //[0, 10, 20, 30] //
+    const yValues_cost = array_cumulated_costs;
+
+    new Chart("TA_cost_chart", {
+    type: "line",
+    data: {
+        labels: xValues,
+        datasets: [{
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(0,0,255,1.0)",
+        borderColor: "rgba(0,0,255,0.1)",
+        data: yValues_cost, 
+        step: true
+        }]
+    },
+    options: {
+        //responsive: true, 
+        animation: {
+            duration: 0
+        },
+        legend: {display: false},
+        scales: {
+            yAxes: [{
+            ticks: {min: 0, max:500},
+            scaleLabel: {
+                display: true, 
+                labelString: "Total Costs",
+            },
+            }],
+            xAxes: [{
+            //ticks: {min: 0, max:50},
+            scaleLabel: {
+                display: true, 
+                labelString: "Seconds passed",
+            },
+            }]
+        },
+    }
+    });
+
+    const yValues_delay = array_delay
+
+    new Chart("delay_chart", {
+    type: "line",
+    data: {
+        labels: xValues,
+        datasets: [{
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(0,0,255,1.0)",
+        borderColor: "rgba(0,0,255,0.1)",
+        data: yValues_delay, 
+        step: true
+        }]
+    },
+    options: {
+        //responsive: true, 
+        animation: {
+            duration: 0
+        },
+        legend: {display: false},
+        scales: {
+            yAxes: [{
+            ticks: {min: 0, max:50},
+            scaleLabel: {
+                display: true, 
+                labelString: "Total Delay",
+            },
+            }],
+            xAxes: [{
+            //ticks: {min: 0, max:50},
+            scaleLabel: {
+                display: true, 
+                labelString: "Seconds passed",
+            },
+            }]
+        },
+    }
+    });
+    
     }
 
 
