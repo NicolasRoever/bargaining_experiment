@@ -178,6 +178,12 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     var array_cumulated_costs = []
     var array_delay = []
 
+    //if (localStorage.getItem('array_time_passed') === null) {
+    //    localStorage.setItem('array_time_passed', JSON.stringify(array_time_passed));
+    //}
+
+    //array_time_passed = JSON.parse(localStorage.getItem('array_time_passed'))
+
     $(document).ready(function (event) {
                     my_slider = new mgslider("offer", 0, 10, 0.1);
                     my_slider.print(document.getElementById("my_slider"));
@@ -253,11 +259,12 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                     },
                 }],
                 xAxes: [{
+                    type: 'category',
                     ticks: {
-                        beginAtZero: true,
-                        stepSize: 20,
-                        //min: 0, 
-                        //max:200,
+                        //beginAtZero: true,
+                        //stepSize: 20,
+                        min: 0, 
+                        max:200,
                     },
                     scaleLabel: {
                         display: true, 
@@ -271,6 +278,9 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         });
     }
 
+    //createChart("TA_cost_chart", Array.from({length: 200}, (_, i) => i + 1), array_cumulated_costs, "Total Costs ($)", 0, 20);
+    //createChart("delay_chart", Array.from({length: 200}, (_, i) => i + 1), array_delay, "Total Delay (Days)", 0, 50);
+
     function liveRecv(data) {
 
         if ('bargaining_time_elapsed' in data) {
@@ -278,7 +288,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
             array_time_passed.push(data.bargaining_time_elapsed);
             array_time_passed = Array.from(new Set(array_time_passed))
-            console.log(array_time_passed)
+            console.log(data.bargaining_time_elapsed)
             
             array_cumulated_costs.push(data.cumulated_TA_costs/100)
             console.log(data.cumulated_TA_costs/100)
@@ -322,6 +332,14 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                 my_slider.submit();
                 my_slider.disable();
                 slider_other.disable();
+
+                for (let [id_in_group, proposal] of data.current_proposals) {
+                    if(id_in_group === js_vars.my_id) {
+                        my_slider.set(proposal/100);
+                        document.getElementById(my_slider.id("cur")).innerHTML = my_slider.f2s(proposal/100, false);
+                    }
+                }
+                
             } else if (data['latest_proposal_by'] === js_vars.other_id) {
                 btnSliderSubmit.disabled = false;
                 my_slider.enable();
@@ -365,6 +383,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     document.addEventListener('DOMContentLoaded', (event) => {
         liveSend({});
     });
+
     
 
 </script>
