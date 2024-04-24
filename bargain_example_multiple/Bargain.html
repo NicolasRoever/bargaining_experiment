@@ -34,12 +34,13 @@ Price Negotiation
     }
 
     .slider-container {
-        display: flex;
+        display: block;
         align-items: center;
+        margin-bottom: 1cm;
     }
 
     .mgslider-wrapper {
-        width: 95%;
+        width: 100%;
         height: 50%; /* Adjust height as needed */
     }
 
@@ -50,16 +51,41 @@ Price Negotiation
         transform: translateX(-50%); /* Center horizontally */
     }
 
-    button#submit {
+    button#btn-offer-slider {
         background-color: #4CAF50; /* Green */
         border: none;
         color: white;
         padding: 15px 32px;
         text-align: center;
         text-decoration: none;
-        display: inline-block;
+        display: block;
         font-size: 16px;
-        margin-left: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button#btn-accept {
+        background-color: #2955cc; /* Blue */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button#btn-terminate {
+        background-color: #c71616; /* Red */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        font-size: 16px;
         border-radius: 5px;
         cursor: pointer;
     }
@@ -110,21 +136,24 @@ Price Negotiation
 
         <h4>Please place your price offer:</h4>
                 <div id="my-proposal" style="display: inline;"> No offer yet.</div>
+            
+            <div class="slider-container">
+                <div class="mgslider-wrapper" id="my_slider" style="margin-top: 1cm;"></div>
 
-                <div id="my_slider" style="margin-top: 1cm;"></div>
-
-                <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit Proposal</button>
-
+                <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit</button>
+            </div>
             
         <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer:</h4>
                 <div id="other-proposal"> No offer yet. </div>
 
-                <div id="slider_other" style="margin-top: 1cm;"></div>
+                <div class="slider-container">
+                    <div class="mgslider-wrapper" id="slider_other" style="margin-top: 1cm;"></div>
+                </div>
     </div>
 
 
 <div class="two_columns_container" >
-    <div class="two_columns_left" style="background-color: #ddedf6; ">
+    <div class="two_columns_left" style="background-color: #dfedf5; ">
         
             <h5>Transaction Costs</h5>
         
@@ -152,14 +181,14 @@ Price Negotiation
 
 <div class="two_columns_container">
     <div class="two_columns_left" style="background-color: #f2f2f2;">
-        <button type="button" id="btn-terminate" style="display: block;" onclick="sendTerminate()">Terminate</button>
+        <button type="button" id="btn-terminate" style="display: block; margin-bottom: 1cm;" onclick="sendTerminate()">Terminate</button>
         <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
         <p>{{ other_role }}'s payoff: ???</p>
     </div>
 
     <div class="two_columns_right" style="background-color: #f2f2f2;">
-        <button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: block;" disabled>Accept {{other_role}}'s offer</button>
-        <p id="my_payoff_accept_text" style="display: inline">Your payoff: <div style="display: inline" id ="my_payoff_accept">(none)</div></p>
+        <button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
+        <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">(none)</div></p>
         <p>{{ other_role }}'s payoff: ???</p>
     </div>  
 </div>
