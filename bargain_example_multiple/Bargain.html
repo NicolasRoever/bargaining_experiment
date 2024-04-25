@@ -263,15 +263,15 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     currency: 'USD',
     });
 
-    
-    var array_time_passed = []
-    var array_cumulated_costs = []
-    var array_delay = []
 
     xValues = [];
-    yValues = [];
+    yValues_cost_complete = [];
+    yValues_delay_complete = [];
+
     current_costs = 200;
-    cumulated_costs = current_costs;
+    total_costs = current_costs;
+    total_delay = 0;
+    
 
     for (let i = 0; i <= 300; i++) {
         xValues.push(i);
@@ -281,19 +281,21 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             if (current_costs < 0) {
                 current_costs = 0;
             }
-            cumulated_costs += current_costs;
+            total_costs += current_costs;
+            total_delay += 1;
         }
-        yValues.push(cumulated_costs/100);
+        yValues_cost_complete.push(total_costs/100);
+        yValues_delay_complete.push(total_delay)
         
     }
-    console.log(yValues)
-    console.log(xValues)
+    //console.log(yValues)
+    //console.log(xValues)
 
     function createChart(chartName, yValues, yLabel, yMin, yMax) {
         new Chart(chartName, {
         type: "line",
         data: {
-            labels: xValues,//Array.from({length: 300}, (_, i) => i +1),
+            labels: xValues,
             datasets: [{
                 fill: false,
                 lineTension: 0,
@@ -340,11 +342,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         }
         });
     }
-
-
-    //createChart("TA_cost_chart", Array.from({length: 200}, (_, i) => i + 1), array_cumulated_costs, "Total Costs ($)", 0, 20);
-    //createChart("delay_chart", Array.from({length: 200}, (_, i) => i + 1), array_delay, "Total Delay (Days)", 0, 50);
-
     
 
     function liveRecv(data) {
@@ -352,29 +349,11 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         if ('bargaining_time_elapsed' in data) {
             document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed;
 
-            array_time_passed.push(data.bargaining_time_elapsed);
-            array_time_passed = Array.from(new Set(array_time_passed))
-            console.log(data.bargaining_time_elapsed)
-            
-            array_cumulated_costs.push(data.cumulated_TA_costs/100)
-            console.log(data.cumulated_TA_costs/100)
-            //array_cumulated_costs = Array.from(new Set(array_cumulated_costs))
-
-            array_delay.push(data.payment_delay)
-            //array_delay = Array.from(new Set(array_delay))
-
-             // Create graphs for transaction costs and payment delay
-            //const yValues_cost = cumulated_costs.slice(0, parseInt(data.bargaining_time_elapsed)) //array_cumulated_costs;
-            //const yValues_delay = array_delay;
-
-            //createChart("TA_cost_chart", yValues_cost, "Total Costs ($)", 0, 20);
-            //createChart("delay_chart", array_delay, "Total Delay (Days)", 0, 50);
-
-            const yValues_cost = yValues.slice(0, parseInt(data.bargaining_time_elapsed) + 1) //array_cumulated_costs;
-            const yValues_delay = array_delay;
+            const yValues_cost = yValues_cost_complete.slice(0, parseInt(data.bargaining_time_elapsed) + 1);
+            const yValues_delay = yValues_delay_complete.slice(0, parseInt(data.bargaining_time_elapsed + 1));
 
             createChart("TA_cost_chart", yValues_cost, "Total Costs ($)", 0, 20);
-            createChart("delay_chart", array_delay, "Total Delay (Days)", 0, 50);
+            createChart("delay_chart", yValues_delay, "Total Delay (Days)", 0, 60);
         }
 
         if ('current_TA_costs' in data) {
