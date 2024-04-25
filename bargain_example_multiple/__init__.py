@@ -47,12 +47,15 @@ class Player(BasePlayer):
     valuation = models.IntegerField()
     current_deal_accept = models.IntegerField()
     current_payoff_accept = models.IntegerField()
-    current_payoff_terminate = models.IntegerField()
 
     current_TA_costs = models.IntegerField()
     cumulated_TA_costs = models.IntegerField()
 
-    payment_delay = models.IntegerField()
+    payment_delay = models.IntegerField(initial=0)
+    additional_delay = models.IntegerField()
+
+    current_payoff_terminate = models.IntegerField()
+    
 
     
 # FUNCTIONS
@@ -62,13 +65,21 @@ def creating_session(subsession):
         player.valuation = random.choice(valuation_list)
 
         # Set transaction costs treatment
-        player.current_TA_costs = 200
-        player.cumulated_TA_costs = 200
+        if player.group.subsession.session.config['TA_treatment'] == "high":
+            player.current_TA_costs = 200
+            player.cumulated_TA_costs = 200
+        elif player.group.subsession.session.config['TA_treatment'] == "low":
+            player.current_TA_costs = 100
+            player.cumulated_TA_costs = 100
 
-        player.current_payoff_terminate = -100
+        player.current_payoff_terminate = -player.current_TA_costs
 
         # Set payment delay treatment
-        player.payment_delay = 0
+        if player.group.subsession.session.config['delay_treatment'] == "high":
+            player.additional_delay = 2
+        elif player.group.subsession.session.config['delay_treatment'] == "low":
+            player.additional_delay = 1
+        
 
 
 # PAGES
@@ -82,7 +93,7 @@ class BargainWaitPage(WaitPage):
 
 class Bargain(Page):
 
-    timeout_seconds = 800
+    timeout_seconds = 5 * 60
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -117,7 +128,7 @@ class Bargain(Page):
             player.current_payoff_terminate = - player.cumulated_TA_costs
             
             # Total delay in payment increases every ten seconds by one day
-            player.payment_delay += 1
+            player.payment_delay += player.additional_delay
             
         
         # Total payoff if other's current proposal is accepted

@@ -213,9 +213,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
 <script>
 
-    var array_time_passed = []
-    var array_cumulated_costs = []
-    var array_delay = []
+   
 
     //if (localStorage.getItem('array_time_passed') === null) {
     //    localStorage.setItem('array_time_passed', JSON.stringify(array_time_passed));
@@ -265,11 +263,37 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     currency: 'USD',
     });
 
+    
+    var array_time_passed = []
+    var array_cumulated_costs = []
+    var array_delay = []
+
+    xValues = [];
+    yValues = [];
+    current_costs = 200;
+    cumulated_costs = current_costs;
+
+    for (let i = 0; i <= 300; i++) {
+        xValues.push(i);
+
+        if ((i > 0) && (i % 10 == 0)) {
+            current_costs = current_costs - 10
+            if (current_costs < 0) {
+                current_costs = 0;
+            }
+            cumulated_costs += current_costs;
+        }
+        yValues.push(cumulated_costs/100);
+        
+    }
+    console.log(yValues)
+    console.log(xValues)
+
     function createChart(chartName, yValues, yLabel, yMin, yMax) {
         new Chart(chartName, {
         type: "line",
         data: {
-            labels: Array.from({length: 200}, (_, i) => i * 0.5),
+            labels: xValues,//Array.from({length: 300}, (_, i) => i +1),
             datasets: [{
                 fill: false,
                 lineTension: 0,
@@ -303,7 +327,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                         //beginAtZero: true,
                         //stepSize: 20,
                         min: 0, 
-                        max:200,
+                        max:300,
                     },
                     scaleLabel: {
                         display: true, 
@@ -317,8 +341,11 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         });
     }
 
+
     //createChart("TA_cost_chart", Array.from({length: 200}, (_, i) => i + 1), array_cumulated_costs, "Total Costs ($)", 0, 20);
     //createChart("delay_chart", Array.from({length: 200}, (_, i) => i + 1), array_delay, "Total Delay (Days)", 0, 50);
+
+    
 
     function liveRecv(data) {
 
@@ -335,6 +362,19 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
             array_delay.push(data.payment_delay)
             //array_delay = Array.from(new Set(array_delay))
+
+             // Create graphs for transaction costs and payment delay
+            //const yValues_cost = cumulated_costs.slice(0, parseInt(data.bargaining_time_elapsed)) //array_cumulated_costs;
+            //const yValues_delay = array_delay;
+
+            //createChart("TA_cost_chart", yValues_cost, "Total Costs ($)", 0, 20);
+            //createChart("delay_chart", array_delay, "Total Delay (Days)", 0, 50);
+
+            const yValues_cost = yValues.slice(0, parseInt(data.bargaining_time_elapsed) + 1) //array_cumulated_costs;
+            const yValues_delay = array_delay;
+
+            createChart("TA_cost_chart", yValues_cost, "Total Costs ($)", 0, 20);
+            createChart("delay_chart", array_delay, "Total Delay (Days)", 0, 50);
         }
 
         if ('current_TA_costs' in data) {
@@ -402,12 +442,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             document.getElementById('form').submit();
         }
     
-    // Create graphs for transaction costs and payment delay
-    const yValues_cost = array_cumulated_costs;
-    const yValues_delay = array_delay;
-
-    createChart("TA_cost_chart", array_cumulated_costs, "Total Costs ($)", 0, 20);
-    createChart("delay_chart", array_delay, "Total Delay (Days)", 0, 50);
+   
 
     }
 
@@ -424,6 +459,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     });
 
     
+   
 
 </script>
 

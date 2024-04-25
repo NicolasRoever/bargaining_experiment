@@ -29,6 +29,8 @@ SESSION_CONFIGS = [
     name = "bargain_example_multiple",
     app_sequence = ["bargain_example_multiple"],
     num_demo_participants=2,
+    TA_treatment = "high",
+    delay_treatment = "high",
     ),
     dict(
     name = "bargain_example_orig2",
