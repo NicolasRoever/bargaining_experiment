@@ -14,6 +14,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 1
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
+    TOTAL_BARGAINING_TIME = 5 * 60
 
 
 class Subsession(BaseSubsession):
@@ -55,6 +56,11 @@ class Player(BasePlayer):
     additional_delay = models.IntegerField()
 
     current_payoff_terminate = models.IntegerField()
+
+    current_costs_list = models.StringField()
+    total_costs_list = models.StringField()
+    total_delay_list = models.StringField()
+
     
 
     
@@ -80,6 +86,34 @@ def creating_session(subsession):
         elif player.group.subsession.session.config['delay_treatment'] == "low":
             player.additional_delay = 1
         
+    current_costs_list = [200]
+    total_costs = 200
+    total_delay = 0
+    total_costs_list = []
+    total_delay_list = []
+    
+    # Initiate list of total transaction costs
+    for i in range(C.TOTAL_BARGAINING_TIME):
+        if (i > 0) and (i % 10 == 0):
+            updated_costs = current_costs_list[i] - 10
+            if updated_costs < 0:
+                updated_costs = 0
+            
+            total_costs += updated_costs
+            total_delay += player.additional_delay
+        else:
+            updated_costs = current_costs_list[i]
+
+        current_costs_list.append(updated_costs)            
+        total_costs_list.append(total_costs)
+        total_delay_list.append(total_delay)
+    #print(total_costs_list)
+
+    for player in subsession.get_players():
+        player.total_costs_list = json.dumps(total_costs_list)
+        player.current_costs_list = json.dumps(current_costs_list)
+        player.total_delay_list = json.dumps(total_delay_list)
+
 
 
 # PAGES
@@ -93,7 +127,7 @@ class BargainWaitPage(WaitPage):
 
 class Bargain(Page):
 
-    timeout_seconds = 5 * 60
+    timeout_seconds = C.TOTAL_BARGAINING_TIME
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -108,27 +142,33 @@ class Bargain(Page):
                     other_id=player.get_others_in_group()[0].id_in_group,
                     start_time=player.group.bargain_start_time, 
                     other_role=player.get_others_in_group()[0].role,
+                    TA_treatment=player.group.subsession.session.config['TA_treatment'],
+                    delay_treatment=player.group.subsession.session.config['delay_treatment'],
                     )
 
     @staticmethod
     def live_method(player: Player, data):
-
+        
         group = player.group
         [other] = player.get_others_in_group()
 
         # Adjust total transaction costs after 10 seconds
         bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+
+        total_costs_list = json.loads(player.total_costs_list) 
+        current_costs_list = json.loads(player.current_costs_list)
+        total_delay_list = json.loads(player.total_delay_list)
         
-        if bargaining_time_elapsed > 0 and bargaining_time_elapsed % 10 == 0:
+        if bargaining_time_elapsed > 0: #and bargaining_time_elapsed % 10 == 0:
             # Current transaction costs decrease every ten seconds by $0.01
-            player.current_TA_costs = int(player.current_TA_costs - 10) 
-            player.cumulated_TA_costs += player.current_TA_costs
+            player.current_TA_costs = int(current_costs_list[bargaining_time_elapsed]) #int(player.current_TA_costs - 10) 
+            player.cumulated_TA_costs = int(total_costs_list[bargaining_time_elapsed])
 
             # Termination payoff is just negative transaction costs
             player.current_payoff_terminate = - player.cumulated_TA_costs
             
             # Total delay in payment increases every ten seconds by one day
-            player.payment_delay += player.additional_delay
+            player.payment_delay = int(total_delay_list[bargaining_time_elapsed])
             
         
         # Total payoff if other's current proposal is accepted
