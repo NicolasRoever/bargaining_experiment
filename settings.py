@@ -2,8 +2,8 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-    name = "bargain_example_multiple",
-    app_sequence = ["bargain_example_multiple"],
+    name = "bargain_live",
+    app_sequence = ["bargain_live"],
     num_demo_participants=2,
     TA_treatment_high = False,
     delay_treatment_high = True,
