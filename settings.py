@@ -8,7 +8,7 @@ SESSION_CONFIGS = [
     TA_treatment_high = False,
     delay_treatment_high = True,
     information_asymmetry = "None", # Which valuation is known? # Buyer, Seller or None
-    treatment_communication = True,
+    treatment_communication = False,
     ),
     #dict(
     #    name="test",
