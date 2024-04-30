@@ -49,6 +49,9 @@ class Player(BasePlayer):
     current_deal_accept = models.IntegerField()
     current_payoff_accept = models.IntegerField()
 
+    current_deal_other_accepts = models.IntegerField()
+    current_payoff_other_accepts = models.IntegerField()
+
     current_TA_costs = models.IntegerField()
     cumulated_TA_costs = models.IntegerField()
 
@@ -175,6 +178,8 @@ class Bargain(Page):
         if player.field_maybe_none('current_deal_accept') is not None:
             player.current_payoff_accept = player.current_deal_accept - player.cumulated_TA_costs
 
+        if player.field_maybe_none('current_deal_other_accepts') is not None:
+            player.current_payoff_other_accepts = player.current_deal_other_accepts - player.cumulated_TA_costs
 
         amount_proposed_list = player.field_maybe_none('amount_proposed_list')
         if amount_proposed_list is not None:
@@ -223,10 +228,14 @@ class Bargain(Page):
 
                 if other.role == "Buyer":
                     other.current_deal_accept = other.valuation - player.amount_proposed
+                    player.current_deal_other_accepts = player.amount_proposed - player.valuation
                 elif other.role == "Seller":
                     other.current_deal_accept = player.amount_proposed - other.valuation
+                    player.current_deal_other_accepts = player.valuation - player.amount_proposed
                 
-                other.current_payoff_accept = other.current_deal_accept - other.cumulated_TA_costs
+                #other.current_payoff_accept = other.current_deal_accept - other.cumulated_TA_costs
+
+                
 
                 if other.field_maybe_none('amount_proposed') == None:
                     group.first_proposal_by = data['latest_proposal_by']
@@ -247,14 +256,18 @@ class Bargain(Page):
 
         current_proposals = []
         current_payoffs_accept = []
+        current_payoffs_other_accepts = []
         for p in [player, other]:
             amount_proposed = p.field_maybe_none('amount_proposed')
             current_payoff_accept = p.field_maybe_none('current_payoff_accept')
+            current_payoff_other_accepts = p.field_maybe_none('current_payoff_other_accepts')
             
             if amount_proposed is not None:
                 current_proposals.append([p.id_in_group, amount_proposed])
             if current_payoff_accept is not None:
                 current_payoffs_accept.append([p.id_in_group, current_payoff_accept])
+            if current_payoff_other_accepts is not None:
+                current_payoffs_other_accepts.append([p.id_in_group, current_payoff_other_accepts])
 
         amount_proposed = player.field_maybe_none('amount_proposed')
         other_amount_proposed = other.field_maybe_none('amount_proposed')
@@ -269,6 +282,7 @@ class Bargain(Page):
                 'current_proposals':current_proposals, 
                 'latest_proposal_by':latest_proposal_by,
                 'current_payoffs_accept':current_payoffs_accept,
+                'current_payoffs_other_accepts':current_payoffs_other_accepts,
                 'current_TA_costs':player.current_TA_costs,
                 'cumulated_TA_costs':player.cumulated_TA_costs,
                 'current_payoff_terminate':player.current_payoff_terminate,

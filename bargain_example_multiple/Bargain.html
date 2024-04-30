@@ -36,7 +36,7 @@ Price Negotiation
     .slider-container {
         display: block;
         align-items: center;
-        margin-bottom: 1cm;
+        margin-bottom: 0.5cm;
     }
 
     .mgslider-wrapper {
@@ -135,7 +135,7 @@ Price Negotiation
     Please negotiate with the {{ other_role }} below.
 </p>
 
-<p style="border: 2px solid black; padding: 10px">In this match, your value of the object is {{ valuation }}. </p>
+<p style="background-color: #f2f2f2; padding: 15px">In this match, your value of the object is <b>{{ valuation }}</b>. </p>
 
 
     
@@ -144,17 +144,27 @@ Price Negotiation
     <div class="middle" style="background-color: #f2f2f2; padding: 15px">
         <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
 
-        <h4>Please place your price offer:</h4>
-                <div id="my-proposal" style="display: inline;"> No offer yet.</div>
+        <h4 style="display:inline">Your price offer:</h4>
+                <div id="my-proposal" style="display: inline; margin-left: 0.5cm;"> No offer yet.</div>
             
             <div class="slider-container">
                 <div class="mgslider-wrapper" id="my_slider" style="margin-top: 1cm;"></div>
 
                 <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit</button>
             </div>
+        
+        <h5>If the {{ other_role }} accepts your current offer: </h5>
+
+            <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts" ></div></p>
+            <p>{{ other_role }}'s payoff: ???</p>
+
             
-        <h4 style="margin-top: 2cm;">{{ other_role }}'s price offer:</h4>
-                <div id="other-proposal"> No offer yet. </div>
+    </div>
+
+    <div class="middle" style="background-color: #f2f2f2; padding: 15px; margin-top: 1cm;">
+            
+        <h4 style="display:inline" style="margin-top: 0.5cm;">{{ other_role }}'s price offer:</h4>
+                <div style="display:inline; margin-left: 0.5cm; margin-top: 0.5cm;" id="other-proposal"> No offer yet. </div>
 
                 <div class="slider-container">
                     <div class="mgslider-wrapper" id="slider_other" style="margin-top: 1cm;"></div>
@@ -223,15 +233,28 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     $(document).ready(function (event) {
                     my_slider = new mgslider("offer", 0, 10, 0.1);
+                    my_slider.f2s = function (val) {
+                        return '$' + val.toFixed(2);
+                    }
+
                     my_slider.print(document.getElementById("my_slider"));
                     //my_slider.recall(); // Optional line to remember value across errors
+
                     slider_other = new mgslider("other_offer", 0, 10, 0.1);
-                    slider_other.yourvalue = js_vars.other_role + "'s " + " Proposal";
+                    //slider_other.yourvalue = js_vars.other_role + "'s " + " Proposal";
+                    slider_other.f2s = function (val) {
+                        return '$' + val.toFixed(2);
+                    }
+
                     slider_other.print(document.getElementById("slider_other"));
                     slider_other.set(0);
                     slider_other.disable();
                     //slider_other.disable()
                     //slider_other.recall(); // Optional line to remember value across errors
+                    
+
+                    
+
                 });
    
     let btnOffer = document.getElementById('btn-offer');
@@ -411,15 +434,27 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
         if ('current_payoffs_accept' in data) {
 
-            for (let [id_in_group, current_deal_accept] of data.current_payoffs_accept){
+            for (let [id_in_group, current_payoff_accept] of data.current_payoffs_accept){
 
                 if (id_in_group === js_vars.my_id){
                     document.getElementById('my_payoff_accept_text').style.display = 'inline';
-                    msgMyPayoffAccept.innerHTML = USDollar.format(current_deal_accept/100)
+                    msgMyPayoffAccept.innerHTML = USDollar.format(current_payoff_accept/100)
                 }
             }
 
         }
+
+        if ('current_payoffs_other_accepts' in data) {
+
+            for (let [id_in_group, current_payoff_other_accepts] of data.current_payoffs_other_accepts){
+
+                if (id_in_group === js_vars.my_id){
+                    //document.getElementById('my_payoff_accept_text').style.display = 'inline';
+                    document.getElementById('my_payoff_other_accepts').innerHTML = USDollar.format(current_payoff_other_accepts/100)
+                }
+            }
+
+}
 
         if ('finished' in data) {
             document.getElementById('form').submit();

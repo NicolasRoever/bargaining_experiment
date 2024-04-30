@@ -29,6 +29,7 @@ mgsliders.lookup = function (which) {
     return undefined;
 };
 
+
 function mgslider(field, min, max, step) {
     this.field = field;
     this.min = parseFloat(min);
@@ -40,7 +41,7 @@ function mgslider(field, min, max, step) {
     this.remember = false;
 
     this.prefix = "mgslider_yF5sTZLy";
-    this.yourvalue = "Your Proposal";
+    this.yourvalue = "";
 
     mgsliders.push({field: field, obj: this});
 }
@@ -90,7 +91,7 @@ mgslider.prototype.markup = function () {
                 <td class='mgslider-limit'>" + this.f2s(this.max, true) + "</td>\
             </tr>\
             <tr class='mgslider-feedback'>\
-                <td id='" + this.id("show") + "' class='mgslider-show' colspan='3'>" + this.yourvalue + ": <b><span id='" + this.id("cur") + "' class='mgslider-value'></span></b></td>\
+                <td id='" + this.id("show") + "' class='mgslider-show' colspan='3'>" + this.yourvalue + "<b><span id='" + this.id("cur") + "' class='mgslider-value'></span></b></td>\
             </tr>\
         </table>\
         \
