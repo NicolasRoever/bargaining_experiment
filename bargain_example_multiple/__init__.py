@@ -144,6 +144,8 @@ class Bargain(Page):
         return dict(my_id=player.id_in_group, 
                     other_id=player.get_others_in_group()[0].id_in_group,
                     start_time=player.group.bargain_start_time, 
+                    my_role=player.role,
+                    my_valuation=player.valuation,
                     other_role=player.get_others_in_group()[0].role,
                     TA_treatment=player.group.subsession.session.config['TA_treatment'],
                     delay_treatment=player.group.subsession.session.config['delay_treatment'],

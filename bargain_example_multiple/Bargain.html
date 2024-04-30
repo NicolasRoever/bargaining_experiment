@@ -155,7 +155,7 @@ Price Negotiation
         
         <h5>If the {{ other_role }} accepts your current offer: </h5>
 
-            <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts" ></div></p>
+            <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts_live"> No offer yet. </div></p>
             <p>{{ other_role }}'s payoff: ???</p>
 
             
@@ -269,6 +269,10 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     let otherProposal;
 
+    let isFirstClick = true;
+
+    
+
 
     function sendOffer() {
         liveSend({'type': 'propose', 'amount': my_slider.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
@@ -371,6 +375,8 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     function liveRecv(data) {
 
+        console.log(my_slider.value())
+
         if ('bargaining_time_elapsed' in data) {
             document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed;
 
@@ -391,9 +397,11 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             document.getElementById('my_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
 
             document.getElementById('payment_delay').innerHTML = data.payment_delay
+            
         }
 
         if ('current_proposals' in data) {
+            //console.log(data.current_proposals)
 
             for (let [id_in_group, proposal] of data.current_proposals) {
 
@@ -430,7 +438,17 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                 
 
             }
+            
+            if (data.current_proposals.length > 0) {
+                if (js_vars.my_role === "Buyer") {
+                    document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100)
+                
+                } else if (js_vars.my_role === "Seller") {
+                    document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100)
+                }
+            }
         }
+        
 
         if ('current_payoffs_accept' in data) {
 
