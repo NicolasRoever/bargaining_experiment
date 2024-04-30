@@ -113,6 +113,23 @@ Price Negotiation
         padding: 15px;
     }
 
+    .three_columns_container {
+        display:flex;
+        justify-content: space-between;
+        width: 150%;
+        gap:20px;
+    }
+
+    .three_columns_left, .three_columns_right {
+        background-color: #dfedf5;
+        padding: 20px;
+    }
+
+    .tree_columns_middle {
+        padding: 20px;
+    }
+    
+
 </style>
 
 
@@ -122,13 +139,25 @@ Price Negotiation
     Please negotiate with the {{ other_role }} below.
 </p>
 
-<p style="background-color: #f2f2f2; padding: 15px">In this match, your value of the object is <b>{{ valuation }}</b>. </p>
+<p style="background-color: #f2f2f2; padding: 15px; width: 150%;">In this match, your value of the object is <b>{{ valuation }}</b>. </p>
 
 
     
 
+<div class="three_columns_container">
+    <div class="three_columns_left" style="flex: 0.5;">
+        <h5>Transaction Costs</h5>
+        
+            <p style="display:inline">Current transaction costs per 10 seconds: <div style="display: inline" id ="TA_costs"></div>.</p>
+        
+            <p style="display:inline"> Total transaction costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
+        
+            <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px;"></canvas>
+    </div>
 
-    <div class="middle" style="background-color: #f2f2f2; padding: 15px">
+    <div class="three_columns_middle" style="flex: 1;">
+    
+    <div style="background-color: #f2f2f2; padding: 15px">
         <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
 
         <h4 style="display:inline">Your price offer:</h4>
@@ -148,7 +177,7 @@ Price Negotiation
             
     </div>
 
-    <div class="middle" style="background-color: #f2f2f2; padding: 15px; margin-top: 1cm;">
+    <div style="background-color: #f2f2f2; padding: 15px; margin-top: 1cm;">
             
         <h4 style="display:inline" style="margin-top: 0.5cm;">{{ other_role }}'s price offer:</h4>
                 <div style="display:inline; margin-left: 0.5cm; margin-top: 0.5cm;" id="other-proposal"> No offer yet. </div>
@@ -157,36 +186,20 @@ Price Negotiation
                     <div class="mgslider-wrapper" id="slider_other" style="margin-top: 1cm;"></div>
                 </div>
     </div>
-
-
-<div class="two_columns_container" >
-    <div class="two_columns_left" style="background-color: #dfedf5; ">
-        
-            <h5>Transaction Costs</h5>
-        
-            <p style="display:inline">Current transaction costs per 10 seconds: <div style="display: inline" id ="TA_costs"></div>.</p>
-        
-            <p style="display:inline"> Total transaction costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
-        
-            <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px;"></canvas>
     </div>
 
-    <div class="two_columns_right" style="background-color: #ddedf6;">
-
-            <h5>Delay in Payment</h5>
+    <div class="three_columns_right" style="flex: 0.5;">
+        <h5>Delay in Payment</h5>
 
             <p style="display:block">Delay in payment per 10 seconds: 2 days.</p>
 
             <p style="display:inline">Total delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
 0
             <canvas id="delay_chart" style="width: 100%; min-height: 200px;" ></canvas>
-        
     </div>
 </div>
 
-
-
-<div class="two_columns_container">
+<div class="two_columns_container" style="width: 150%;">
     <div class="two_columns_left" style="background-color: #f2f2f2;">
         <button type="button" class="button terminate" id="btn-terminate" style="display: block; margin-bottom: 1cm;" onclick="sendTerminate()">Terminate</button>
         <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
