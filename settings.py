@@ -2,41 +2,43 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-        name="test",
-        app_sequence=[
-            "slider",
-        ],
-        num_demo_participants=2,
-    ),
-    dict(
-        name="slider",
-        app_sequence=[
-            "slider_2",
-        ],
-        num_demo_participants=2,
-    ),
-    dict(
-        name = "bargain_example",
-        app_sequence = ["bargain_example"],
-        num_demo_participants=2,
-    ),
-    dict(
-        name = "bargain_example_slider",
-        app_sequence = ["bargain_example_slider"],
-        num_demo_participants=2,
-    ),
-    dict(
     name = "bargain_example_multiple",
     app_sequence = ["bargain_example_multiple"],
     num_demo_participants=2,
-    TA_treatment = "high",
-    delay_treatment = "high",
+    TA_treatment_high = False,
+    delay_treatment_high = True,
+    information_asymmetry = "None", # Which valuation is known? # Buyer, Seller or None
+    treatment_communication = True,
     ),
-    dict(
-    name = "bargain_example_orig2",
-    app_sequence = ["bargain_example_orig2"],
-    num_demo_participants=2,
-    )
+    #dict(
+    #    name="test",
+    #    app_sequence=[
+    #        "slider",
+    #    ],
+    #    num_demo_participants=2,
+    #),
+    #dict(
+    #    name="slider",
+    #    app_sequence=[
+    #        "slider_2",
+    #    ],
+    #    num_demo_participants=2,
+    #),
+    #dict(
+    #    name = "bargain_example",
+    #    app_sequence = ["bargain_example"],
+    #    num_demo_participants=2,
+    #),
+    #dict(
+    #    name = "bargain_example_slider",
+    #    app_sequence = ["bargain_example_slider"],
+    #    num_demo_participants=2,
+    #),
+    #dict(
+    #name = "bargain_example_orig2",
+    #app_sequence = ["bargain_example_orig2"],
+    #num_demo_participants=2,
+    #)
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

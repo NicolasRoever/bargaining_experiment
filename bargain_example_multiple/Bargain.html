@@ -190,13 +190,13 @@ Price Negotiation
     <div class="two_columns_left" style="background-color: #f2f2f2;">
         <button type="button" class="button terminate" id="btn-terminate" style="display: block; margin-bottom: 1cm;" onclick="sendTerminate()">Terminate</button>
         <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
-        <p>{{ other_role }}'s payoff: ???</p>
+        <p style="display: inline;">{{ other_role }}'s payoff: <div style="display: inline" id="other_payoff_terminate" ></div> </p>
     </div>
 
     <div class="two_columns_right" style="background-color: #f2f2f2;">
         <button type="button" class="button accept" id="btn-accept" onclick="sendAccept(this)" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
-        <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">(none)</div></p>
-        <p>{{ other_role }}'s payoff: ???</p>
+        <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">No offer yet.</div></p>
+        <p style="display: inline;">{{ other_role }}'s payoff: <div style="display: inline" id ="other_payoff_accept">???</div> </p>
     </div>  
 </div>
 
@@ -209,14 +209,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
 
 <script>
-
-   
-
-    //if (localStorage.getItem('array_time_passed') === null) {
-    //    localStorage.setItem('array_time_passed', JSON.stringify(array_time_passed));
-    //}
-
-    //array_time_passed = JSON.parse(localStorage.getItem('array_time_passed'))
 
     $(document).ready(function (event) {
                     my_slider = new mgslider("offer", 0, 10, 0.1);
@@ -380,6 +372,13 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
             document.getElementById('my_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
 
+            if (js_vars.information_asymmetry == js_vars.other_role) {
+                document.getElementById('other_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
+            } else {
+                document.getElementById('other_payoff_terminate').innerHTML = "???"
+            }
+            
+
             document.getElementById('payment_delay').innerHTML = data.payment_delay
             
         }
@@ -440,7 +439,8 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
                 if (id_in_group === js_vars.my_id){
                     document.getElementById('my_payoff_accept_text').style.display = 'inline';
-                    msgMyPayoffAccept.innerHTML = USDollar.format(current_payoff_accept/100)
+                    msgMyPayoffAccept.innerHTML = USDollar.format(current_payoff_accept/100);
+                    document.getElementById('other_payoff_accept') = "???"
                 }
             }
 

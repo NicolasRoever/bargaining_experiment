@@ -9,7 +9,7 @@ doc = """
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'live_bargaining_multiple'
+    NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 1
     SELLER_ROLE = 'Seller'
@@ -74,23 +74,28 @@ def creating_session(subsession):
         player.valuation = random.choice(valuation_list)
 
         # Set transaction costs treatment
-        if player.group.subsession.session.config['TA_treatment'] == "high":
+        if player.group.subsession.session.config['TA_treatment_high'] == True:
             player.current_TA_costs = 200
             player.cumulated_TA_costs = 200
-        elif player.group.subsession.session.config['TA_treatment'] == "low":
+        elif player.group.subsession.session.config['TA_treatment_high'] == False:
             player.current_TA_costs = 100
             player.cumulated_TA_costs = 100
 
         player.current_payoff_terminate = -player.current_TA_costs
 
         # Set payment delay treatment
-        if player.group.subsession.session.config['delay_treatment'] == "high":
+        if player.group.subsession.session.config['delay_treatment_high'] == True:
             player.additional_delay = 2
-        elif player.group.subsession.session.config['delay_treatment'] == "low":
+        elif player.group.subsession.session.config['delay_treatment_high'] == False:
             player.additional_delay = 1
-        
-    current_costs_list = [200]
-    total_costs = 200
+
+    if subsession.session.config['TA_treatment_high'] == True:
+        current_costs_list = [200]
+        total_costs = 200
+    elif subsession.session.config['TA_treatment_high'] == False:
+        current_costs_list = [100]
+        total_costs = 100
+
     total_delay = 0
     total_costs_list = []
     total_delay_list = []
@@ -134,8 +139,11 @@ class Bargain(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(other_role=player.get_others_in_group()[0].role, 
-                    valuation = cu(player.valuation/100),
+        return dict(my_role=player.role,
+                    other_role=player.get_others_in_group()[0].role, 
+                    valuation=cu(player.valuation/100),
+                    information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
+                    treatment_communication=player.group.subsession.session.config['treatment_communication'],
                     )
 
 
@@ -147,8 +155,9 @@ class Bargain(Page):
                     my_role=player.role,
                     my_valuation=player.valuation,
                     other_role=player.get_others_in_group()[0].role,
-                    TA_treatment=player.group.subsession.session.config['TA_treatment'],
-                    delay_treatment=player.group.subsession.session.config['delay_treatment'],
+                    TA_treatment_high=player.group.subsession.session.config['TA_treatment_high'],
+                    delay_treatment_high=player.group.subsession.session.config['delay_treatment_high'],
+                    information_asymmetry=player.group.subsession.session.config['information_asymmetry']
                     )
 
     @staticmethod
