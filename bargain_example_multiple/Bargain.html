@@ -129,6 +129,9 @@ Price Negotiation
         padding: 20px;
     }
     
+    .chat {
+        width: 150%;
+    }
 
 </style>
 
@@ -214,8 +217,11 @@ Price Negotiation
 </div>
 
 {% if treatment_communication %}
+    <h5 style="margin-top: 1cm;">Please use this chat room to communicate with the {{ other_role }}:</h5>
 
+    <div class="chat">
     {{ chat nickname=my_role}}
+    </div>
 
 {% endif %}
 
