@@ -51,8 +51,7 @@ Price Negotiation
         transform: translateX(-50%); /* Center horizontally */
     }
 
-    button#btn-offer-slider {
-        background-color: #4CAF50; /* Green */
+    .button {
         border: none;
         color: white;
         padding: 15px 32px;
@@ -64,41 +63,29 @@ Price Negotiation
         cursor: pointer;
     }
 
-    button#btn-offer-slider:hover {
+    .button.offer {
+        background-color: #4CAF50; /* Green */
+        
+    }
+
+    .button.offer:hover {
         background-color: #45a049; /* Darker Green */
     }
 
-    button#btn-accept {
+    .button.accept {
         background-color: #2955cc; /* Blue */
-        border: none;
-        color: white;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: block;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
+        
     }
 
-    button#btn-accept:hover {
+    .button.accept:hover {
         background-color: #1e3e98; /* Darker Blue */
     }
 
-    button#btn-terminate {
+    .button.terminate {
         background-color: #c71616; /* Red */
-        border: none;
-        color: white;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: block;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
     }
 
-    button#btn-terminate:hover {
+    .button.terminate:hover {
         background-color: #9b0f0f; /* Darker Red */
     }
 
@@ -150,7 +137,7 @@ Price Negotiation
             <div class="slider-container">
                 <div class="mgslider-wrapper" id="my_slider" style="margin-top: 1cm;"></div>
 
-                <button type="button" id="btn-offer-slider" onclick="sendOffer()">Submit</button>
+                <button type="button" class="button offer" id="btn-offer-slider" onclick="sendOffer()">Submit</button>
             </div>
         
         <h5>If the {{ other_role }} accepts your current offer: </h5>
@@ -191,7 +178,7 @@ Price Negotiation
             <p style="display:block">Delay in payment per 10 seconds: 2 days.</p>
 
             <p style="display:inline">Total delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
-
+0
             <canvas id="delay_chart" style="width: 100%; min-height: 200px;" ></canvas>
         
     </div>
@@ -201,13 +188,13 @@ Price Negotiation
 
 <div class="two_columns_container">
     <div class="two_columns_left" style="background-color: #f2f2f2;">
-        <button type="button" id="btn-terminate" style="display: block; margin-bottom: 1cm;" onclick="sendTerminate()">Terminate</button>
+        <button type="button" class="button terminate" id="btn-terminate" style="display: block; margin-bottom: 1cm;" onclick="sendTerminate()">Terminate</button>
         <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
         <p>{{ other_role }}'s payoff: ???</p>
     </div>
 
     <div class="two_columns_right" style="background-color: #f2f2f2;">
-        <button type="button" id="btn-accept" onclick="sendAccept(this)" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
+        <button type="button" class="button accept" id="btn-accept" onclick="sendAccept(this)" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
         <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">(none)</div></p>
         <p>{{ other_role }}'s payoff: ???</p>
     </div>  
@@ -251,9 +238,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                     slider_other.disable();
                     //slider_other.disable()
                     //slider_other.recall(); // Optional line to remember value across errors
-                    
-
-                    
 
                 });
    
