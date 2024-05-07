@@ -181,7 +181,7 @@ Price Negotiation
     <div style="background-color: #f2f2f2; padding: 15px">
         <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
 
-        <h4 style="display:inline">Your price offer:</h4>
+        <h4 style="display:inline">Your submitted price offer:</h4>
                 <div id="my-proposal" style="display: inline; margin-left: 0.5cm;"> No offer yet.</div>
             
             <div class="slider-container">
@@ -272,7 +272,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                     //my_slider.recall(); // Optional line to remember value across errors
 
                     slider_other = new mgslider("other_offer", 0, 10, 0.1);
-                    //slider_other.yourvalue = js_vars.other_role + "'s " + " Proposal";
                     slider_other.f2s = function (val) {
                         return '$' + val.toFixed(2);
                     }
@@ -280,14 +279,12 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                     slider_other.print(document.getElementById("slider_other"));
                     slider_other.set(0);
                     slider_other.disable();
-                    //slider_other.disable()
                     //slider_other.recall(); // Optional line to remember value across errors
 
                 });
    
     let btnOffer = document.getElementById('btn-offer');
     let btnSliderSubmit = document.getElementById('btn-offer-slider');
-    let my_offer = document.getElementById('my_offer');
     
     let msgOtherProposal = document.getElementById('other-proposal');
     let msgMyProposal = document.getElementById('my-proposal');
@@ -304,7 +301,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     function sendOffer() {
         liveSend({'type': 'propose', 'amount': my_slider.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
-        //my_offer.value = '';
     }
 
     function sendAccept() {
@@ -336,7 +332,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         xValues.push(i);
 
         if (i > 0) {
-            current_costs = current_costs - 5
+            current_costs = current_costs - js_vars.decrease_TA_costs_per_second
             if (current_costs < 0) {
                 current_costs = 0;
             }
@@ -347,12 +343,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         yValues_delay_complete.push(total_delay)
         
     }
-    //console.log(yValues_cost_complete)
-    //console.log(xValues)
 
-    //max = yValues_cost_complete[yValues_cost_complete.length - 1]
-    //console.log(yValues_cost_complete)
-    //console.log(max)
 
     function createChart(chartName, yValues, yLabel, yMin, yMax) {
         new Chart(chartName, {
@@ -409,8 +400,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     function liveRecv(data) {
 
-        //console.log(my_slider.value())
-
         if ('bargaining_time_elapsed' in data) {
             document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed;
 
@@ -442,7 +431,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         }
 
         if ('current_proposals' in data) {
-            //console.log(data.current_proposals)
 
             for (let [id_in_group, proposal] of data.current_proposals) {
 

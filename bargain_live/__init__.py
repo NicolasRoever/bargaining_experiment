@@ -53,6 +53,7 @@ class Player(BasePlayer):
     current_payoff_other_accepts = models.IntegerField()
 
     initial_TA_costs = models.IntegerField()
+    decrease_TA_costs_per_second = models.IntegerField()
     current_TA_costs = models.IntegerField()
     cumulated_TA_costs = models.IntegerField()
 
@@ -77,8 +78,10 @@ def creating_session(subsession):
         # Set transaction costs treatment
         if player.group.subsession.session.config['TA_treatment_high'] == True:
             player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  500
+            player.decrease_TA_costs_per_second = 5
         elif player.group.subsession.session.config['TA_treatment_high'] == False:
-           player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  300
+            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  300
+            player.decrease_TA_costs_per_second = 5
 
         player.current_payoff_terminate = -player.current_TA_costs
 
@@ -88,12 +91,9 @@ def creating_session(subsession):
         elif player.group.subsession.session.config['delay_treatment_high'] == False:
             player.additional_delay = 1
 
-    #if subsession.session.config['TA_treatment_high'] == True:
     current_costs_list = [player.current_TA_costs]
     total_costs = player.current_TA_costs
-    #elif subsession.session.config['TA_treatment_high'] == False:
-    #    current_costs_list = [100]
-    #    total_costs = 100
+    decrease_TA_costs_per_second = player.decrease_TA_costs_per_second
 
     total_delay = 0
     total_costs_list = []
@@ -101,8 +101,8 @@ def creating_session(subsession):
     
     # Initiate list of total transaction costs
     for i in range(C.TOTAL_BARGAINING_TIME):
-        if (i > 0): #and (i % 10 == 0):
-            updated_costs = current_costs_list[i] - 5
+        if (i > 0):
+            updated_costs = current_costs_list[i] - decrease_TA_costs_per_second 
             if updated_costs < 0:
                 updated_costs = 0
             
@@ -157,6 +157,7 @@ class Bargain(Page):
                     other_role=player.get_others_in_group()[0].role,
                     TA_treatment_high=player.group.subsession.session.config['TA_treatment_high'],
                     initial_TA_costs=player.initial_TA_costs,
+                    decrease_TA_costs_per_second=player.decrease_TA_costs_per_second,
                     additional_delay=player.additional_delay,
                     delay_treatment_high=player.group.subsession.session.config['delay_treatment_high'],
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry']
@@ -168,22 +169,22 @@ class Bargain(Page):
         group = player.group
         [other] = player.get_others_in_group()
 
-        # Adjust total transaction costs after 10 seconds
+        # Adjust total transaction costs after each seconds
         bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
 
         total_costs_list = json.loads(player.total_costs_list) 
         current_costs_list = json.loads(player.current_costs_list)
         total_delay_list = json.loads(player.total_delay_list)
         
-        if bargaining_time_elapsed > 0: #and bargaining_time_elapsed % 10 == 0:
-            # Current transaction costs decrease every ten seconds by $0.01
-            player.current_TA_costs = int(current_costs_list[bargaining_time_elapsed]) #int(player.current_TA_costs - 10) 
+        if bargaining_time_elapsed > 0:
+            # Current transaction costs decrease every second by $0.01
+            player.current_TA_costs = int(current_costs_list[bargaining_time_elapsed])
             player.cumulated_TA_costs = int(total_costs_list[bargaining_time_elapsed])
 
             # Termination payoff is just negative transaction costs
             player.current_payoff_terminate = - player.cumulated_TA_costs
             
-            # Total delay in payment increases every ten seconds by one day
+            # Total delay in payment increases every second by additional delay
             player.payment_delay = int(total_delay_list[bargaining_time_elapsed])
             
         
