@@ -141,6 +141,7 @@ class Bargain(Page):
         return dict(my_role=player.role,
                     other_role=player.get_others_in_group()[0].role, 
                     valuation=cu(player.valuation/100),
+                    additional_delay=player.additional_delay,
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
                     treatment_communication=player.group.subsession.session.config['treatment_communication'],
                     )
@@ -156,6 +157,7 @@ class Bargain(Page):
                     other_role=player.get_others_in_group()[0].role,
                     TA_treatment_high=player.group.subsession.session.config['TA_treatment_high'],
                     initial_TA_costs=player.initial_TA_costs,
+                    additional_delay=player.additional_delay,
                     delay_treatment_high=player.group.subsession.session.config['delay_treatment_high'],
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry']
                     )

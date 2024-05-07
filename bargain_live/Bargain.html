@@ -194,7 +194,15 @@ Price Negotiation
     <div class="three_columns_right" style="flex: 0.5;">
         <h5>Delay in Payment</h5>
 
-            <p style="display:block">Delay in payment per second: 2 days.</p>
+            <p style="display:block">Delay in payment per second: {{ additional_delay }} 
+                
+                {% if additional_delay == 1 %}
+                day.</p>
+
+                {% else %}
+                days.</p>
+
+                {% endif %}
 
             <p style="display:inline">Total delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
 0
@@ -301,6 +309,8 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     current_costs = js_vars.initial_TA_costs;
     total_costs = current_costs;
+
+    additional_delay = js_vars.additional_delay
     total_delay = 0;
     
 
@@ -313,7 +323,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                 current_costs = 0;
             }
             total_costs += current_costs;
-            total_delay += 1;
+            total_delay += additional_delay;
         }
         yValues_cost_complete.push(total_costs/100);
         yValues_delay_complete.push(total_delay)

@@ -6,7 +6,7 @@ SESSION_CONFIGS = [
     app_sequence = ["bargain_live"],
     num_demo_participants=2,
     TA_treatment_high = False,
-    delay_treatment_high = False,
+    delay_treatment_high = True,
     information_asymmetry = "None", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
     ),
