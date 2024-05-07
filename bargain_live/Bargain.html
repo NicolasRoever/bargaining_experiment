@@ -151,7 +151,7 @@ Price Negotiation
     <div class="three_columns_left" style="flex: 0.5;">
         <h5>Transaction Costs</h5>
         
-            <p style="display:inline">Current transaction costs per 10 seconds: <div style="display: inline" id ="TA_costs"></div>.</p>
+            <p style="display:inline">Current transaction costs per second: <div style="display: inline" id ="TA_costs"></div>.</p>
         
             <p style="display:inline"> Total transaction costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
         
@@ -194,7 +194,7 @@ Price Negotiation
     <div class="three_columns_right" style="flex: 0.5;">
         <h5>Delay in Payment</h5>
 
-            <p style="display:block">Delay in payment per 10 seconds: 2 days.</p>
+            <p style="display:block">Delay in payment per second: 2 days.</p>
 
             <p style="display:inline">Total delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
 0
@@ -299,7 +299,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     yValues_cost_complete = [];
     yValues_delay_complete = [];
 
-    current_costs = 200;
+    current_costs = js_vars.initial_TA_costs;
     total_costs = current_costs;
     total_delay = 0;
     
@@ -307,7 +307,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     for (let i = 0; i <= 300; i++) {
         xValues.push(i);
 
-        if ((i > 0) && (i % 10 == 0)) {
+        if (i > 0) {
             current_costs = current_costs - 10
             if (current_costs < 0) {
                 current_costs = 0;
@@ -321,6 +321,10 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     }
     //console.log(yValues_cost_complete)
     //console.log(xValues)
+
+    //max = yValues_cost_complete[yValues_cost_complete.length - 1]
+    //console.log(yValues_cost_complete)
+    //console.log(max)
 
     function createChart(chartName, yValues, yLabel, yMin, yMax) {
         new Chart(chartName, {
@@ -377,7 +381,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     function liveRecv(data) {
 
-        console.log(my_slider.value())
+        //console.log(my_slider.value())
 
         if ('bargaining_time_elapsed' in data) {
             document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed;
@@ -385,8 +389,8 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             const yValues_cost = yValues_cost_complete.slice(0, parseInt(data.bargaining_time_elapsed) + 1);
             const yValues_delay = yValues_delay_complete.slice(0, parseInt(data.bargaining_time_elapsed + 1));
 
-            createChart("TA_cost_chart", yValues_cost, "Total Costs ($)", 0, 20);
-            createChart("delay_chart", yValues_delay, "Total Delay (Days)", 0, 60);
+            createChart("TA_cost_chart", yValues_cost, "Total Costs ($)", 0, ( Math.ceil( yValues_cost_complete[yValues_cost_complete.length - 1] / 10 )) * 10 );
+            createChart("delay_chart", yValues_delay, "Total Delay (Days)", 0, ( Math.ceil( yValues_delay_complete[yValues_delay_complete.length - 1] / 10 )) * 10);
         }
 
         if ('current_TA_costs' in data) {

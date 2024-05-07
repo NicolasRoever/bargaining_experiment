@@ -52,6 +52,7 @@ class Player(BasePlayer):
     current_deal_other_accepts = models.IntegerField()
     current_payoff_other_accepts = models.IntegerField()
 
+    initial_TA_costs = models.IntegerField()
     current_TA_costs = models.IntegerField()
     cumulated_TA_costs = models.IntegerField()
 
@@ -75,11 +76,9 @@ def creating_session(subsession):
 
         # Set transaction costs treatment
         if player.group.subsession.session.config['TA_treatment_high'] == True:
-            player.current_TA_costs = 200
-            player.cumulated_TA_costs = 200
+            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  500
         elif player.group.subsession.session.config['TA_treatment_high'] == False:
-            player.current_TA_costs = 100
-            player.cumulated_TA_costs = 100
+           player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  300
 
         player.current_payoff_terminate = -player.current_TA_costs
 
@@ -89,12 +88,12 @@ def creating_session(subsession):
         elif player.group.subsession.session.config['delay_treatment_high'] == False:
             player.additional_delay = 1
 
-    if subsession.session.config['TA_treatment_high'] == True:
-        current_costs_list = [200]
-        total_costs = 200
-    elif subsession.session.config['TA_treatment_high'] == False:
-        current_costs_list = [100]
-        total_costs = 100
+    #if subsession.session.config['TA_treatment_high'] == True:
+    current_costs_list = [player.current_TA_costs]
+    total_costs = player.current_TA_costs
+    #elif subsession.session.config['TA_treatment_high'] == False:
+    #    current_costs_list = [100]
+    #    total_costs = 100
 
     total_delay = 0
     total_costs_list = []
@@ -102,7 +101,7 @@ def creating_session(subsession):
     
     # Initiate list of total transaction costs
     for i in range(C.TOTAL_BARGAINING_TIME):
-        if (i > 0) and (i % 10 == 0):
+        if (i > 0): #and (i % 10 == 0):
             updated_costs = current_costs_list[i] - 10
             if updated_costs < 0:
                 updated_costs = 0
@@ -156,6 +155,7 @@ class Bargain(Page):
                     my_valuation=player.valuation,
                     other_role=player.get_others_in_group()[0].role,
                     TA_treatment_high=player.group.subsession.session.config['TA_treatment_high'],
+                    initial_TA_costs=player.initial_TA_costs,
                     delay_treatment_high=player.group.subsession.session.config['delay_treatment_high'],
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry']
                     )
