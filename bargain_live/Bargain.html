@@ -428,15 +428,15 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             }
             
             if (data['latest_proposal_by'] === js_vars.my_id) {
-                btnSliderSubmit.disabled = true;
+                //btnSliderSubmit.disabled = true;
                 //my_slider.submit();
                 //my_slider.disable();
                 slider_other.disable();
 
                 for (let [id_in_group, proposal] of data.current_proposals) {
                     if(id_in_group === js_vars.my_id) {
-                        my_slider.set(proposal/100);
-                        document.getElementById(my_slider.id("cur")).innerHTML = my_slider.f2s(proposal/100, false);
+                        //my_slider.set(proposal/100);
+                        //document.getElementById(my_slider.id("cur")).innerHTML = my_slider.f2s(proposal/100, false);
                     }
                 }
                 
