@@ -102,7 +102,7 @@ def creating_session(subsession):
     # Initiate list of total transaction costs
     for i in range(C.TOTAL_BARGAINING_TIME):
         if (i > 0): #and (i % 10 == 0):
-            updated_costs = current_costs_list[i] - 10
+            updated_costs = current_costs_list[i] - 5
             if updated_costs < 0:
                 updated_costs = 0
             
