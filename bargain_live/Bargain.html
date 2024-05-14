@@ -296,6 +296,15 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     let isFirstClick = true;
 
+
+    // Reveal payoff if other player accepts my offer once the slider is clicked for the first time
+    var SliderClicked = false
+
+    my_slider.onclick = function() {
+        if(!SliderClicked) {
+            SliderClicked = true;
+        }
+    }
     
 
 
@@ -400,6 +409,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     function liveRecv(data) {
 
+
         if ('bargaining_time_elapsed' in data) {
             document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed;
 
@@ -467,15 +477,16 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                 
 
             }
-            
-            if (data.current_proposals.length > 0) {
+            if (SliderClicked) {
                 if (js_vars.my_role === "Buyer") {
                     document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100)
-                
+                    
                 } else if (js_vars.my_role === "Seller") {
                     document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100)
                 }
-            }
+        }
+
+        
         }
         
 
