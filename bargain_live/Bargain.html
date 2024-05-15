@@ -258,7 +258,18 @@ Price Negotiation
     <div class="two_columns_right" style="background-color: #f2f2f2;">
         <button type="button" class="button accept" id="btn-accept" onclick="sendAccept(this)" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
         <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">No offer yet.</div></p>
-        <p style="display: inline;">{{ other_role }}'s payoff: <div style="display: inline" id ="other_payoff_accept">???</div> </p>
+        <p style="display: inline;">{{ other_role }}'s payoff: 
+            {% if information_asymmetry == "None" or information_asymmetry != other_role %}
+
+                    ???
+
+                {% else %}
+                    <div style="display: inline" id="other_payoff_accept"> 
+                        No offer yet. 
+                    </div>
+                
+                {% endif %}
+        </p>
     </div>  
 </div>
 
