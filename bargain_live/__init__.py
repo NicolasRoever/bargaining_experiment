@@ -77,11 +77,11 @@ def creating_session(subsession):
 
         # Set transaction costs treatment
         if player.group.subsession.session.config['TA_treatment_high'] == True:
-            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  500
-            player.decrease_TA_costs_per_second = 5
+            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  100
+            player.decrease_TA_costs_per_second = 1
         elif player.group.subsession.session.config['TA_treatment_high'] == False:
-            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  300
-            player.decrease_TA_costs_per_second = 5
+            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  50
+            player.decrease_TA_costs_per_second = 1
 
         player.current_payoff_terminate = -player.current_TA_costs
 
