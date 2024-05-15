@@ -488,12 +488,16 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                     if (js_vars.my_role === "Buyer") {
                         msgMyPayoffAccept.innerHTML = USDollar.format((js_vars.my_valuation - proposal - data.cumulated_TA_costs)/100);
                         
-                        document.getElementById('other_payoff_accept').innerHTML = USDollar.format((proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100);
-                        
+                        if (js_vars.information_asymmetry === js_vars.other_role) {
+                            document.getElementById('other_payoff_accept').innerHTML = USDollar.format((proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100);
+                        }
+
                     } else if (js_vars.my_role === "Seller") {
                         msgMyPayoffAccept.innerHTML = USDollar.format((proposal - js_vars.my_valuation - data.cumulated_TA_costs)/100);
                         
-                        document.getElementById('other_payoff_accept').innerHTML = USDollar.format((js_vars.other_valuation - proposal - data.cumulated_TA_costs)/100);
+                        if (js_vars.information_asymmetry === js_vars.other_role) {
+                            document.getElementById('other_payoff_accept').innerHTML = USDollar.format((js_vars.other_valuation - proposal - data.cumulated_TA_costs)/100);
+                        }
                     }
 
                 }
@@ -526,16 +530,21 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         }
 
         if (SliderClicked) {
-                if (js_vars.my_role === "Buyer") {
-                    document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
-                    
+            console.log('Slider is clicked for', js_vars.my_id)
+            if (js_vars.my_role === "Buyer") {
+                document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
+                
+                if (js_vars.information_asymmetry === js_vars.other_role) {
                     document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.other_valuation - data.cumulated_TA_costs)/100);
-                    
-                } else if (js_vars.my_role === "Seller") {
-                    document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100);
-                    
+                }    
+
+            } else if (js_vars.my_role === "Seller") {
+                document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100);
+                
+                if (js_vars.information_asymmetry === js_vars.other_role) {
                     document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.other_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
                 }
+            }
         }
         
 
