@@ -271,7 +271,7 @@ class Bargain(Page):
 
 
         current_proposals = []
-        current_payoffs_accept = []
+        #current_payoffs_accept = []
         current_payoffs_other_accepts = []
         for p in [player, other]:
             amount_proposed = p.field_maybe_none('amount_proposed')
@@ -280,10 +280,10 @@ class Bargain(Page):
             
             if amount_proposed is not None:
                 current_proposals.append([p.id_in_group, amount_proposed])
-            if current_payoff_accept is not None:
-                current_payoffs_accept.append([p.id_in_group, current_payoff_accept])
-            if current_payoff_other_accepts is not None:
-                current_payoffs_other_accepts.append([p.id_in_group, current_payoff_other_accepts])
+            #if current_payoff_accept is not None:
+            #    current_payoffs_accept.append([p.id_in_group, current_payoff_accept])
+            #if current_payoff_other_accepts is not None:
+            #   current_payoffs_other_accepts.append([p.id_in_group, current_payoff_other_accepts])
 
         amount_proposed = player.field_maybe_none('amount_proposed')
         other_amount_proposed = other.field_maybe_none('amount_proposed')
@@ -297,8 +297,8 @@ class Bargain(Page):
         return {0: {
                 'current_proposals':current_proposals, 
                 'latest_proposal_by':latest_proposal_by,
-                'current_payoffs_accept':current_payoffs_accept,
-                'current_payoffs_other_accepts':current_payoffs_other_accepts,
+                #'current_payoffs_accept':current_payoffs_accept,
+                #'current_payoffs_other_accepts':current_payoffs_other_accepts,
                 'current_TA_costs':player.current_TA_costs,
                 'cumulated_TA_costs':player.cumulated_TA_costs,
                 'current_payoff_terminate':player.current_payoff_terminate,

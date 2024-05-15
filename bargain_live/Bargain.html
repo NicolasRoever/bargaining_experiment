@@ -539,31 +539,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         }
         
 
-        //if ('current_payoffs_accept' in data) {
-
-         //   for (let [id_in_group, current_payoff_accept] of data.current_payoffs_accept){
-
-        //       if (id_in_group === js_vars.my_id){
-        //            document.getElementById('my_payoff_accept_text').style.display = 'inline';
-        //            msgMyPayoffAccept.innerHTML = USDollar.format(current_payoff_accept/100);
-                    //document.getElementById('other_payoff_accept') = "???"
-        //        }
-        //    }
-
-        //}
-
-        if ('current_payoffs_other_accepts' in data) {
-
-            for (let [id_in_group, current_payoff_other_accepts] of data.current_payoffs_other_accepts){
-
-                if (id_in_group === js_vars.my_id){
-                    //document.getElementById('my_payoff_accept_text').style.display = 'inline';
-                    document.getElementById('my_payoff_other_accepts').innerHTML = USDollar.format(current_payoff_other_accepts/100)
-                }
-            }
-
-}
-
         if ('finished' in data) {
             document.getElementById('form').submit();
         }
