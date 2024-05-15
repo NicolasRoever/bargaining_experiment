@@ -160,7 +160,16 @@ Price Negotiation
     Please negotiate with the {{ other_role }} below.
 </p>
 
-<p style="background-color: #f2f2f2; padding: 15px; width: 150%;">In this match, your value of the object is <b>{{ valuation }}</b>. </p>
+<p style="background-color: #f2f2f2; padding: 15px; width: 150%;">  
+   
+    In this match, your value of the object is <b>{{ valuation }}</b><br/><br/>
+    The {{ other_role }}'s value of the object is 
+    {% if information_asymmetry == "None" or information_asymmetry != other_role %}
+        <b>unknown to you</b>.
+    {% else %}
+        <b>{{ other_valuation }}</b>.
+    {% endif %}
+</p>
 
 
     
@@ -193,7 +202,18 @@ Price Negotiation
         <h5>If the {{ other_role }} accepts your current offer: </h5>
 
             <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts_live"> No offer yet. </div></p>
-            <p>{{ other_role }}'s payoff: ???</p>
+            <p style="margin-top:3cm;display: inline;">{{ other_role }}'s payoff: 
+                {% if information_asymmetry == "None" or information_asymmetry != other_role %}
+
+                    ???
+
+                {% else %}
+                    <div style="display: inline" id="other_payoff_other_accepts_live"> 
+                        No offer yet. 
+                    </div>
+                
+                {% endif %}
+            </p>
 
             
     </div>
@@ -479,10 +499,14 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             }
             if (SliderClicked) {
                 if (js_vars.my_role === "Buyer") {
-                    document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100)
+                    document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
+                    
+                    document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.other_valuation - data.cumulated_TA_costs)/100);
                     
                 } else if (js_vars.my_role === "Seller") {
-                    document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100)
+                    document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100);
+                    
+                    document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.other_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
                 }
         }
 
@@ -497,7 +521,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                 if (id_in_group === js_vars.my_id){
                     document.getElementById('my_payoff_accept_text').style.display = 'inline';
                     msgMyPayoffAccept.innerHTML = USDollar.format(current_payoff_accept/100);
-                    document.getElementById('other_payoff_accept') = "???"
+                    //document.getElementById('other_payoff_accept') = "???"
                 }
             }
 

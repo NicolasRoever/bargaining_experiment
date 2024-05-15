@@ -7,7 +7,7 @@ SESSION_CONFIGS = [
     num_demo_participants=2,
     TA_treatment_high = False,
     delay_treatment_high = True,
-    information_asymmetry = "None", # Which valuation is known? # Buyer, Seller or None
+    information_asymmetry = "Seller", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
     ),
     #dict(
