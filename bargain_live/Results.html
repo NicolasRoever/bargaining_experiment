@@ -7,9 +7,19 @@
 {% if group.is_finished == True %}
 
     {% if group.terminated == False %}
-    <p>
-        Congratulations, you made a deal at the price of {{ deal_price }} and you receive a payment of {{ player.payoff }}.
-    </p>
+
+        {% if group.accepted_by == player.id_in_group %}
+
+        <p>
+            You accepted the price offer by the {{ other_role }} of {{ deal_price }} and you receive a payment of {{ player.payoff }}.
+        </p>
+
+        {% elif group.accepted_by != player.id_in_group %}
+        <p>
+            The {{ other_role }} accepted your offer of {{ deal_price }} and you receive a payment of {{ player.payoff }}.
+        </p>
+
+        {% endif %}
 
     <p>
        You are going to receive your payment in {{ player.payment_delay }} days.
