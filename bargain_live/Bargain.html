@@ -473,9 +473,23 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                     btnAccept.disabled = false;
                     slider_other.set(proposal/100);
                     document.getElementById(slider_other.id("cur")).innerHTML = slider_other.f2s(proposal/100, false);
+
+                    if (js_vars.my_role === "Buyer") {
+                        msgMyPayoffAccept.innerHTML = USDollar.format((js_vars.my_valuation - proposal - data.cumulated_TA_costs)/100);
+                        
+                        document.getElementById('other_payoff_accept').innerHTML = USDollar.format((proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100);
+                        
+                    } else if (js_vars.my_role === "Seller") {
+                        msgMyPayoffAccept.innerHTML = USDollar.format((proposal - js_vars.my_valuation - data.cumulated_TA_costs)/100);
+                        
+                        document.getElementById('other_payoff_accept').innerHTML = USDollar.format((js_vars.other_valuation - proposal - data.cumulated_TA_costs)/100);
+                    }
+
                 }
                 
             }
+        
+            
             
             if (data['latest_proposal_by'] === js_vars.my_id) {
                 //btnSliderSubmit.disabled = true;
@@ -514,18 +528,18 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         }
         
 
-        if ('current_payoffs_accept' in data) {
+        //if ('current_payoffs_accept' in data) {
 
-            for (let [id_in_group, current_payoff_accept] of data.current_payoffs_accept){
+         //   for (let [id_in_group, current_payoff_accept] of data.current_payoffs_accept){
 
-                if (id_in_group === js_vars.my_id){
-                    document.getElementById('my_payoff_accept_text').style.display = 'inline';
-                    msgMyPayoffAccept.innerHTML = USDollar.format(current_payoff_accept/100);
+        //       if (id_in_group === js_vars.my_id){
+        //            document.getElementById('my_payoff_accept_text').style.display = 'inline';
+        //            msgMyPayoffAccept.innerHTML = USDollar.format(current_payoff_accept/100);
                     //document.getElementById('other_payoff_accept') = "???"
-                }
-            }
+        //        }
+        //    }
 
-        }
+        //}
 
         if ('current_payoffs_other_accepts' in data) {
 
