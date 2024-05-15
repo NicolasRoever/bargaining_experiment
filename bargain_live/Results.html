@@ -4,19 +4,39 @@
 
 {{ block content }}
 
-{% if group.terminated == False %}
-<p>
-    Congratulations, you made a deal at the price of {{ deal_price }}.
-</p>
+{% if group.is_finished == True %}
 
-{% elif group.terminated == True %}
+    {% if group.terminated == False %}
+    <p>
+        Congratulations, you made a deal at the price of {{ deal_price }} and you receive a payment of {{ player.payoff }}.
+    </p>
 
-<p>
-    The bargaining was terminated and no deal has been made.
-</p>
+    <p>
+       You are going to receive your payment in {{ player.payment_delay }} days.
+
+    </p>
+
+    {% elif group.terminated == True %}
+
+        {% if group.terminated_by == player.id_in_group %}
+
+            <p>You terminated the negotation.</p>
+
+        {% elif group.terminated_by != player.id_in_group %}
+            <p>
+                The bargaining was terminated by the {{ other_role }} and no deal has been made.
+            </p>
+        {% endif %}
+
+    {% endif %}
+
+
+{% else %}
+    
+   <p> No deal was made in the given time frame. </p>
 
 {% endif %}
 
 
-{{ endblock }}
+    {{ endblock }}
 

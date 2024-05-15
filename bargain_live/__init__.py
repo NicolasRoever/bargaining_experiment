@@ -306,7 +306,20 @@ class Bargain(Page):
                 'bargaining_time_elapsed':bargaining_time_elapsed,
                 }
                 }
-            
+
+    @staticmethod
+    def before_next_page(player, timeout_happened):
+        if player.group.is_finished == True and player.group.terminated == False:
+            if player.role == "Buyer":
+                player.payoff = (player.valuation - player.group.deal_price - player.cumulated_TA_costs)/100
+                
+            elif player.role == "Seller":
+                player.payoff = (player.group.deal_price - player.valuation - player.cumulated_TA_costs)/100
+        
+        else:
+            player.payoff = 0
+
+
 
     @staticmethod
     def error_message(player: Player, values):
@@ -327,6 +340,7 @@ class Results(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return dict(deal_price = cu(player.group.deal_price/100),
+                    other_role=player.get_others_in_group()[0].role, 
                     )
 
 
