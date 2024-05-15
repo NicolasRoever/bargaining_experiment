@@ -309,12 +309,15 @@ class Bargain(Page):
 
     @staticmethod
     def before_next_page(player, timeout_happened):
-        if player.group.is_finished == True and player.group.terminated == False:
-            if player.role == "Buyer":
-                player.payoff = (player.valuation - player.group.deal_price - player.cumulated_TA_costs)/100
-                
-            elif player.role == "Seller":
-                player.payoff = (player.group.deal_price - player.valuation - player.cumulated_TA_costs)/100
+        if player.group.is_finished == True:
+            if player.group.terminated == False:
+                if player.role == "Buyer":
+                    player.payoff = (player.valuation - player.group.deal_price - player.cumulated_TA_costs)/100
+                    
+                elif player.role == "Seller":
+                    player.payoff = (player.group.deal_price - player.valuation - player.cumulated_TA_costs)/100
+            elif player.group.terminated == True:
+                player.payoff = -player.cumulated_TA_costs/100
         
         else:
             player.payoff = 0
