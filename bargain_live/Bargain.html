@@ -339,6 +339,8 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
     let isFirstClick = true;
 
+    let AlreadyRefreshed = false;
+
 
     // Reveal payoff if other player accepts my offer once the slider is clicked for the first time
     var SliderClicked = false
@@ -487,8 +489,10 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
             for (let [id_in_group, proposal] of data.current_proposals) {
 
-                if (id_in_group === js_vars.my_id) {
+                if (id_in_group === js_vars.my_id && !AlreadyRefreshed ) {
                     msgMyProposal.innerHTML = USDollar.format(proposal/100);
+                    my_slider.set(proposal/100);
+                    AlreadyRefreshed = true;
             
                 } else if (id_in_group === js_vars.other_id) {
                     msgOtherProposal.innerHTML = USDollar.format(proposal/100);
@@ -557,6 +561,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
                     document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.other_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
                 }
             }
+         
         }
         
 
