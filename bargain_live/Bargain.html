@@ -489,10 +489,13 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
             for (let [id_in_group, proposal] of data.current_proposals) {
 
-                if (id_in_group === js_vars.my_id && !AlreadyRefreshed ) {
+                if (id_in_group === js_vars.my_id) {
                     msgMyProposal.innerHTML = USDollar.format(proposal/100);
-                    my_slider.set(proposal/100);
-                    AlreadyRefreshed = true;
+
+                    if (!AlreadyRefreshed) {
+                        my_slider.set(proposal/100);
+                        AlreadyRefreshed = true;
+                    }
             
                 } else if (id_in_group === js_vars.other_id) {
                     msgOtherProposal.innerHTML = USDollar.format(proposal/100);
@@ -546,7 +549,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         }
 
         if (SliderClicked) {
-            console.log('Slider is clicked for', js_vars.my_id)
+            //console.log('Slider is clicked for', js_vars.my_id)
             if (js_vars.my_role === "Buyer") {
                 document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
                 
