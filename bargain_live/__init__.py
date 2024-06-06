@@ -332,8 +332,8 @@ class Bargain(Page):
         
         # Set final payoffs
         if player.round_number == C.NUM_ROUNDS:
-            random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
-            player.participant.payoff = player.in_round(random_round)
+            player.participant.random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
+            player.participant.payoff = player.in_round(player.participant.random_round).payoff
 
 
 
@@ -361,7 +361,15 @@ class RoundResults(Page):
 class FinalResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(deal_price = cu(player.group.deal_price/100),
+        return dict(
+                    payoff_group_finished = player.in_round(player.participant.random_round).group.is_finished,
+                    payoff_group_terminated = player.in_round(player.participant.random_round).group.field_maybe_none('terminated'),
+                    payoff_group_terminated_by = player.in_round(player.participant.random_round).group.field_maybe_none('terminated_by'),
+                    payoff_group_accepted_by = player.in_round(player.participant.random_round).group.field_maybe_none('accepted_by'),
+                    payoff_valuation = cu(player.in_round(player.participant.random_round).valuation / 100),
+                    payoff_TA_costs = cu(player.in_round(player.participant.random_round).cumulated_TA_costs / 100),
+                    payoff_delay = player.in_round(player.participant.random_round).payment_delay,
+                    payoff_deal_price = cu(player.in_round(player.participant.random_round).group.deal_price/100),
                     other_role=player.get_others_in_group()[0].role, 
                     )
     

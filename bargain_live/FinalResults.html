@@ -1,47 +1,51 @@
 {{ block title }}
-    Results
+    Your Payoff
 {{ endblock }}
 
 {{ block content }}
 
-{% if group.is_finished == True %}
+<p>Match Number {{ player.participant.random_round }} was chosen to be payoff-relevant.</p>
 
-    {% if group.terminated == False %}
+<p>In this match,
 
-        {% if group.accepted_by == player.id_in_group %}
+{% if payoff_group_finished == True %}
 
-        <p>
-            You accepted the price offer by the {{ other_role }} of {{ deal_price }} and you receive a payment of {{ player.payoff }}.
-        </p>
+    {% if payoff_group_terminated == False %}
 
-        {% elif group.accepted_by != player.id_in_group %}
-        <p>
-            The {{ other_role }} accepted your offer of {{ deal_price }} and you receive a payment of {{ player.payoff }}.
-        </p>
+        {% if payoff_group_accepted_by == player.id_in_group %}
+
+        
+            you accepted the price offer by the {{ other_role }} of {{ payoff_deal_price }}
+        
+
+        {% elif payoff_group_accepted_by != player.id_in_group %}
+        
+            the {{ other_role }} accepted your offer of {{ payoff_deal_price }}
 
         {% endif %}
 
-    <p>
-       You are going to receive your payment in {{ player.payment_delay }} days.
+        and your valuation was {{ payoff_valuation }}.
 
-    </p>
 
-    {% elif group.terminated == True %}
+    {% elif payoff_group_terminated == True %}
 
-        {% if group.terminated_by == player.id_in_group %}
+        {% if payoff_group_terminated_by == player.id_in_group %}
 
-            <p>You terminated the negotation.</p>
+            you terminated the negotation.
 
-        {% elif group.terminated_by != player.id_in_group %}
-            <p>
-                The bargaining was terminated by the {{ other_role }} and no deal has been made.
+        {% elif payoff_group_terminated_by != player.id_in_group %}
+            
+            the bargaining was terminated by the {{ other_role }} and no deal has been made.
             </p>
+            
         {% endif %}
-
-        <p>You have to pay the transaction costs and thus your payoff is {{ player.payoff }}. </p>
 
     {% endif %}
 
+    <p>You have to pay the transaction costs of {{ payoff_TA_costs }} and thus your payoff is {{ player.participant.payoff }}. </p>
+
+    <p>You are going to receive your total payment of {{ player.participant.payoff_plus_participation_fee }} 
+        (including the participation fee of {{ session.participation_fee }}) in {{ payoff_delay }} days.</p>
 
 {% else %}
     
