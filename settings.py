@@ -10,35 +10,6 @@ SESSION_CONFIGS = [
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
     ),
-    #dict(
-    #    name="test",
-    #    app_sequence=[
-    #        "slider",
-    #    ],
-    #    num_demo_participants=2,
-    #),
-    #dict(
-    #    name="slider",
-    #    app_sequence=[
-    #        "slider_2",
-    #    ],
-    #    num_demo_participants=2,
-    #),
-    #dict(
-    #    name = "bargain_example",
-    #    app_sequence = ["bargain_example"],
-    #    num_demo_participants=2,
-    #),
-    #dict(
-    #    name = "bargain_example_slider",
-    #    app_sequence = ["bargain_example_slider"],
-    #    num_demo_participants=2,
-    #),
-    #dict(
-    #name = "bargain_example_orig2",
-    #app_sequence = ["bargain_example_orig2"],
-    #num_demo_participants=2,
-    #)
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

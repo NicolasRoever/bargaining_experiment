@@ -11,7 +11,7 @@ doc = """
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 2
+    NUM_ROUNDS = 10
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
     TOTAL_BARGAINING_TIME = 5 * 60
@@ -36,6 +36,7 @@ class Group(BaseGroup):
     terminated_by = models.IntegerField()
 
     bargain_start_time = models.FloatField()
+    bargain_duration = models.IntegerField()
 
 
 class Player(BasePlayer):
@@ -141,7 +142,7 @@ class BargainWaitPage(WaitPage):
 
 class Bargain(Page):
 
-    timeout_seconds = 5#C.TOTAL_BARGAINING_TIME
+    timeout_seconds = C.TOTAL_BARGAINING_TIME
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -329,6 +330,15 @@ class Bargain(Page):
         else:
             player.payoff = 0
             player.group.deal_price = 0
+
+        # Record total bargaininig time
+        if player.group.is_finished == True:
+            if player.group.field_maybe_none('acceptance_time') is not None:
+                player.group.bargain_duration = player.group.acceptance_time 
+            elif player.group.field_maybe_none('termination_time') is not None:
+                player.group.bargain_duration = player.group.termination_time 
+        else:
+            player.group.bargain_duration = C.TOTAL_BARGAINING_TIME
         
         # Set final payoffs
         if player.round_number == C.NUM_ROUNDS:
@@ -356,6 +366,7 @@ class RoundResults(Page):
     def vars_for_template(player: Player):
         return dict(deal_price = cu(player.group.deal_price/100),
                     other_role=player.get_others_in_group()[0].role, 
+                    TA_costs = cu(player.cumulated_TA_costs / 100)
                     )
 
 class FinalResults(Page):
@@ -369,6 +380,7 @@ class FinalResults(Page):
                     payoff_valuation = cu(player.in_round(player.participant.random_round).valuation / 100),
                     payoff_TA_costs = cu(player.in_round(player.participant.random_round).cumulated_TA_costs / 100),
                     payoff_delay = player.in_round(player.participant.random_round).payment_delay,
+                    payoff_bargaining_time = player.in_round(player.participant.random_round).group.bargain_duration,
                     payoff_deal_price = cu(player.in_round(player.participant.random_round).group.deal_price/100),
                     other_role=player.get_others_in_group()[0].role, 
                     )

@@ -24,7 +24,7 @@
 
         {% endif %}
 
-        and your valuation was {{ payoff_valuation }}.
+         after {{ payoff_bargaining_time}} seconds and your valuation was {{ payoff_valuation }}.
 
 
     {% elif payoff_group_terminated == True %}
@@ -35,7 +35,7 @@
 
         {% elif payoff_group_terminated_by != player.id_in_group %}
             
-            the bargaining was terminated by the {{ other_role }} and no deal has been made.
+            the bargaining was terminated by the {{ other_role }} after {{ payoff_bargaining_time }} and no deal has been made.
             </p>
             
         {% endif %}
