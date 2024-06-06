@@ -103,12 +103,6 @@ Price Negotiation
     display: none;
     }
 
-    .two_columns_container {
-        display: flex; 
-        justify-content: space-between; 
-        margin-top: 1cm; 
-        width: 150%;
-    }
 
     .two_columns_left {
         flex: 1;  
@@ -128,14 +122,30 @@ Price Negotiation
     overflow: auto;
     align-items: center;
     flex-direction: column;
+    width: 1200px;
+    }
+
+    .central_container {
+        
+        justify-content: center;
+        width: 150%;
+        position: relative;
     }
 
     .three_columns_container {
     display: flex;
     justify-content: space-between;
-    width: 150%;
+    width: 100%;
     gap: 20px;
     
+    }
+
+
+    .two_columns_container {
+        display: flex; 
+        justify-content: space-between; 
+        margin-top: 1cm; 
+        width: 100%;
     }
 
     .three_columns_left, .three_columns_right {
@@ -152,12 +162,14 @@ Price Negotiation
 </style>
 
 
+<div class="central_container">
 
 <p>
     You are the {{ player.role }}.
     Please negotiate with the {{ other_role }} below.
 </p>
 
+<div class="three_columns_container">
 <p style="background-color: #f2f2f2; padding: 15px; width: 150%;">  
    
     In this match, your value of the object is <b>{{ valuation }}</b><br/><br/>
@@ -169,7 +181,7 @@ Price Negotiation
     {% endif %}
 </p>
 
-
+</div>
     
 
 <div class="three_columns_container">
@@ -188,7 +200,7 @@ Price Negotiation
     <div style="background-color: #f2f2f2; padding: 15px">
         <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
 
-        <h4 style="display:inline">Your submitted price offer:</h4>
+        <h4 style="display:inline">Your current submitted price offer:</h4>
                 <div id="my-proposal" style="display: inline; margin-left: 0.5cm;"> No offer yet.</div>
             
             <div class="slider-container">
@@ -218,7 +230,7 @@ Price Negotiation
 
     <div style="background-color: #f2f2f2; padding: 15px; margin-top: 1cm;">
             
-        <h4 style="display:inline" style="margin-top: 0.5cm;">{{ other_role }}'s submitted price offer:</h4>
+        <h4 style="display:inline" style="margin-top: 0.5cm;">{{ other_role }}'s current submitted price offer:</h4>
                 <div style="display:inline; margin-left: 0.5cm; margin-top: 0.5cm;" id="other-proposal"> No offer yet. </div>
 
                 <div class="slider-container">
@@ -294,7 +306,7 @@ Price Negotiation
 
 {% endif %}
 
-
+</div>
 
 <script src="{{ static 'mgslider.js' }}"></script>
 
