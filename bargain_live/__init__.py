@@ -330,6 +330,10 @@ class Bargain(Page):
             player.payoff = 0
             player.group.deal_price = 0
         
+        # Set final payoffs
+        if player.round_number == C.NUM_ROUNDS:
+            random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
+            player.participant.payoff = player.in_round(random_round)
 
 
 
@@ -347,8 +351,14 @@ class Bargain(Page):
         return deal_price is None
 
 
-class Results(Page):
-    
+class RoundResults(Page):
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(deal_price = cu(player.group.deal_price/100),
+                    other_role=player.get_others_in_group()[0].role, 
+                    )
+
+class FinalResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return dict(deal_price = cu(player.group.deal_price/100),
@@ -360,4 +370,4 @@ class Results(Page):
         return player.round_number == C.NUM_ROUNDS
 
 
-page_sequence = [BargainWaitPage, Bargain, Results]
+page_sequence = [BargainWaitPage, Bargain, RoundResults, FinalResults]

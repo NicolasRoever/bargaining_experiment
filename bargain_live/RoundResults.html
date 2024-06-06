@@ -1,0 +1,57 @@
+{{ block title }}
+    Results
+{{ endblock }}
+
+{{ block content }}
+
+{% if group.is_finished == True %}
+
+    {% if group.terminated == False %}
+
+        {% if group.accepted_by == player.id_in_group %}
+
+        <p>
+            You accepted the price offer by the {{ other_role }} of {{ deal_price }}.
+        </p>
+
+        {% elif group.accepted_by != player.id_in_group %}
+        <p>
+            The {{ other_role }} accepted your offer of {{ deal_price }}.
+        </p>
+
+        {% endif %}
+
+    <p>
+       If this match is drawn to be payoff-relevant, you are going to receive a payment of {{ player.payoff }}
+       in {{ player.payment_delay }} days.
+
+    </p>
+
+    {% elif group.terminated == True %}
+
+        {% if group.terminated_by == player.id_in_group %}
+
+            <p>You terminated the negotation.</p>
+
+        {% elif group.terminated_by != player.id_in_group %}
+            <p>
+                The bargaining was terminated by the {{ other_role }} and no deal has been made.
+            </p>
+        {% endif %}
+
+        <p>You have to pay the transaction costs and thus your payoff is {{ player.payoff }}. </p>
+
+    {% endif %}
+
+
+{% else %}
+    
+   <p> No deal was made in the given time frame. </p>
+
+{% endif %}
+
+{{ next_button }}
+
+
+    {{ endblock }}
+
