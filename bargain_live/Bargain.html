@@ -103,12 +103,6 @@ Price Negotiation
     display: none;
     }
 
-    .two_columns_container {
-        display: flex; 
-        justify-content: space-between; 
-        margin-top: 1cm; 
-        width: 150%;
-    }
 
     .two_columns_left {
         flex: 1;  
@@ -130,12 +124,28 @@ Price Negotiation
     flex-direction: column;
     }
 
+    .central_container {
+        
+        justify-content: center;
+        width: 150%;
+        position: relative;
+        left: -50%;
+    }
+
     .three_columns_container {
     display: flex;
     justify-content: space-between;
-    width: 150%;
+    width: 100%;
     gap: 20px;
     
+    }
+
+
+    .two_columns_container {
+        display: flex; 
+        justify-content: space-between; 
+        margin-top: 1cm; 
+        width: 100%;
     }
 
     .three_columns_left, .three_columns_right {
@@ -152,12 +162,14 @@ Price Negotiation
 </style>
 
 
+<div class="central_container">
 
 <p>
     You are the {{ player.role }}.
     Please negotiate with the {{ other_role }} below.
 </p>
 
+<div class="three_columns_container">
 <p style="background-color: #f2f2f2; padding: 15px; width: 150%;">  
    
     In this match, your value of the object is <b>{{ valuation }}</b><br/><br/>
@@ -169,7 +181,7 @@ Price Negotiation
     {% endif %}
 </p>
 
-
+</div>
     
 
 <div class="three_columns_container">
@@ -294,7 +306,7 @@ Price Negotiation
 
 {% endif %}
 
-
+</div>
 
 <script src="{{ static 'mgslider.js' }}"></script>
 
