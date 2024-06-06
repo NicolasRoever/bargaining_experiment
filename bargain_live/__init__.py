@@ -321,6 +321,8 @@ class Bargain(Page):
         
         else:
             player.payoff = 0
+            player.group.deal_price = 0
+        
 
 
 
