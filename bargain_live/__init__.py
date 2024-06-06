@@ -11,7 +11,7 @@ doc = """
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 1
+    NUM_ROUNDS = 2
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
     TOTAL_BARGAINING_TIME = 5 * 60
@@ -72,8 +72,13 @@ class Player(BasePlayer):
 # FUNCTIONS
 def creating_session(subsession):
     for player in subsession.get_players():
-        valuation_list = list(range(0, 1001, 10))
+        # Randomly draw valuations in each round
+        if player.role == "Seller":
+            valuation_list = list(range(0, 501, 10))
+        elif player.role == "Buyer":
+            valuation_list = list(range(1000, 1501, 10))
         player.valuation = random.choice(valuation_list)
+
 
         # Set transaction costs treatment
         if player.group.subsession.session.config['TA_treatment_high'] == True:
@@ -121,6 +126,8 @@ def creating_session(subsession):
         player.current_costs_list = json.dumps(current_costs_list)
         player.total_delay_list = json.dumps(total_delay_list)
 
+    # Set up grouping mechanism of random grouping in each round with fixed roles across rounds
+    subsession.group_randomly(fixed_id_in_group = True)
 
 
 # PAGES
@@ -134,7 +141,7 @@ class BargainWaitPage(WaitPage):
 
 class Bargain(Page):
 
-    timeout_seconds = C.TOTAL_BARGAINING_TIME
+    timeout_seconds = 5#C.TOTAL_BARGAINING_TIME
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -347,6 +354,10 @@ class Results(Page):
         return dict(deal_price = cu(player.group.deal_price/100),
                     other_role=player.get_others_in_group()[0].role, 
                     )
+    
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == C.NUM_ROUNDS
 
 
 page_sequence = [BargainWaitPage, Bargain, Results]
