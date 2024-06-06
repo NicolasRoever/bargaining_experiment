@@ -122,6 +122,7 @@ Price Negotiation
     overflow: auto;
     align-items: center;
     flex-direction: column;
+    width: 1200px;
     }
 
     .central_container {
@@ -129,7 +130,6 @@ Price Negotiation
         justify-content: center;
         width: 150%;
         position: relative;
-        left: -50%;
     }
 
     .three_columns_container {
@@ -200,7 +200,7 @@ Price Negotiation
     <div style="background-color: #f2f2f2; padding: 15px">
         <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
 
-        <h4 style="display:inline">Your submitted price offer:</h4>
+        <h4 style="display:inline">Your current submitted price offer:</h4>
                 <div id="my-proposal" style="display: inline; margin-left: 0.5cm;"> No offer yet.</div>
             
             <div class="slider-container">
@@ -230,7 +230,7 @@ Price Negotiation
 
     <div style="background-color: #f2f2f2; padding: 15px; margin-top: 1cm;">
             
-        <h4 style="display:inline" style="margin-top: 0.5cm;">{{ other_role }}'s submitted price offer:</h4>
+        <h4 style="display:inline" style="margin-top: 0.5cm;">{{ other_role }}'s current submitted price offer:</h4>
                 <div style="display:inline; margin-left: 0.5cm; margin-top: 0.5cm;" id="other-proposal"> No offer yet. </div>
 
                 <div class="slider-container">
