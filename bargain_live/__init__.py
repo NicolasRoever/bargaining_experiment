@@ -14,7 +14,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 3
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
-    TOTAL_BARGAINING_TIME = 5 * 60
+    TOTAL_BARGAINING_TIME = 2 * 60
 
 
 class Subsession(BaseSubsession):
@@ -134,11 +134,15 @@ def creating_session(subsession):
 # PAGES
 
 class WelcomeAndConsent(Page):
-    pass
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
 
 
 class BargainInstructions(Page):
-    pass
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
 
 
 class BargainWaitPage(WaitPage):
@@ -178,7 +182,8 @@ class Bargain(Page):
                     decrease_TA_costs_per_second=player.decrease_TA_costs_per_second,
                     additional_delay=player.additional_delay,
                     delay_treatment_high=player.group.subsession.session.config['delay_treatment_high'],
-                    information_asymmetry=player.group.subsession.session.config['information_asymmetry']
+                    information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
+                    maximum_bargain_time=C.TOTAL_BARGAINING_TIME,
                     )
 
     @staticmethod

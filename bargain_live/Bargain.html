@@ -186,11 +186,11 @@ Price Negotiation
 
 <div class="three_columns_container">
     <div class="three_columns_left" style="flex: 0.5;">
-        <h5>Transaction Costs</h5>
+        <h5>Negotiation Costs</h5>
         
-            <p style="display:inline">Current transaction costs per second: <div style="display: inline" id ="TA_costs"></div>.</p>
+            <p style="display:inline">Current negotiation costs per second: <div style="display: inline" id ="TA_costs"></div>.</p>
         
-            <p style="display:inline"> Total transaction costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
+            <p style="display:inline"> Total negotiation costs: <div style="display: inline" id ="cumulated_TA_costs"></div>.</p>
         
             <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px;"></canvas>
     </div>
@@ -272,7 +272,7 @@ Price Negotiation
                 {% endif %}
 
             <p style="display:inline">Total delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
-0
+
             <canvas id="delay_chart" style="width: 100%; min-height: 200px;" ></canvas>
     </div>
 </div>
@@ -394,7 +394,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     total_delay = 0;
     
 
-    for (let i = 0; i <= 300; i++) {
+    for (let i = 0; i <= js_vars.maximum_bargain_time; i++) {
         xValues.push(i);
 
         if (i > 0) {
@@ -410,6 +410,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         
     }
 
+    console.log(xValues)
 
     function createChart(chartName, yValues, yLabel, yMin, yMax) {
         new Chart(chartName, {

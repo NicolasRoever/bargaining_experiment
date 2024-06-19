@@ -29,30 +29,30 @@
 
         {% if payoff_group_terminated_by == player.id_in_group %}
 
-            you terminated the negotation.
+            <li>You terminated the negotation.</li>
 
         {% elif payoff_group_terminated_by != player.id_in_group %}
             
-            the bargaining was terminated by the {{ other_role }} after {{ payoff_bargaining_time }} and no deal has been made.
+            <li>The negotiation was terminated by the {{ other_role }}.</li>
 
             
         {% endif %}
 
     {% endif %}
 
-    <li>Total time of negotiation: {{ payoff_bargaining_time }} seconds.</li>
-
-    <li>Total transaction costs {{ payoff_TA_costs }}. </li>
-
-
-    <li>Total payment: {{ player.participant.payoff_plus_participation_fee }} 
-        (including the participation fee of {{ session.participation_fee }}) in {{ payoff_delay }} days.</li>
-
 {% else %}
     
-   <p> No deal was made in the given time frame. </p>
+   <li> No deal was made in the given time frame. </li>
 
 {% endif %}
+
+<li>Total time of negotiation: {{ payoff_bargaining_time }} seconds.</li>
+
+<li>Total transaction costs {{ payoff_TA_costs }}. </li>
+
+
+<li>Total payment: {{ player.participant.payoff_plus_participation_fee }} 
+        (including the participation fee of {{ session.participation_fee }}) in {{ payoff_delay }} days.</li>
 
 
     {{ endblock }}
