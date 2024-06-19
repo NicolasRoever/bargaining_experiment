@@ -133,6 +133,14 @@ def creating_session(subsession):
 
 # PAGES
 
+class WelcomeAndConsent(Page):
+    pass
+
+
+class BargainInstructions(Page):
+    pass
+
+
 class BargainWaitPage(WaitPage):
     @staticmethod
     def after_all_players_arrive(group):
@@ -390,4 +398,9 @@ class FinalResults(Page):
         return player.round_number == C.NUM_ROUNDS
 
 
-page_sequence = [BargainWaitPage, Bargain, RoundResults, FinalResults]
+page_sequence = [#WelcomeAndConsent, 
+                 BargainInstructions,
+                 BargainWaitPage, 
+                 Bargain, 
+                 RoundResults, 
+                 FinalResults]
