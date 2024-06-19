@@ -11,7 +11,7 @@ doc = """
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 10
+    NUM_ROUNDS = 3
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
     TOTAL_BARGAINING_TIME = 5 * 60
