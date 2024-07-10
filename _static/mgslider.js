@@ -127,6 +127,14 @@ mgslider.prototype.change = function (target, omit_hook) {
     document.getElementById(this.id("cur")).innerHTML = this.f2s(value, false);
     document.getElementById(this.id("input")).value = value;
 
+    const button = document.getElementById('btn-offer-slider');
+    console.log(button.classList);
+    if (button.classList.contains('active')) {
+        button.classList.remove('active');
+        // Additional logic to untoggle the button, if necessary
+    }
+
+
     if (this.remember) {
         document.cookie = "mgslider__" + this.field + "=" + value + ";path=/";
     }
@@ -161,6 +169,7 @@ mgslider.prototype.set = function (new_value) {
     document.getElementById(this.id()).value = new_value;
 
     this.change();
+    
 };
 
 mgslider.prototype.recall = function () {

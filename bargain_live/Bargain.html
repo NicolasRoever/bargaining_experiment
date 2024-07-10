@@ -51,51 +51,7 @@ Price Negotiation
         transform: translateX(-50%); /* Center horizontally */
     }
 
-    .button {
-        border: none;
-        color: white;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: block;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: auto;
-    }
 
-    .button.offer {
-        background-color: #4CAF50; /* Green */
-        
-    }
-
-    .button.offer:hover {
-        background-color: #45a049; /* Darker Green */
-    }
-
-    .button.accept {
-        background-color: #2955cc; /* Blue */
-        
-    }
-
-    .button.accept:disabled {
-        background-color: #525452; /* Dark Grey */
-    }
-
-    .button.accept:disabled:hover {
-        background-color: #525452; /* Dark Grey */
-    }
-
-    .button.accept:hover {
-        background-color: #1e3e98; /* Darker Blue */
-    }
-
-    .button.terminate {
-        background-color: #c71616; /* Red */
-    }
-
-    .button.terminate:hover {
-        background-color: #9b0f0f; /* Darker Red */
-    }
 
  
 
@@ -205,8 +161,7 @@ Price Negotiation
             
             <div class="slider-container">
                 <div class="mgslider-wrapper" id="my_slider" style="margin-top: 1cm;"></div>
-
-                <button type="button" class="button offer" id="btn-offer-slider" onclick="sendOffer()">Submit</button>
+                <button type="button" class="btn btn-success btn-lg active" id="btn-offer-slider" data-bs-toggle="button" onclick="sendOffer()">Submit</button>
             </div>
         
         <h5>If the {{ other_role }} accepts your current offer: </h5>
@@ -236,7 +191,7 @@ Price Negotiation
                 <div class="slider-container">
                     <div class="mgslider-wrapper" id="slider_other" style="margin-top: 1cm;"></div>
                 
-                    <button type="button" class="button accept" id="btn-accept" onclick="sendAccept(this)" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
+                    <button type="button" class="btn btn-primary" id="btn-accept" onclick="sendAccept(this)" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
                 </div>
 
                 <h5>If you accept the {{ other_role }}'s offer: </h5>
@@ -285,7 +240,7 @@ Price Negotiation
 
         <h4>Terminate the Negotiation</h4>
 
-        <button type="button" class="button terminate" id="btn-terminate" style="display: block; margin-bottom: 1cm;" onclick="sendTerminate()">Terminate</button>
+        <button type="button" class="btn btn-danger" id="btn-terminate" style="display: block; margin-bottom: 1cm;" onclick="sendTerminate()">Terminate</button>
 
             <h5>If you terminate the negotiation:</h5>
             <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
@@ -316,7 +271,6 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
 
 <script>
-
     $(document).ready(function (event) {
                     my_slider = new mgslider("offer", 0, 10, 0.1);
                     my_slider.f2s = function (val) {
@@ -363,9 +317,10 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         }
     }
     
-
-
     function sendOffer() {
+        const button = document.getElementById('btn-offer-slider');
+        button.classList.add('active');
+        console.log(button.classList)
         liveSend({'type': 'propose', 'amount': my_slider.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
     }
 
