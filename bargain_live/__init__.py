@@ -128,7 +128,7 @@ def creating_session(subsession):
         player.total_delay_list = json.dumps(total_delay_list)
 
     # Set up grouping mechanism of random grouping in each round with fixed roles across rounds
-    subsession.group_randomly(fixed_id_in_group = True)
+    #subsession.group_randomly(fixed_id_in_group = True) # Disable for testing
 
 
 # PAGES

@@ -4,7 +4,7 @@ SESSION_CONFIGS = [
     dict(
     name = "bargain_live",
     app_sequence = ["bargain_live"],
-    num_demo_participants=2,
+    num_demo_participants=6,
     TA_treatment_high = False,
     delay_treatment_high = True,
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
