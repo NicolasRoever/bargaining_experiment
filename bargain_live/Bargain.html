@@ -96,7 +96,7 @@ Price Negotiation
     .two_columns_container {
         display: flex; 
         justify-content: space-between; 
-        margin-top: 0.25cm; 
+        margin-top:15px; 
         width: 100%;
     }
 
@@ -163,8 +163,8 @@ Price Negotiation
         
         <h5>If the {{ other_role }} accepts your current offer: </h5>
 
-            <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts_live"> No offer yet. </div></p>
-            <p style="margin-top:3cm;display: inline;">{{ other_role }}'s payoff: 
+            <p style="margin-top:0.25cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts_live"> No offer yet. </div></p>
+            <p style="margin-top:0.25cm;display: inline;">{{ other_role }}'s payoff: 
                 {% if information_asymmetry == "None" or information_asymmetry != other_role %}
 
                     ???
@@ -182,11 +182,11 @@ Price Negotiation
 
     <div style="background-color: #f2f2f2; padding: 15px; margin-top: 1cm;">
             
-        <h4 style="display:inline" style="margin-top: 0.5cm;">{{ other_role }}'s current submitted price offer:</h4>
+        <h4 style="display:inline" style="margin-top: 0.24cm;">{{ other_role }}'s current submitted price offer:</h4>
                 <div style="display:inline; margin-left: 0.5cm; margin-top: 0.5cm;" id="other-proposal"> No offer yet. </div>
 
                 <div class="slider-container">
-                    <div class="mgslider-wrapper" id="slider_other" style="margin-top: 1cm;"></div>
+                    <div class="mgslider-wrapper" id="slider_other" style="margin-top: 2cm;"></div>
                 
                     <button type="button" class="btn btn-primary" id="btn-accept" onclick="sendAccept(this)" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
                 </div>
@@ -233,11 +233,11 @@ Price Negotiation
     <div class="three_columns_left" style="background-color: #ffffff; flex: 0.5">
 
     </div>
-    <div class="three_columns_middle" style="padding: 15px; background-color: #f2f2f2; flex: 1; margin-top: 1cm;">
+    <div class="three_columns_middle" style="padding: 15px; background-color: #f2f2f2; flex: 1; margin-top: 0.25cm;">
 
         <h4>Terminate the Negotiation</h4>
 
-        <button type="button" class="btn btn-danger" id="btn-terminate" style="display: block; margin-bottom: 1cm;" onclick="sendTerminate()">Terminate</button>
+        <button type="button" class="btn btn-danger" id="btn-terminate" style="display: block; margin-bottom: 0.25cm;" onclick="sendTerminate()">Terminate</button>
 
             <h5>If you terminate the negotiation:</h5>
             <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
