@@ -14,7 +14,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 3
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
-    TOTAL_BARGAINING_TIME = 2 * 60
+    TOTAL_BARGAINING_TIME = 10 * 60
 
 
 class Subsession(BaseSubsession):
