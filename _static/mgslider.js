@@ -145,6 +145,9 @@ mgslider.prototype.change = function (target, omit_hook) {
 };
 
 mgslider.prototype.reveal = function (event) {
+    var slider = document.getElementById('my_slider');
+    slider.style.marginBottom = '0px';
+
     var now;
 
     if (event !== undefined && typeof event.offsetX !== undefined) {
