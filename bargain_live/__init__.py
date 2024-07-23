@@ -14,7 +14,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 3
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
-    TOTAL_BARGAINING_TIME = 10 * 60
+    TOTAL_BARGAINING_TIME = 2 * 60
 
 
 class Subsession(BaseSubsession):
@@ -128,7 +128,9 @@ def creating_session(subsession):
         player.total_delay_list = json.dumps(total_delay_list)
 
     # Set up grouping mechanism of random grouping in each round with fixed roles across rounds
-    #subsession.group_randomly(fixed_id_in_group = True) # Disable for testing
+    ###### Disable for testing ######
+    #subsession.group_randomly(fixed_id_in_group = True) 
+    
 
 
 # PAGES
