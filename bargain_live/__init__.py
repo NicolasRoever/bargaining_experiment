@@ -2,6 +2,7 @@ from otree.api import *
 import json
 import random
 import time
+from bargain_live.bargaining import calculate_total_delay, calculate_total_transaction_cost
 
 
 doc = """
@@ -16,9 +17,6 @@ class C(BaseConstants):
     BUYER_ROLE = 'Buyer'
     TOTAL_BARGAINING_TIME = 2 * 60
 
-
-class Subsession(BaseSubsession):
-    pass
 
 
 class Group(BaseGroup):
@@ -37,6 +35,8 @@ class Group(BaseGroup):
 
     bargain_start_time = models.FloatField()
     bargain_duration = models.IntegerField()
+
+    __table_args__ = {'extend_existing': True} # I need this for pytest to work
 
 
 class Player(BasePlayer):
@@ -73,6 +73,7 @@ class Player(BasePlayer):
 # FUNCTIONS
 def creating_session(subsession):
     for player in subsession.get_players():
+
         # Randomly draw valuations in each round
         if player.role == "Seller":
             valuation_list = list(range(0, 501, 10))
@@ -80,51 +81,19 @@ def creating_session(subsession):
             valuation_list = list(range(1000, 1501, 10))
         player.valuation = random.choice(valuation_list)
 
-
-        # Set transaction costs treatment
-        if player.group.subsession.session.config['TA_treatment_high'] == True:
-            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  100
-            player.decrease_TA_costs_per_second = 1
-        elif player.group.subsession.session.config['TA_treatment_high'] == False:
-            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  50
-            player.decrease_TA_costs_per_second = 1
-
-        player.current_payoff_terminate = -player.current_TA_costs
-
         # Set payment delay treatment
         if player.group.subsession.session.config['delay_treatment_high'] == True:
-            player.additional_delay = 2
+            player.delay_multiplier = 1/2
         elif player.group.subsession.session.config['delay_treatment_high'] == False:
-            player.additional_delay = 1
-
-    current_costs_list = [player.current_TA_costs]
-    total_costs = player.current_TA_costs
-    decrease_TA_costs_per_second = player.decrease_TA_costs_per_second
-
-    total_delay = 0
-    total_costs_list = []
-    total_delay_list = []
+            player.delay_multiplier = 3.5
     
-    # Initiate list of total transaction costs
-    for i in range(C.TOTAL_BARGAINING_TIME):
-        if (i > 0):
-            updated_costs = current_costs_list[i] - decrease_TA_costs_per_second 
-            if updated_costs < 0:
-                updated_costs = 0
-            
-            total_costs += updated_costs
-            total_delay += player.additional_delay
-        else:
-            updated_costs = current_costs_list[i]
-
-        current_costs_list.append(updated_costs)            
-        total_costs_list.append(total_costs)
-        total_delay_list.append(total_delay)
-    #print(total_costs_list)
+    total_delay_list = calculate_total_delay(player, C)
+    total_costs_list = calculate_total_transaction_cost(
+        TA_treatment_high = player.group.subsession.session.config['TA_treatment_high'], 
+        total_bargaining_time=C.TOTAL_BARGAINING_TIME)
 
     for player in subsession.get_players():
         player.total_costs_list = json.dumps(total_costs_list)
-        player.current_costs_list = json.dumps(current_costs_list)
         player.total_delay_list = json.dumps(total_delay_list)
 
     # Set up grouping mechanism of random grouping in each round with fixed roles across rounds
