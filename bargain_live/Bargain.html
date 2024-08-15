@@ -277,6 +277,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeElements();  
+    initializeSliders();
 });
 
 
@@ -289,28 +290,6 @@ my_slider.onclick = function() {
         SliderClicked = true;
     }
 }
-
-
-$(document).ready(function (event) {
-                my_slider = new mgslider("offer", 0, 10, 0.1);
-                my_slider.f2s = function (val) {
-                    return '$' + val.toFixed(2);
-                }
-
-                my_slider.print(document.getElementById("my_slider"));
-                //my_slider.recall(); // Optional line to remember value across errors
-
-                slider_other = new mgslider("other_offer", 0, 10, 0.1);
-                slider_other.f2s = function (val) {
-                    return '$' + val.toFixed(2);
-                }
-
-                slider_other.print(document.getElementById("slider_other"));
-                slider_other.set(0);
-                slider_other.disable();
-                //slider_other.recall(); // Optional line to remember value across errors
-
-            });
 
 function sendOffer() {
     const button = document.getElementById('btn-offer-slider');
