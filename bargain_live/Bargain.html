@@ -298,13 +298,6 @@ document.getElementById('btn-offer-slider').addEventListener('click', function()
     });
 });
 
-function sendOffer() {
-    const button = document.getElementById('btn-offer-slider');
-    button.classList.add('active');
-    console.log(button.classList)
-    liveSend({'type': 'propose', 'amount': my_slider.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
-}
-
 function sendAccept() {
     liveSend({'type': 'accept', 'amount': otherProposal, 'acceptance_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'accepted_by': js_vars.my_id})
 }
