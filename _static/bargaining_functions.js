@@ -22,6 +22,23 @@ function initializeElements() {
     });
 }
 
+// This function is called when the player clicks the "Submit" button to make an offer. 
+function sendOffer({ buttonId, slider, startTime, myId }) {
+    const button = document.getElementById(buttonId);
+    button.classList.add('active');
+
+    const offerDetails = {
+        type: 'propose',
+        amount: slider.value(),
+        offer_time: Math.floor(Date.now() / 1000 - startTime),
+        latest_proposal_by: myId
+    };
+
+    liveSend(offerDetails);
+}
+
+module.exports = sendOffer; // Export the function for testing
+
 // Function to initialize the sliders
 function initializeSliders() {
     // Initialize the first slider (my_slider)
