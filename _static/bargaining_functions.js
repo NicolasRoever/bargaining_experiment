@@ -22,23 +22,6 @@ function initializeElements() {
     });
 }
 
-// This function is called when the player clicks the "Submit" button to make an offer. 
-function sendOffer({ buttonId, slider, startTime, myId }) {
-    const button = document.getElementById(buttonId);
-    button.classList.add('active');
-
-    const offerDetails = {
-        type: 'propose',
-        amount: slider.value(),
-        offer_time: Math.floor(Date.now() / 1000 - startTime),
-        latest_proposal_by: myId
-    };
-
-    liveSend(offerDetails);
-}
-
-module.exports = sendOffer; // Export the function for testing
-
 // Function to initialize the sliders
 function initializeSliders() {
     // Initialize the first slider (my_slider)
@@ -61,6 +44,32 @@ function initializeSliders() {
     // Optional: Recall the value across errors
     // slider_other.recall();
 }
+
+
+// This function is called when the player clicks the "Submit" button to make an offer. 
+function sendOffer({ buttonId, slider, startTime, myId }) {
+    const button = document.getElementById(buttonId);
+    button.classList.add('active');
+
+    const offerDetails = {
+        type: 'propose',
+        amount: slider.value(),
+        offer_time: Math.floor(Date.now() / 1000 - startTime),
+        latest_proposal_by: myId
+    };
+
+    liveSend(offerDetails);
+}
+
+function sendAccept({ otherProposal, startTime, myId }) {
+    liveSend({
+        type: 'accept',
+        amount: otherProposal,
+        acceptance_time: Math.floor(Date.now() / 1000 - startTime),
+        accepted_by: myId
+    });
+}
+
 
 
 function createChart(chartName, yValues, yLabel, yMin, yMax) {
@@ -114,3 +123,6 @@ options: {
 }
 });
 }
+
+
+module.exports = {  sendAccept, sendOffer } ; // Export the function for testing
