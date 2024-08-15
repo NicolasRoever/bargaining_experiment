@@ -10,6 +10,16 @@ SESSION_CONFIGS = [
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
     ),
+    dict(
+    name = "bargain_live_testing",
+    app_sequence = ["bargain_live"],
+    num_demo_participants=6,
+    TA_treatment_high = False,
+    delay_treatment_high = True,
+    information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
+    treatment_communication = False,
+    )
+    
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

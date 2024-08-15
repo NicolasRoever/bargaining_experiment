@@ -8,6 +8,8 @@ doc = """
 """
 
 
+#-----------------------------------------------------------------------------------------------
+# Global Classes
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
@@ -67,9 +69,7 @@ class Player(BasePlayer):
     total_costs_list = models.StringField()
     total_delay_list = models.StringField()
 
-    
-
-    
+#-----------------------------------------------------------------------------------------------   
 # FUNCTIONS
 def creating_session(subsession):
     for player in subsession.get_players():
@@ -132,7 +132,7 @@ def creating_session(subsession):
     #subsession.group_randomly(fixed_id_in_group = True) 
     
 
-
+#-----------------------------------------------------------------------------------------------
 # PAGES
 
 class WelcomeAndConsent(Page):
