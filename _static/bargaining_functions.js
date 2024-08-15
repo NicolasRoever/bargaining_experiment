@@ -1,7 +1,6 @@
 function sum(a, b) {
     return a + b;
   }
-  module.exports = sum;
 
 
 
@@ -15,7 +14,12 @@ function initializeElements() {
     window.otherProposal = null;
     window.isFirstClick = true;
     window.AlreadyRefreshed = false;
-    window.SliderClicked = false
+    window.SliderClicked = false;
+    // Initialize the USDollar formatter
+    window.USDollar = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
 }
 
 // Function to initialize the sliders
@@ -40,6 +44,7 @@ function initializeSliders() {
     // Optional: Recall the value across errors
     // slider_other.recall();
 }
+
 
 function createChart(chartName, yValues, yLabel, yMin, yMax) {
 new Chart(chartName, {

@@ -273,7 +273,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 <script>
 
 
-// Initialize global variables
+// Initialize global elements after HTML is loaded
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeElements();  
@@ -281,10 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
 // Reveal payoff if other player accepts my offer once the slider is clicked for the first time
-
-
 my_slider.onclick = function() {
     if(!SliderClicked) {
         SliderClicked = true;
@@ -305,11 +302,6 @@ function sendAccept() {
 function sendTerminate() {
     liveSend({'type': 'terminate', 'termination_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'terminated_by': js_vars.my_id})
 }
-
-let USDollar = new Intl.NumberFormat('en-US', {
-style: 'currency',
-currency: 'USD',
-});
 
 
 xValues = [];
