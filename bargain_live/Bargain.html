@@ -271,238 +271,234 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
 
 <script>
-    $(document).ready(function (event) {
-                    my_slider = new mgslider("offer", 0, 10, 0.1);
-                    my_slider.f2s = function (val) {
-                        return '$' + val.toFixed(2);
-                    }
-
-                    my_slider.print(document.getElementById("my_slider"));
-                    //my_slider.recall(); // Optional line to remember value across errors
-
-                    slider_other = new mgslider("other_offer", 0, 10, 0.1);
-                    slider_other.f2s = function (val) {
-                        return '$' + val.toFixed(2);
-                    }
-
-                    slider_other.print(document.getElementById("slider_other"));
-                    slider_other.set(0);
-                    slider_other.disable();
-                    //slider_other.recall(); // Optional line to remember value across errors
-
-                });
-   
-    let btnOffer = document.getElementById('btn-offer');
-    let btnSliderSubmit = document.getElementById('btn-offer-slider');
-    
-    let msgOtherProposal = document.getElementById('other-proposal');
-    let msgMyProposal = document.getElementById('my-proposal');
-    
-    let btnAccept = document.getElementById('btn-accept');
-    let msgMyPayoffAccept = document.getElementById('my_payoff_accept')
-
-    let otherProposal;
-
-    let isFirstClick = true;
-
-    let AlreadyRefreshed = false;
 
 
-    // Reveal payoff if other player accepts my offer once the slider is clicked for the first time
-    var SliderClicked = false
+// Initialize global variables
 
-    my_slider.onclick = function() {
-        if(!SliderClicked) {
-            SliderClicked = true;
+document.addEventListener('DOMContentLoaded', function() {
+    initializeElements();  
+});
+
+
+
+// Reveal payoff if other player accepts my offer once the slider is clicked for the first time
+
+
+my_slider.onclick = function() {
+    if(!SliderClicked) {
+        SliderClicked = true;
+    }
+}
+
+
+$(document).ready(function (event) {
+                my_slider = new mgslider("offer", 0, 10, 0.1);
+                my_slider.f2s = function (val) {
+                    return '$' + val.toFixed(2);
+                }
+
+                my_slider.print(document.getElementById("my_slider"));
+                //my_slider.recall(); // Optional line to remember value across errors
+
+                slider_other = new mgslider("other_offer", 0, 10, 0.1);
+                slider_other.f2s = function (val) {
+                    return '$' + val.toFixed(2);
+                }
+
+                slider_other.print(document.getElementById("slider_other"));
+                slider_other.set(0);
+                slider_other.disable();
+                //slider_other.recall(); // Optional line to remember value across errors
+
+            });
+
+function sendOffer() {
+    const button = document.getElementById('btn-offer-slider');
+    button.classList.add('active');
+    console.log(button.classList)
+    liveSend({'type': 'propose', 'amount': my_slider.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
+}
+
+function sendAccept() {
+    liveSend({'type': 'accept', 'amount': otherProposal, 'acceptance_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'accepted_by': js_vars.my_id})
+}
+
+function sendTerminate() {
+    liveSend({'type': 'terminate', 'termination_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'terminated_by': js_vars.my_id})
+}
+
+let USDollar = new Intl.NumberFormat('en-US', {
+style: 'currency',
+currency: 'USD',
+});
+
+
+xValues = [];
+yValues_cost_complete = [];
+yValues_delay_complete = [];
+
+current_costs = js_vars.initial_TA_costs;
+total_costs = current_costs;
+
+additional_delay = js_vars.additional_delay
+total_delay = 0;
+
+
+for (let i = 0; i <= js_vars.maximum_bargain_time; i++) {
+    xValues.push(i);
+
+    if (i > 0) {
+        current_costs = current_costs - js_vars.decrease_TA_costs_per_second
+        if (current_costs < 0) {
+            current_costs = 0;
         }
+        total_costs += current_costs;
+        total_delay += additional_delay;
     }
+    yValues_cost_complete.push(total_costs/100);
+    yValues_delay_complete.push(total_delay)
     
-    function sendOffer() {
-        const button = document.getElementById('btn-offer-slider');
-        button.classList.add('active');
-        console.log(button.classList)
-        liveSend({'type': 'propose', 'amount': my_slider.value(), 'offer_time': Math.floor(Date.now()/1000 - js_vars.start_time),'latest_proposal_by': js_vars.my_id})
+}
+
+console.log(xValues)
+
+
+
+function liveRecv(data) {
+
+
+    if ('bargaining_time_elapsed' in data) {
+        document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed;
+
+        const yValues_cost = yValues_cost_complete.slice(0, parseInt(data.bargaining_time_elapsed) + 1);
+        const yValues_delay = yValues_delay_complete.slice(0, parseInt(data.bargaining_time_elapsed + 1));
+
+        createChart("TA_cost_chart", yValues_cost, "Total Costs ($)", 0, ( Math.ceil( yValues_cost_complete[yValues_cost_complete.length - 1] / 10 )) * 10 );
+        createChart("delay_chart", yValues_delay, "Total Delay (Days)", 0, ( Math.ceil( yValues_delay_complete[yValues_delay_complete.length - 1] / 10 )) * 10);
     }
 
-    function sendAccept() {
-        liveSend({'type': 'accept', 'amount': otherProposal, 'acceptance_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'accepted_by': js_vars.my_id})
+    if ('current_TA_costs' in data) {
+        document.getElementById('TA_costs').innerHTML = USDollar.format(data.current_TA_costs/100)
     }
 
-    function sendTerminate() {
-        liveSend({'type': 'terminate', 'termination_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'terminated_by': js_vars.my_id})
-    }
+    if ('cumulated_TA_costs' in data) {
+        document.getElementById('cumulated_TA_costs').innerHTML = USDollar.format(data.cumulated_TA_costs/100);
 
-    let USDollar = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    });
+        document.getElementById('my_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
 
-
-    xValues = [];
-    yValues_cost_complete = [];
-    yValues_delay_complete = [];
-
-    current_costs = js_vars.initial_TA_costs;
-    total_costs = current_costs;
-
-    additional_delay = js_vars.additional_delay
-    total_delay = 0;
-    
-
-    for (let i = 0; i <= js_vars.maximum_bargain_time; i++) {
-        xValues.push(i);
-
-        if (i > 0) {
-            current_costs = current_costs - js_vars.decrease_TA_costs_per_second
-            if (current_costs < 0) {
-                current_costs = 0;
-            }
-            total_costs += current_costs;
-            total_delay += additional_delay;
+        if (js_vars.information_asymmetry == js_vars.other_role) {
+            document.getElementById('other_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
+        } else {
+            document.getElementById('other_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
         }
-        yValues_cost_complete.push(total_costs/100);
-        yValues_delay_complete.push(total_delay)
+        
+
+        document.getElementById('payment_delay').innerHTML = data.payment_delay
         
     }
 
-    console.log(xValues)
+    if ('current_proposals' in data) {
 
+        for (let [id_in_group, proposal] of data.current_proposals) {
 
-    
-    function liveRecv(data) {
+            if (id_in_group === js_vars.my_id) {
+                msgMyProposal.innerHTML = USDollar.format(proposal/100);
 
+                if (!AlreadyRefreshed) {
+                    my_slider.set(proposal/100);
+                    AlreadyRefreshed = true;
+                    SliderClicked = true;
+                }
+        
+            } else if (id_in_group === js_vars.other_id) {
+                msgOtherProposal.innerHTML = USDollar.format(proposal/100);
+                otherProposal = proposal;
+                btnAccept.disabled = false;
+                slider_other.set(proposal/100);
+                document.getElementById(slider_other.id("cur")).innerHTML = slider_other.f2s(proposal/100, false);
 
-        if ('bargaining_time_elapsed' in data) {
-            document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed;
+                if (js_vars.my_role === "Buyer") {
+                    msgMyPayoffAccept.innerHTML = USDollar.format((js_vars.my_valuation - proposal - data.cumulated_TA_costs)/100);
+                    
+                    if (js_vars.information_asymmetry === js_vars.other_role) {
+                        document.getElementById('other_payoff_accept').innerHTML = USDollar.format((proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100);
+                    }
 
-            const yValues_cost = yValues_cost_complete.slice(0, parseInt(data.bargaining_time_elapsed) + 1);
-            const yValues_delay = yValues_delay_complete.slice(0, parseInt(data.bargaining_time_elapsed + 1));
+                } else if (js_vars.my_role === "Seller") {
+                    msgMyPayoffAccept.innerHTML = USDollar.format((proposal - js_vars.my_valuation - data.cumulated_TA_costs)/100);
+                    
+                    if (js_vars.information_asymmetry === js_vars.other_role) {
+                        document.getElementById('other_payoff_accept').innerHTML = USDollar.format((js_vars.other_valuation - proposal - data.cumulated_TA_costs)/100);
+                    }
+                }
 
-            createChart("TA_cost_chart", yValues_cost, "Total Costs ($)", 0, ( Math.ceil( yValues_cost_complete[yValues_cost_complete.length - 1] / 10 )) * 10 );
-            createChart("delay_chart", yValues_delay, "Total Delay (Days)", 0, ( Math.ceil( yValues_delay_complete[yValues_delay_complete.length - 1] / 10 )) * 10);
-        }
-
-        if ('current_TA_costs' in data) {
-            document.getElementById('TA_costs').innerHTML = USDollar.format(data.current_TA_costs/100)
-        }
-
-        if ('cumulated_TA_costs' in data) {
-            document.getElementById('cumulated_TA_costs').innerHTML = USDollar.format(data.cumulated_TA_costs/100);
-
-            document.getElementById('my_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
-
-            if (js_vars.information_asymmetry == js_vars.other_role) {
-                document.getElementById('other_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
-            } else {
-                document.getElementById('other_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
             }
             
-
-            document.getElementById('payment_delay').innerHTML = data.payment_delay
-            
         }
-
-        if ('current_proposals' in data) {
+    
+        
+        
+        if (data['latest_proposal_by'] === js_vars.my_id) {
+            //btnSliderSubmit.disabled = true;
+            //my_slider.submit();
+            //my_slider.disable();
+            slider_other.disable();
 
             for (let [id_in_group, proposal] of data.current_proposals) {
-
-                if (id_in_group === js_vars.my_id) {
-                    msgMyProposal.innerHTML = USDollar.format(proposal/100);
-
-                    if (!AlreadyRefreshed) {
-                        my_slider.set(proposal/100);
-                        AlreadyRefreshed = true;
-                        SliderClicked = true;
-                    }
-            
-                } else if (id_in_group === js_vars.other_id) {
-                    msgOtherProposal.innerHTML = USDollar.format(proposal/100);
-                    otherProposal = proposal;
-                    btnAccept.disabled = false;
-                    slider_other.set(proposal/100);
-                    document.getElementById(slider_other.id("cur")).innerHTML = slider_other.f2s(proposal/100, false);
-
-                    if (js_vars.my_role === "Buyer") {
-                        msgMyPayoffAccept.innerHTML = USDollar.format((js_vars.my_valuation - proposal - data.cumulated_TA_costs)/100);
-                        
-                        if (js_vars.information_asymmetry === js_vars.other_role) {
-                            document.getElementById('other_payoff_accept').innerHTML = USDollar.format((proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100);
-                        }
-
-                    } else if (js_vars.my_role === "Seller") {
-                        msgMyPayoffAccept.innerHTML = USDollar.format((proposal - js_vars.my_valuation - data.cumulated_TA_costs)/100);
-                        
-                        if (js_vars.information_asymmetry === js_vars.other_role) {
-                            document.getElementById('other_payoff_accept').innerHTML = USDollar.format((js_vars.other_valuation - proposal - data.cumulated_TA_costs)/100);
-                        }
-                    }
-
-                }
-                
-            }
-        
-            
-            
-            if (data['latest_proposal_by'] === js_vars.my_id) {
-                //btnSliderSubmit.disabled = true;
-                //my_slider.submit();
-                //my_slider.disable();
-                slider_other.disable();
-
-                for (let [id_in_group, proposal] of data.current_proposals) {
-                    if(id_in_group === js_vars.my_id) {
-                        //my_slider.set(proposal/100);
-                        //document.getElementById(my_slider.id("cur")).innerHTML = my_slider.f2s(proposal/100, false);
-                    }
-                }
-                
-            } else if (data['latest_proposal_by'] === js_vars.other_id) {
-                btnSliderSubmit.disabled = false;
-                //my_slider.enable();
-                slider_other.disable();
-                
-
-            }
-        
-        }
-
-        if (SliderClicked) {
-            //console.log('Slider is clicked for', js_vars.my_id)
-            if (js_vars.my_role === "Buyer") {
-                document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
-                
-                if (js_vars.information_asymmetry === js_vars.other_role) {
-                    document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.other_valuation - data.cumulated_TA_costs)/100);
-                }    
-
-            } else if (js_vars.my_role === "Seller") {
-                document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100);
-                
-                if (js_vars.information_asymmetry === js_vars.other_role) {
-                    document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.other_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
+                if(id_in_group === js_vars.my_id) {
+                    //my_slider.set(proposal/100);
+                    //document.getElementById(my_slider.id("cur")).innerHTML = my_slider.f2s(proposal/100, false);
                 }
             }
-         
-        }
-        
+            
+        } else if (data['latest_proposal_by'] === js_vars.other_id) {
+            btnSliderSubmit.disabled = false;
+            //my_slider.enable();
+            slider_other.disable();
+            
 
-        if ('finished' in data) {
-            document.getElementById('form').submit();
         }
-
+    
     }
 
-    // Update live page every second
-    setInterval(
-        function () {
-            liveSend({})
-        },
-        1000
-    )
+    if (SliderClicked) {
+        //console.log('Slider is clicked for', js_vars.my_id)
+        if (js_vars.my_role === "Buyer") {
+            document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
+            
+            if (js_vars.information_asymmetry === js_vars.other_role) {
+                document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.other_valuation - data.cumulated_TA_costs)/100);
+            }    
 
-    document.addEventListener('DOMContentLoaded', (event) => {
-        liveSend({});
-    });
+        } else if (js_vars.my_role === "Seller") {
+            document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100);
+            
+            if (js_vars.information_asymmetry === js_vars.other_role) {
+                document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.other_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
+            }
+        }
+        
+    }
+    
+
+    if ('finished' in data) {
+        document.getElementById('form').submit();
+    }
+
+}
+
+
+// Update live page every second
+setInterval(
+    function () {
+        liveSend({})
+    },
+    1000
+)
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    liveSend({});
+});
 
 </script>
 

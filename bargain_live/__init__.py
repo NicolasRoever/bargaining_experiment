@@ -329,6 +329,11 @@ class Bargain(Page):
                 'bargaining_time_elapsed':bargaining_time_elapsed,
                 }
                 }
+    
+
+
+
+
 
     @staticmethod
     def before_next_page(player, timeout_happened):
@@ -374,6 +379,8 @@ class Bargain(Page):
         group = player.group
         deal_price = group.field_maybe_none('deal_price')
         return deal_price is None
+    
+    
 
 
 class RoundResults(Page):
