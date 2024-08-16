@@ -62,6 +62,7 @@ function sendOffer({ buttonId, slider, startTime, myId }) {
 }
 
 function sendAccept({ otherProposal, startTime, myId }) {
+    console.log("Send Accept was Called");
     liveSend({
         type: 'accept',
         amount: otherProposal,

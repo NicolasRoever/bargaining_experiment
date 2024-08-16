@@ -189,7 +189,7 @@ Price Negotiation
                 <div class="slider-container">
                     <div class="mgslider-wrapper" id="slider_other" style="margin-top: 2cm;"></div>
                 
-                    <button type="button" class="btn btn-primary btn-lg" id="btn-accept" onclick="sendAccept(this)" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
+                    <button type="button" class="btn btn-primary btn-lg" id="btn-accept" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
                 </div>
 
                 <h5>If you accept the {{ other_role }}'s offer: </h5>
@@ -298,9 +298,16 @@ document.getElementById('btn-offer-slider').addEventListener('click', function()
     });
 });
 
-function sendAccept() {
-    liveSend({'type': 'accept', 'amount': otherProposal, 'acceptance_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'accepted_by': js_vars.my_id})
-}
+// Send offer information to server if submit button is clicked
+document.getElementById('btn-accept').addEventListener('click', function() {
+    sendAccept({
+        otherProposal: otherProposal,
+        startTime: js_vars.start_time,
+        myId: js_vars.my_id
+    });
+});
+
+
 
 function sendTerminate() {
     liveSend({'type': 'terminate', 'termination_time': Math.floor(Date.now()/1000 - js_vars.start_time), 'terminated_by': js_vars.my_id})
