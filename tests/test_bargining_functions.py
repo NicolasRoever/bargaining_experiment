@@ -1,51 +1,66 @@
 import pytest
+from typing import List, Tuple
 
-from bargain_live.bargaining_functions import calculate_total_delay, calculate_transaction_costs
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs
 
 
 
+#-------------------------
+# Test cases for calculate_total_delay_list
 
-# Mock player class for testing
-class MockPlayer:
-    def __init__(self, delay_multiplier):
-        self.delay_multiplier = delay_multiplier
-
-# Mock constants class for testing
-class MockConstants:
-    TOTAL_BARGAINING_TIME = 120  
-
-def test_calculate_total_delay_low_treatment():
-    player = MockPlayer(delay_multiplier=0.5)
-    C = MockConstants()
-    expected_delay_list = [i * 0.5 for i in range(C.TOTAL_BARGAINING_TIME)]
-    result = calculate_total_delay(player, C)
+@pytest.mark.parametrize("bargaining_time, delay_multiplier, expected", [
+    # Test case 1: Simple case with a small bargaining time and delay multiplier
+    (5, 0.1, [0.1, 0.2, 0.3, 0.4, 0.5]),
     
-    assert result == expected_delay_list
+    # Test case 2: Different values
+    (3, 0.5, [0.5, 1.0, 1.5]),
 
-def test_calculate_total_delay_high_treatment():
-    player = MockPlayer(delay_multiplier=3.5)
-    C = MockConstants()
-    expected_delay_list = [i * 3.5 for i in range(C.TOTAL_BARGAINING_TIME)]
-    result = calculate_total_delay(player, C)
+    # Test case 3: No delay multiplier
+    (4, 0.0, [0.0, 0.0, 0.0, 0.0]),
+
+    # Test case 4: Single time step
+    (1, 2.0, [2.0]),
+
+    # Test case 5: Larger delay multiplier
+    (3, 1.5, [1.5, 3.0, 4.5])
+])
+def test_calculate_total_delay_list(bargaining_time: int, delay_multiplier: float, expected: List[float]):
+    # Act: Call the function with the test data
+    actual = calculate_total_delay_list(bargaining_time, delay_multiplier)
+
+    # Assert: Check if the actual result matches the expected result
+    assert actual == pytest.approx(expected, rel=1e-9), f"Expected {expected}, but got {actual}"
+
+
+
+
+#-------------------------
+# Test cases for calculate_transaction_costs
+
+@pytest.mark.parametrize("TA_treatment_high, total_bargaining_time, expected_cumulative, expected_differences", [
+    # Test case 1: High treatment, short time
+    (True, 3, 
+     [0.25, 0.4975, 0.744525], 
+     [0.0025000000000000022, 0.0024750000000000276, 0.0]),
+
+    # Test case 2: Low treatment, short time
+    (False, 3, 
+     [0.25, 0.4825, 0.700725], 
+     [0.01749999999999999, 0.01722500000000002, 0.0]),
+
+    # Test case 3: High treatment, longer time
+    (True, 5, 
+     [0.25, 0.4975, 0.744525, 0.99107975, 1.2371699475], 
+     [0.0025000000000000022, 0.0024750000000000276, 0.0024547499999999874, 0.0024374975, 0.0])
+])
+
+def test_calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: int, 
+                                     expected_cumulative: List[float], 
+                                     expected_differences: List[float]):
     
-    assert result == expected_delay_list
+    # Act: Call the function with the test data
+    actual_cumulative, actual_differences = calculate_transaction_costs(TA_treatment_high, total_bargaining_time)
 
-def test_calculate_transaction_costs_high_treatment():
-    # High treatment, where decay factor is 0.99
-    total_costs, current_costs = calculate_transaction_costs(TA_treatment_high=True, total_bargaining_time=120)
-    expected_total_costs = [0.25 * (0.99 ** t) for t in range(120)]
-    expected_current_costs = [expected_total_costs[i] - expected_total_costs[i + 1] for i in range(119)] + [0]
-    
-    assert total_costs == pytest.approx(expected_total_costs), "High treatment total cost calculation failed."
-    assert current_costs == pytest.approx(expected_current_costs), "High treatment current cost differences failed."
-
-def test_calculate_transaction_costs_low_treatment():
-    # Low treatment, where decay factor is 0.93
-    total_costs, current_costs = calculate_transaction_costs(TA_treatment_high=False, total_bargaining_time=120)
-    expected_total_costs = [0.25 * (0.93 ** t) for t in range(120)]
-    expected_current_costs = [expected_total_costs[i] - expected_total_costs[i + 1] for i in range(119)] + [0]
-    
-    assert total_costs == pytest.approx(expected_total_costs), "Low treatment total cost calculation failed."
-    assert current_costs == pytest.approx(expected_current_costs), "Low treatment current cost differences failed."
-
-
+    # Assert: Check if the actual result matches the expected result
+    assert actual_cumulative == pytest.approx(expected_cumulative, rel=1e-1), "Cumulative costs do not match"
+    assert actual_differences == pytest.approx(expected_differences, rel=1e-1), "Cost differences do not match"

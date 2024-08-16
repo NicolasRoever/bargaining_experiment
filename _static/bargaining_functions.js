@@ -83,9 +83,6 @@ function sendTerminate({ startTime, myId }) {
 
 
 
-
-
-
 function createChart(chartName, yValues, yLabel, yMin, yMax) {
 new Chart(chartName, {
 type: "line",
