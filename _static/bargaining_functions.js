@@ -1,6 +1,7 @@
-function sum(a, b) {
-    return a + b;
-  }
+
+
+
+
 
 
 
@@ -83,57 +84,60 @@ function sendTerminate({ startTime, myId }) {
 
 
 
-function createChart(chartName, yValues, yLabel, yMin, yMax) {
-new Chart(chartName, {
-type: "line",
-data: {
-    labels: xValues,
-    datasets: [{
-        fill: false,
-        lineTension: 0,
-        backgroundColor: "rgba(0,0,255,1.0)",
-        borderColor: "black",
-        borderWidth: 1.5,
-        data: yValues, 
-        step: true,
-        fill: false,
-        pointRadius: 0,
-    }],
-},
-options: {
-    //responsive: true, 
-    animation: { duration: 0 },
-    legend: { display: false },
-    scales: {
-        yAxes: [{
-            ticks: {
-                min: yMin, 
-                max: yMax
+function createChart(chartName, xValues, yValues, yLabel, yMin, yMax) {
+    // Create a new dataset that matches the length of yValues with the xValues
+    const limitedData = yValues.map((value, index) => ({
+        x: xValues[index], 
+        y: value
+    }));
+
+    new Chart(chartName, {
+        type: "line",
+        data: {
+            labels: xValues,
+            datasets: [{
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "rgba(0,0,255,1.0)",
+                borderColor: "black",
+                borderWidth: 1.5,
+                data: limitedData,  // Use the mapped data
+                steppedLine: true,
+                pointRadius: 0,
+            }],
+        },
+        options: {
+            animation: { duration: 0 },
+            legend: { display: false },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: yMin, 
+                        max: yMax
+                    },
+                    scaleLabel: {
+                        display: true, 
+                        labelString: yLabel,
+                    },
+                }],
+                xAxes: [{
+                    type: 'category',
+                    ticks: {
+                        min: 0, 
+                        max: xValues.length - 1,  // Keep the full x-axis
+                    },
+                    scaleLabel: {
+                        display: true, 
+                        labelString: "Seconds passed",
+                    },
+                }]
             },
-            scaleLabel: {
-                display: true, 
-                labelString: yLabel,
-            },
-        }],
-        xAxes: [{
-            type: 'category',
-            ticks: {
-                //beginAtZero: true,
-                //stepSize: 20,
-                min: 0, 
-                max: xValues.length,
-            },
-            scaleLabel: {
-                display: true, 
-                labelString: "Seconds passed",
-            },
-        }]
-    },
-    maintainAspectRatio: true,
-    aspectRatio: 1,
-}
-});
+            maintainAspectRatio: true,
+            aspectRatio: 1,
+        }
+    });
 }
 
 
-module.exports = {  sendAccept, sendOffer, sendTerminate } ; // Export the function for testing
+
+module.exports = {  sendAccept, sendOffer, sendTerminate, createChart } ; // Export the function for testing

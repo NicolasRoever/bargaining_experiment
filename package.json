@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "chart.js": "^4.4.3",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0"
   },

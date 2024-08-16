@@ -1,6 +1,8 @@
 //--------------------------------------------------------------------------------------
 
-const    { sendAccept, sendOffer, sendTerminate }    = require('../_static/bargaining_functions.js');
+const    { sendAccept, sendOffer, sendTerminate, createChart }    = require('../_static/bargaining_functions.js');
+
+const { Chart } = require('chart.js');
 
 
 //GLobal Mocks
@@ -11,6 +13,15 @@ const mockSlider = {
 };
 
 global.liveSend = jest.fn();
+
+
+
+jest.mock('chart.js', () => {
+    return {
+        Chart: jest.fn(),
+    };
+});
+
 
 
 
@@ -108,5 +119,74 @@ describe('sendTerminate', () => {
 
         // Clean up mock
         mockDateNow.mockRestore();
+    });
+});
+
+//-----------------------------------------------------------------------------------------------
+//Test createChart
+
+describe('createChart', () => {
+    beforeEach(() => {
+        // Clear the mock before each test
+        Chart.mockClear();
+    });
+
+    it('should create a chart with the correct parameters when xValues > yValues', () => {
+        const chartName = 'testChart';
+        const xValues = Array.from({ length: 120 }, (_, i) => i); // 120 x-values
+        const yValues = Array.from({ length: 20 }, (_, i) => i * 2); // 20 y-values
+        const yLabel = 'Test Y Label';
+        const yMin = 0;
+        const yMax = 40;
+
+        // Call the function
+        createChart(chartName, xValues, yValues, yLabel, yMin, yMax);
+
+        // Check if the Chart constructor was called with the correct parameters
+        expect(Chart).toHaveBeenCalledWith(chartName, {
+            type: 'line',
+            data: {
+                labels: xValues,
+                datasets: [{
+                    fill: false,
+                    lineTension: 0,
+                    backgroundColor: 'rgba(0,0,255,1.0)',
+                    borderColor: 'black',
+                    borderWidth: 1.5,
+                    data: yValues.map((value, index) => ({ x: xValues[index], y: value })),
+                    steppedLine: true,
+                    pointRadius: 0,
+                }],
+            },
+            options: {
+                animation: { duration: 0 },
+                legend: { display: false },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: yMin,
+                            max: yMax,
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: yLabel,
+                        },
+                    }],
+                    xAxes: [{
+                        type: 'category',
+                        ticks: {
+                            min: 0,
+                            max: xValues.length - 1,
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Seconds passed',
+                        },
+                    }],
+                },
+                maintainAspectRatio: true,
+                aspectRatio: 1,
+            },
+        });
     });
 });

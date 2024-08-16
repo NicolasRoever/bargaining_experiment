@@ -2,6 +2,9 @@ from otree.api import *
 import json
 import random
 import time
+import math
+
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs
 
 
 doc = """
@@ -42,32 +45,37 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    amount_proposed = models.IntegerField()
-    amount_accepted = models.IntegerField()
+    amount_proposed = models.IntegerField()#
+    amount_accepted = models.IntegerField()#
 
-    amount_proposed_list = models.StringField()
-    offer_time_list = models.StringField()
+    amount_proposed_list = models.StringField()#
+    offer_time_list = models.StringField()#
 
-    valuation = models.IntegerField()
-    current_deal_accept = models.IntegerField()
-    current_payoff_accept = models.IntegerField()
+    valuation = models.IntegerField()#
+    current_deal_accept = models.IntegerField()#
+    current_payoff_accept = models.FloatField()#
 
-    current_deal_other_accepts = models.IntegerField()
-    current_payoff_other_accepts = models.IntegerField()
+    current_deal_other_accepts = models.IntegerField()#
+    current_payoff_other_accepts = models.FloatField()#
 
-    initial_TA_costs = models.IntegerField()
-    decrease_TA_costs_per_second = models.IntegerField()
-    current_TA_costs = models.IntegerField()
-    cumulated_TA_costs = models.IntegerField()
+    initial_TA_costs = models.IntegerField()#
+    decrease_TA_costs_per_second = models.IntegerField()#
+    current_TA_costs = models.FloatField()#
+    cumulated_TA_costs = models.FloatField()#
 
-    payment_delay = models.IntegerField(initial=0)
-    additional_delay = models.IntegerField()
+    payment_delay = models.FloatField()
+    additional_delay = models.IntegerField()#
+    delay_multiplier = models.FloatField()#
 
-    current_payoff_terminate = models.IntegerField()
+    current_payoff_terminate = models.IntegerField()#
 
-    current_costs_list = models.StringField()
-    total_costs_list = models.StringField()
-    total_delay_list = models.StringField()
+    current_costs_list = models.LongStringField()
+    total_costs_list = models.LongStringField()
+    total_delay_list = models.LongStringField()
+    x_axis_values_TA_graph = models.LongStringField()
+    x_axis_values_delay_graph = models.LongStringField()
+    y_axis_maximum_TA_graph = models.FloatField()
+    y_axis_maximum_delay_graph = models.FloatField()
 
 #-----------------------------------------------------------------------------------------------   
 # FUNCTIONS
@@ -89,43 +97,35 @@ def creating_session(subsession):
             player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  50
             player.decrease_TA_costs_per_second = 1
 
+        player.x_axis_values_TA_graph = json.dumps(list(range(0, C.TOTAL_BARGAINING_TIME + 1)))
+
         player.current_payoff_terminate = -player.current_TA_costs
 
         # Set payment delay treatment
         if player.group.subsession.session.config['delay_treatment_high'] == True:
             player.additional_delay = 2
+            player.delay_multiplier = 3.5
         elif player.group.subsession.session.config['delay_treatment_high'] == False:
             player.additional_delay = 1
+            player.delay_multiplier = 0.5
 
-    current_costs_list = [player.current_TA_costs]
-    total_costs = player.current_TA_costs
-    decrease_TA_costs_per_second = player.decrease_TA_costs_per_second
+        player.x_axis_values_delay_graph = json.dumps(list(range(0, C.TOTAL_BARGAINING_TIME + 1)))
+        player.y_axis_maximum_delay_graph = math.ceil(C.TOTAL_BARGAINING_TIME * player.delay_multiplier)
 
-    total_delay = 0
-    total_costs_list = []
-    total_delay_list = []
-    
-    # Initiate list of total transaction costs
-    for i in range(C.TOTAL_BARGAINING_TIME):
-        if (i > 0):
-            updated_costs = current_costs_list[i] - decrease_TA_costs_per_second 
-            if updated_costs < 0:
-                updated_costs = 0
-            
-            total_costs += updated_costs
-            total_delay += player.additional_delay
-        else:
-            updated_costs = current_costs_list[i]
+        transaction_cost_list, current_costs_list = calculate_transaction_costs(
+        TA_treatment_high=player.group.subsession.session.config['TA_treatment_high'], 
+        total_bargaining_time=C.TOTAL_BARGAINING_TIME)
 
-        current_costs_list.append(updated_costs)            
-        total_costs_list.append(total_costs)
-        total_delay_list.append(total_delay)
-    #print(total_costs_list)
-
-    for player in subsession.get_players():
-        player.total_costs_list = json.dumps(total_costs_list)
+        player.y_axis_maximum_TA_graph = transaction_cost_list[-1]
+        
+        total_delay_list = calculate_total_delay_list(
+            bargaining_time=C.TOTAL_BARGAINING_TIME, 
+            delay_multiplier=player.additional_delay)
+        
+        player.total_costs_list = json.dumps(transaction_cost_list)
         player.current_costs_list = json.dumps(current_costs_list)
         player.total_delay_list = json.dumps(total_delay_list)
+        
 
     # Set up grouping mechanism of random grouping in each round with fixed roles across rounds
     ###### Disable for testing ######
@@ -172,6 +172,8 @@ class Bargain(Page):
 
     @staticmethod
     def js_vars(player: Player):
+
+
         return dict(my_id=player.id_in_group, 
                     other_id=player.get_others_in_group()[0].id_in_group,
                     start_time=player.group.bargain_start_time, 
@@ -186,6 +188,10 @@ class Bargain(Page):
                     delay_treatment_high=player.group.subsession.session.config['delay_treatment_high'],
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
                     maximum_bargain_time=C.TOTAL_BARGAINING_TIME,
+                    x_values_TA_graph=json.loads(player.x_axis_values_TA_graph),
+                    x_values_delay_graph=json.loads(player.x_axis_values_delay_graph), 
+                    y_axis_maximum_TA_graph=player.y_axis_maximum_TA_graph,
+                    y_axis_maximum_delay_graph=player.y_axis_maximum_delay_graph
                     )
 
     @staticmethod
@@ -197,20 +203,21 @@ class Bargain(Page):
         # Adjust total transaction costs after each seconds
         bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
 
-        total_costs_list = json.loads(player.total_costs_list) 
-        current_costs_list = json.loads(player.current_costs_list)
-        total_delay_list = json.loads(player.total_delay_list)
-        
-        if bargaining_time_elapsed > 0:
-            # Current transaction costs decrease every second by $0.01
-            player.current_TA_costs = int(current_costs_list[bargaining_time_elapsed])
-            player.cumulated_TA_costs = int(total_costs_list[bargaining_time_elapsed])
+        total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed + 1]
+        total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed + 1]
+        current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
 
-            # Termination payoff is just negative transaction costs
-            player.current_payoff_terminate = - player.cumulated_TA_costs
+        
+        #if bargaining_time_elapsed > 0:
             
-            # Total delay in payment increases every second by additional delay
-            player.payment_delay = int(total_delay_list[bargaining_time_elapsed])
+        player.current_TA_costs = current_transaction_costs
+        player.cumulated_TA_costs = total_cost_y_values[-1]
+
+        # Termination payoff is just negative transaction costs
+        player.current_payoff_terminate = 1
+        
+        # Total delay in payment increases every second by additional delay
+        player.payment_delay = total_delay_y_values[-1]
             
         
         # Total payoff if other's current proposal is accepted
@@ -327,6 +334,11 @@ class Bargain(Page):
                 'current_payoff_terminate':player.current_payoff_terminate,
                 'payment_delay':player.payment_delay,
                 'bargaining_time_elapsed':bargaining_time_elapsed,
+                'total_cost_y_values':total_cost_y_values,
+                'total_delay_y_values':total_delay_y_values,
+                'x_axis_values_TA_graph':json.loads(player.x_axis_values_TA_graph),
+                'x_axis_values_delay_graph':json.loads(player.x_axis_values_delay_graph),
+                'current_transaction_costs':current_transaction_costs
                 }
                 }
     
