@@ -351,30 +351,30 @@ document.getElementById('btn-terminate').addEventListener('click', function() {
 
 function liveRecv(data) {
 
-    document.getElementById('time_spent').innerHTML = data.bargaining_time_elapsed;
+    updateElementText(
+        elementId='time_spent',
+        text=data.bargaining_time_elapsed
+    );
 
-    createChart(
-        chartName = 'TA_cost_chart',
-        xValues = data.x_axis_values_TA_graph, 
-        yValues = data.total_cost_y_values,
-        yLabel = "Total Transaction Costs",
-        yMin = 0, 
-        yMax = js_vars.y_axis_maximum_TA_graph);
+    updateElementText(
+        elementId="payment_delay",
+        text=data.payment_delay
+    );
 
-    createChart(
-        chartName = 'delay_chart',
-        xValues = data.x_axis_values_delay_graph, 
-        yValues = data.total_delay_y_values,
-        yLabel = "Total Delay in Payment",
-        yMin = 0, 
-        yMax = js_vars.y_axis_maximum_delay_graph)
+    updateCurrencyElement(
+        elementId='TA_costs',
+        value=data.current_TA_costs
+    );
 
-        
-    document.getElementById('TA_costs').innerHTML = USDollar.format(data.current_TA_costs)
-    
-    document.getElementById('cumulated_TA_costs').innerHTML = USDollar.format(data.cumulated_TA_costs);
-    
-    document.getElementById('payment_delay').innerHTML = data.payment_delay;
+    updateCurrencyElement(
+        elementId="cumulated_TA_costs",
+        value=data.cumulated_TA_costs
+    );
+
+    updateCharts(
+        data=data,
+        js_vars=js_vars
+    );
 
 
     if ('cumulated_TA_costs' in data) {

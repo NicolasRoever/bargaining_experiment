@@ -138,6 +138,10 @@ function createChart(chartName, xValues, yValues, yLabel, yMin, yMax) {
     });
 }
 
+function updateCurrencyElement(elementId, amount) {
+    document.getElementById(elementId).innerHTML = USDollar.format(amount);
+}
+
 function updateElementText(elementId, content) {
     document.getElementById(elementId).innerHTML = content;
 }
