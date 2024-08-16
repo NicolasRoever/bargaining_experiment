@@ -61,8 +61,9 @@ function sendOffer({ buttonId, slider, startTime, myId }) {
     liveSend(offerDetails);
 }
 
+// This function is called when the player clicks the "Accept" button to accept an offer.
 function sendAccept({ otherProposal, startTime, myId }) {
-    console.log("Send Accept was Called");
+
     liveSend({
         type: 'accept',
         amount: otherProposal,
@@ -70,6 +71,18 @@ function sendAccept({ otherProposal, startTime, myId }) {
         accepted_by: myId
     });
 }
+
+// This function is called when the player clicks the "Terminate" button to terminate the game.
+function sendTerminate({ startTime, myId }) {
+    liveSend({
+        type: 'terminate',
+        termination_time: Math.floor(Date.now() / 1000 - startTime),
+        terminated_by: myId
+    });
+}
+
+
+
 
 
 
@@ -126,4 +139,4 @@ options: {
 }
 
 
-module.exports = {  sendAccept, sendOffer } ; // Export the function for testing
+module.exports = {  sendAccept, sendOffer, sendTerminate } ; // Export the function for testing

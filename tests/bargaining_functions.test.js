@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 
-const    { sendAccept, sendOffer }    = require('../_static/bargaining_functions.js');
+const    { sendAccept, sendOffer, sendTerminate }    = require('../_static/bargaining_functions.js');
 
 
 //GLobal Mocks
@@ -82,4 +82,31 @@ describe('sendOffer function', () => {
     });
 });
 
+//-----------------------------------------------------------------------------------------------
+//Test sendTerminate
 
+
+describe('sendTerminate', () => {
+    it('should call liveSend with the correct parameters', () => {
+
+        // Fixed time for testing
+        const mockDateNow = jest.spyOn(Date, 'now').mockReturnValue(1625152800000); // July 1, 2021 12:00:00 UTC
+
+        // Test data
+        const startTime = 1625152500; // Fixed start time (10 minutes earlier)
+        const myId = 'player1';
+
+        // Call the function
+        sendTerminate({ startTime, myId });
+
+        // Assert that liveSend was called with the correct data
+        expect(liveSend).toHaveBeenCalledWith({
+            type: 'terminate',
+            termination_time: Math.floor(1625152800 - startTime),
+            terminated_by: myId
+        });
+
+        // Clean up mock
+        mockDateNow.mockRestore();
+    });
+});
