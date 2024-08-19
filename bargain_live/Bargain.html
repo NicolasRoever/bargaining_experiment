@@ -351,6 +351,8 @@ document.getElementById('btn-terminate').addEventListener('click', function() {
 
 function liveRecv(data) {
 
+    console.log(data.current_TA_costs)
+
     updateElementText(
         elementId='time_spent',
         text=data.bargaining_time_elapsed

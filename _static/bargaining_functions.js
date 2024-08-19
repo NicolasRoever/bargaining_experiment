@@ -147,23 +147,23 @@ function updateElementText(elementId, content) {
 }
 
 function updateCharts(data, js_vars) {
-    createChart({
-        chartName: 'TA_cost_chart',
-        xValues: data.x_axis_values_TA_graph, 
-        yValues: data.total_cost_y_values,
-        yLabel: "Total Transaction Costs",
-        yMin: 0, 
-        yMax: js_vars.y_axis_maximum_TA_graph
-    });
+    createChart(
+        chartName= 'TA_cost_chart',
+        xValues= data.x_axis_values_TA_graph, 
+        yValues= data.total_cost_y_values,
+        yLabel="Total Transaction Costs",
+        yMin= 0, 
+        yMax= js_vars.y_axis_maximum_TA_graph
+    );
 
-    createChart({
-        chartName: 'delay_chart',
-        xValues: data.x_axis_values_delay_graph, 
-        yValues: data.total_delay_y_values,
-        yLabel: "Total Delay in Payment",
-        yMin: 0, 
-        yMax: js_vars.y_axis_maximum_delay_graph
-    });
+    createChart(
+        chartName= 'delay_chart',
+        xValues= data.x_axis_values_delay_graph, 
+        yValues= data.total_delay_y_values,
+        yLabel= "Total Delay in Payment",
+        yMin= 0, 
+        yMax= js_vars.y_axis_maximum_delay_graph
+    );
 }
 
 
