@@ -242,7 +242,7 @@ Price Negotiation
 
             <h5>If you terminate the negotiation:</h5>
             <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
-            <p style="display: inline;">{{ other_role }}'s payoff: <div style="display: inline" id="other_payoff_terminate" ></div> </p>
+            <p style="display: inline;">{{ other_role }}'s payoff: <div style="display: inline" id="other_payoff_terminate" >???</div> </p>
     </div>
     <div class="three_columns_right" style="background-color: #ffffff; flex: 0.5">
 
@@ -373,23 +373,16 @@ function liveRecv(data) {
         value=data.cumulated_TA_costs
     );
 
+    updateCurrencyElement(
+        elementId="my_payoff_terminate",
+        value=data.current_payoff_terminate
+    );
+
     updateCharts(
         data=data,
         js_vars=js_vars
     );
 
-
-    if ('cumulated_TA_costs' in data) {
-
-        document.getElementById('my_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
-
-        if (js_vars.information_asymmetry == js_vars.other_role) {
-            document.getElementById('other_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
-        } else {
-            document.getElementById('other_payoff_terminate').innerHTML = USDollar.format(data.current_payoff_terminate/100)
-        }
-        
-    };
 
     if ('current_proposals' in data) {
 

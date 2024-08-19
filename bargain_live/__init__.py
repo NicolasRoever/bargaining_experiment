@@ -67,7 +67,7 @@ class Player(BasePlayer):
     additional_delay = models.IntegerField()#
     delay_multiplier = models.FloatField()#
 
-    current_payoff_terminate = models.IntegerField()#
+    current_payoff_terminate = models.FloatField()#
 
     current_costs_list = models.LongStringField()
     total_costs_list = models.LongStringField()
@@ -214,7 +214,7 @@ class Bargain(Page):
         player.cumulated_TA_costs = total_cost_y_values[-1]
 
         # Termination payoff is just negative transaction costs
-        player.current_payoff_terminate = 1
+        player.current_payoff_terminate = -player.cumulated_TA_costs
         
         # Total delay in payment increases every second by additional delay
         player.payment_delay = total_delay_y_values[-1]
