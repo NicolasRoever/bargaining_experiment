@@ -1,8 +1,8 @@
 //--------------------------------------------------------------------------------------
-
-const    { sendAccept, sendOffer, sendTerminate, createChart }    = require('../_static/bargaining_functions.js');
-
 const { Chart } = require('chart.js');
+const    { sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay }    = require('../_static/bargaining_functions.js');
+
+
 
 
 //GLobal Mocks
@@ -15,12 +15,18 @@ const mockSlider = {
 global.liveSend = jest.fn();
 
 
-
 jest.mock('chart.js', () => {
     return {
         Chart: jest.fn(),
     };
 });
+
+const sliderComponent = {
+    id: jest.fn(() => 'test-element-id'),
+    f2s: jest.fn(() => '$50.00'),
+};
+
+let targetElement;
 
 
 
@@ -188,5 +194,33 @@ describe('createChart', () => {
                 aspectRatio: 1,
             },
         });
+    });
+});
+
+//-----------------------------------------------------------------------------------------------
+//Test updateSliderDisplay
+
+beforeEach(() => {
+    // Create a mock DOM element and spy on getElementById
+    targetElement = document.createElement('div');
+    targetElement.id = 'test-element-id';
+    document.body.appendChild(targetElement);
+
+    jest.spyOn(document, 'getElementById').mockReturnValue(targetElement);
+});
+
+afterEach(() => {
+    // Clean up DOM and reset mocks
+    document.body.innerHTML = '';
+    jest.clearAllMocks();
+});
+
+describe('updateSliderDisplay', () => {
+    it('updates the innerHTML of the target element', () => {
+        updateSliderDisplay(sliderComponent, 5000); // 5000 cents = $50.00
+
+        expect(sliderComponent.id).toHaveBeenCalledWith('cur');
+        expect(sliderComponent.f2s).toHaveBeenCalledWith(50, false);
+        expect(targetElement.innerHTML).toBe('$50.00');
     });
 });

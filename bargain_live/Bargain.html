@@ -166,7 +166,7 @@ Price Negotiation
 
             <p style="margin-top:0.25cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts_live"> No offer yet. </div></p>
             <p style="margin-top:0.25cm;display: inline;">{{ other_role }}'s payoff: 
-                {% if information_asymmetry == "None" or information_asymmetry != other_role %}
+                {% if my_role == "Seller" %}
 
                     ???
 
@@ -196,16 +196,16 @@ Price Negotiation
 
                     <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">No offer yet.</div></p>
                     <p style="display: inline;">{{ other_role }}'s payoff: 
-                        {% if information_asymmetry == "None" or information_asymmetry != other_role %}
+                        {% if my_role == "Seller" %}
             
                                 ???
             
-                            {% else %}
-                                <div style="display: inline" id="other_payoff_accept"> 
-                                    No offer yet. 
-                                </div>
-                            
-                            {% endif %}
+                        {% else %}
+                            <div style="display: inline" id="other_payoff_accept"> 
+                                No offer yet. 
+                            </div>
+                        
+                        {% endif %}
                     </p>
 
     </div>
@@ -278,6 +278,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 document.addEventListener('DOMContentLoaded', function() {
     initializeElements();  
     initializeSliders();
+    liveSend({});
 });
 
 
@@ -317,41 +318,7 @@ document.getElementById('btn-terminate').addEventListener('click', function() {
 });
 
 
-
-// xValues = [];
-// yValues_cost_complete = [];
-// yValues_delay_complete = [];
-
-// current_costs = js_vars.initial_TA_costs;
-// total_costs = current_costs;
-
-// additional_delay = js_vars.additional_delay
-// total_delay = 0;
-
-
-// for (let i = 0; i <= js_vars.maximum_bargain_time; i++) {
-//     xValues.push(i);
-
-//     if (i > 0) {
-//         current_costs = current_costs - js_vars.decrease_TA_costs_per_second
-//         if (current_costs < 0) {
-//             current_costs = 0;
-//         }
-//         total_costs += current_costs;
-//         total_delay += additional_delay;
-//     }
-//     yValues_cost_complete.push(total_costs/100);
-//     yValues_delay_complete.push(total_delay)
-    
-// }
-
-// console.log(xValues)
-
-
-
 function liveRecv(data) {
-
-    console.log(data.current_TA_costs)
 
     updateElementText(
         elementId='time_spent',
@@ -384,93 +351,142 @@ function liveRecv(data) {
     );
 
 
-    if ('current_proposals' in data) {
+    if (data.my_current_proposed_amount != null){
+           
+        updateCurrencyElement(
+            elementId='my-proposal',
+            value=data.my_current_proposed_amount);
 
-        for (let [id_in_group, proposal] of data.current_proposals) {
+        updateCurrencyElement(
+            elementId ="other_payoff_other_accepts_live", 
+            value=data.my_current_proposed_amount - js_vars.other_valuation
+        );
 
-            if (id_in_group === js_vars.my_id) {
-                msgMyProposal.innerHTML = USDollar.format(proposal/100);
 
-                if (!AlreadyRefreshed) {
-                    my_slider.set(proposal/100);
-                    AlreadyRefreshed = true;
-                    SliderClicked = true;
-                }
-        
-            } else if (id_in_group === js_vars.other_id) {
-                msgOtherProposal.innerHTML = USDollar.format(proposal/100);
-                otherProposal = proposal;
-                btnAccept.disabled = false;
-                slider_other.set(proposal/100);
-                document.getElementById(slider_other.id("cur")).innerHTML = slider_other.f2s(proposal/100, false);
+        updateCurrencyElement(
+            elementId="my_payoff_other_accepts_live",
+            value=js_vars.my_valuation - data.my_current_proposed_amount
+        );
 
-                if (js_vars.my_role === "Buyer") {
-                    msgMyPayoffAccept.innerHTML = USDollar.format((js_vars.my_valuation - proposal - data.cumulated_TA_costs)/100);
-                    
-                    if (js_vars.information_asymmetry === js_vars.other_role) {
-                        document.getElementById('other_payoff_accept').innerHTML = USDollar.format((proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100);
-                    }
+    };
 
-                } else if (js_vars.my_role === "Seller") {
-                    msgMyPayoffAccept.innerHTML = USDollar.format((proposal - js_vars.my_valuation - data.cumulated_TA_costs)/100);
-                    
-                    if (js_vars.information_asymmetry === js_vars.other_role) {
-                        document.getElementById('other_payoff_accept').innerHTML = USDollar.format((js_vars.other_valuation - proposal - data.cumulated_TA_costs)/100);
-                    }
-                }
+    if (data.other_current_proposed_amount != null){
 
-            }
+
+        updateCurrencyElement(
+        elementId='other-proposal',
+        value=data.other_current_proposed_amount);
+
+        btnAccept.disabled = false;
+
+        slider_other.set(data.other_current_proposed_amount/100);
+
+
+        updateCurrencyElement(
+            elementId='other_payoff_accept',
+            value=((data.other_current_proposed_amount - data.cumulated_TA_costs - data.other_valuation)/100));
+        //TO DO: This is not quite correct I need to get the cumulated TA costs of the opponent!
+
+        updateCurrencyElement(
+            elemendId="my_payoff_accept",
+            value=(js_vars.my_valuation - data.other_current_proposed_amount - data.cumulated_TA_costs)/100);
             
-        }
+    };
+
+
+        
+    
+
+
+
+    // if ('current_proposals' in data) {
+
+    //     for (let [id_in_group, proposal] of data.current_proposals) {
+
+    //         if (id_in_group === js_vars.my_id) {
+    //             msgMyProposal.innerHTML = USDollar.format(proposal/100);
+
+    //             // if (!AlreadyRefreshed) {
+    //             //     my_slider.set(proposal/100);
+    //             //     AlreadyRefreshed = true;
+    //             //     SliderClicked = true;
+    //             // }
+        
+    //         } else if (id_in_group === js_vars.other_id) {
+    //             msgOtherProposal.innerHTML = USDollar.format(proposal/100);
+    //             otherProposal = proposal;
+    //             btnAccept.disabled = false;
+    //             slider_other.set(proposal/100);
+    //             document.getElementById(slider_other.id("cur")).innerHTML = slider_other.f2s(proposal/100, false);
+
+    //             if (js_vars.my_role === "Buyer") {
+    //                 msgMyPayoffAccept.innerHTML = USDollar.format((js_vars.my_valuation - proposal - data.cumulated_TA_costs)/100);
+                    
+    //                 // if (js_vars.information_asymmetry === js_vars.other_role) {
+    //                 //     document.getElementById('other_payoff_accept').innerHTML = USDollar.format((proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100);
+    //                 // }
+
+    //             } else if (js_vars.my_role === "Seller") {
+    //                 msgMyPayoffAccept.innerHTML = USDollar.format((proposal - js_vars.my_valuation - data.cumulated_TA_costs)/100);
+                    
+    //                 if (js_vars.information_asymmetry === js_vars.other_role) {
+    //                     document.getElementById('other_payoff_accept').innerHTML = USDollar.format((js_vars.other_valuation - proposal - data.cumulated_TA_costs)/100);
+    //                 }
+    //             }
+
+    //         }
+            
+    //     }
+
     
         
         
-        if (data['latest_proposal_by'] === js_vars.my_id) {
-            //btnSliderSubmit.disabled = true;
-            //my_slider.submit();
-            //my_slider.disable();
-            slider_other.disable();
+    //     if (data['latest_proposal_by'] === js_vars.my_id) {
+    //         //btnSliderSubmit.disabled = true;
+    //         //my_slider.submit();
+    //         //my_slider.disable();
+    //         slider_other.disable();
 
-            for (let [id_in_group, proposal] of data.current_proposals) {
-                if(id_in_group === js_vars.my_id) {
-                    //my_slider.set(proposal/100);
-                    //document.getElementById(my_slider.id("cur")).innerHTML = my_slider.f2s(proposal/100, false);
-                }
-            }
+    //         for (let [id_in_group, proposal] of data.current_proposals) {
+    //             if(id_in_group === js_vars.my_id) {
+    //                 //my_slider.set(proposal/100);
+    //                 //document.getElementById(my_slider.id("cur")).innerHTML = my_slider.f2s(proposal/100, false);
+    //             }
+    //         }
             
-        } else if (data['latest_proposal_by'] === js_vars.other_id) {
-            btnSliderSubmit.disabled = false;
-            //my_slider.enable();
-            slider_other.disable();
+    //     } else if (data['latest_proposal_by'] === js_vars.other_id) {
+    //         btnSliderSubmit.disabled = false;
+    //         //my_slider.enable();
+    //         slider_other.disable();
             
 
-        }
+    //     }
     
-    }
+    // }
 
-    if (SliderClicked) {
-        //console.log('Slider is clicked for', js_vars.my_id)
-        if (js_vars.my_role === "Buyer") {
-            document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
+    // if (SliderClicked) {
+    //     //console.log('Slider is clicked for', js_vars.my_id)
+    //     if (js_vars.my_role === "Buyer") {
+    //         document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
             
-            if (js_vars.information_asymmetry === js_vars.other_role) {
-                document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.other_valuation - data.cumulated_TA_costs)/100);
-            }    
+    //         if (js_vars.information_asymmetry === js_vars.other_role) {
+    //             document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.other_valuation - data.cumulated_TA_costs)/100);
+    //         }    
 
-        } else if (js_vars.my_role === "Seller") {
-            document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100);
+    //     } else if (js_vars.my_role === "Seller") {
+    //         document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100);
             
-            if (js_vars.information_asymmetry === js_vars.other_role) {
-                document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.other_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
-            }
-        }
+    //         if (js_vars.information_asymmetry === js_vars.other_role) {
+    //             document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.other_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
+    //         }
+    //     }
         
-    }
+    // }
     
 
     if ('finished' in data) {
-        document.getElementById('form').submit();
-    }
+        document.getElementById('form').submit()
+    };
 
 }
 
@@ -482,10 +498,6 @@ setInterval(
     },
     1000
 )
-
-document.addEventListener('DOMContentLoaded', (event) => {
-    liveSend({});
-});
 
 </script>
 

@@ -56,8 +56,10 @@ function sendOffer({ buttonId, slider, startTime, myId }) {
         type: 'propose',
         amount: slider.value(),
         offer_time: Math.floor(Date.now() / 1000 - startTime),
-        latest_proposal_by: myId
+        latest_proposal_by: myId // I would like to rename this as proposal_by, that is more accurate
     };
+
+    console.log("Offer sent from Client" );
 
     liveSend(offerDetails);
 }
@@ -167,5 +169,19 @@ function updateCharts(data, js_vars) {
 }
 
 
+function updateSliderDisplay(sliderComponent, proposalInCents) {
+    // Generate the ID for the element to update
+    const elementId = sliderComponent.id("cur");
 
-module.exports = {  sendAccept, sendOffer, sendTerminate, createChart } ; // Export the function for testing
+    // Get the HTML element by ID
+    const targetElement = document.getElementById(elementId);
+
+    // Format the proposal amount from cents to a string (in dollars)
+    const formattedValue = sliderComponent.f2s(proposalInCents / 100, false);
+
+    // Update the inner HTML of the target element
+    targetElement.innerHTML = formattedValue;
+}
+
+
+module.exports = {  sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay } ; // Export the function for testing

@@ -3,6 +3,7 @@ import json
 import random
 import time
 import math
+import pandas as pd
 
 from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs
 
@@ -45,8 +46,10 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    amount_proposed = models.IntegerField()#
+
+    amount_proposed = models.FloatField()#
     amount_accepted = models.IntegerField()#
+    current_amount_proposed = models.FloatField()
 
     amount_proposed_list = models.StringField()#
     offer_time_list = models.StringField()#
@@ -81,6 +84,7 @@ class Player(BasePlayer):
 # FUNCTIONS
 def creating_session(subsession):
     for player in subsession.get_players():
+
         # Randomly draw valuations in each round
         if player.role == "Seller":
             valuation_list = list(range(0, 501, 10))
@@ -160,6 +164,7 @@ class Bargain(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
+
         return dict(my_role=player.role,
                     other_role=player.get_others_in_group()[0].role, 
                     valuation=cu(player.valuation/100),
@@ -194,11 +199,16 @@ class Bargain(Page):
                     y_axis_maximum_delay_graph=player.y_axis_maximum_delay_graph
                     )
 
+
     @staticmethod
     def live_method(player: Player, data):
+
+        #Initialize variables
         
         group = player.group
         [other] = player.get_others_in_group()
+
+ 
 
         # Adjust total transaction costs after each seconds
         bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
@@ -218,115 +228,140 @@ class Bargain(Page):
         
         # Total delay in payment increases every second by additional delay
         player.payment_delay = total_delay_y_values[-1]
+
+        if data.get('type') == 'propose':
+
+            if player.id_in_group == data.get('latest_proposal_by'):
+
+                print("Update proposal with", data.get('amount'))
+
+                amount_proposed_list = json.loads(player.field_maybe_none('amount_proposed_list') or "[]")
+                amount_proposed_list.append(data.get('amount'))
+                player.amount_proposed_list = json.dumps(amount_proposed_list)
+
+                offer_time_list = json.loads(player.field_maybe_none('offer_time_list') or "[]")
+                offer_time_list.append(data.get('offer_time'))
+                player.offer_time_list = json.dumps(offer_time_list)
+
+                player.current_amount_proposed = data.get('amount')
+
+
+
+        elif data.get('type') == 'accept':
+            pass
+
             
         
-        # Total payoff if other's current proposal is accepted
-        if player.field_maybe_none('current_deal_accept') is not None:
-            player.current_payoff_accept = player.current_deal_accept - player.cumulated_TA_costs
+        # # Total payoff if other's current proposal is accepted
+        # if player.field_maybe_none('current_deal_accept') is not None:
+        #     player.current_payoff_accept = player.current_deal_accept - player.cumulated_TA_costs
 
-        if player.field_maybe_none('current_deal_other_accepts') is not None:
-            player.current_payoff_other_accepts = player.current_deal_other_accepts - player.cumulated_TA_costs
+        # if player.field_maybe_none('current_deal_other_accepts') is not None:
+        #     player.current_payoff_other_accepts = player.current_deal_other_accepts - player.cumulated_TA_costs
 
-        amount_proposed_list = player.field_maybe_none('amount_proposed_list')
-        if amount_proposed_list is not None:
-            amount_proposed_list = json.loads(amount_proposed_list)
-        else:
-            amount_proposed_list = []
+        # amount_proposed_list = player.field_maybe_none('amount_proposed_list')
+        # if amount_proposed_list is not None:
+        #     amount_proposed_list = json.loads(amount_proposed_list)
+        # else:
+        #     amount_proposed_list = []
         
-        offer_time_list = player.field_maybe_none('offer_time_list')
-        if offer_time_list is not None:
-            offer_time_list = json.loads(offer_time_list)
-        else:
-            offer_time_list = []
+        # offer_time_list = player.field_maybe_none('offer_time_list')
+        # if offer_time_list is not None:
+        #     offer_time_list = json.loads(offer_time_list)
+        # else:
+        #     offer_time_list = []
 
 
-        if 'amount' in data:
+        # if 'amount' in data:
             
-            if data['type'] == 'accept':
-                try:
-                    amount = int(data['amount'])
-                except Exception:
-                    print('Invalid message received', data)
-                    return
-                if amount == other.amount_proposed:
-                    player.amount_accepted = amount
-                    group.deal_price = amount
-                    group.is_finished = True
-                    group.accepted_by = data['accepted_by']
-                    group.acceptance_time = data['acceptance_time']
+        #     if data['type'] == 'accept':
+        #         try:
+        #             amount = int(data['amount'])
+        #         except Exception:
+        #             print('Invalid message received', data)
+        #             return
+        #         if amount == other.amount_proposed:
+        #             player.amount_accepted = amount
+        #             group.deal_price = amount
+        #             group.is_finished = True
+        #             group.accepted_by = data['accepted_by']
+        #             group.acceptance_time = data['acceptance_time']
 
-                return {0: dict(finished=True)}
+        #         return {0: dict(finished=True)}
                 
-            if data['type'] == 'propose':
-                try:
-                    amount = int(float(data['amount']) * 100)
-                except Exception:
-                    print('Invalid message received', data)
-                    return
+        #     if data['type'] == 'propose':
+        #         try:
+        #             amount = int(float(data['amount']) * 100)
+        #         except Exception:
+        #             print('Invalid message received', data)
+        #             return
                 
-                player.amount_proposed = amount
-                amount_proposed_list.append(amount)
+        #         player.amount_proposed = amount
+        #         amount_proposed_list.append(amount)
 
-                offer_time = data['offer_time']
-                offer_time_list.append(offer_time)
+        #         offer_time = data['offer_time']
+        #         offer_time_list.append(offer_time)
 
-                player.group.latest_proposal_by = data['latest_proposal_by']
+        #         player.group.latest_proposal_by = data['latest_proposal_by']
 
-                if other.role == "Buyer":
-                    other.current_deal_accept = other.valuation - player.amount_proposed
-                    player.current_deal_other_accepts = player.amount_proposed - player.valuation
-                elif other.role == "Seller":
-                    other.current_deal_accept = player.amount_proposed - other.valuation
-                    player.current_deal_other_accepts = player.valuation - player.amount_proposed
+        #         if other.role == "Buyer":
+        #             other.current_deal_accept = other.valuation - player.amount_proposed
+        #             player.current_deal_other_accepts = player.amount_proposed - player.valuation
+        #         elif other.role == "Seller":
+        #             other.current_deal_accept = player.amount_proposed - other.valuation
+        #             player.current_deal_other_accepts = player.valuation - player.amount_proposed
                 
-                #other.current_payoff_accept = other.current_deal_accept - other.cumulated_TA_costs
+        #         #other.current_payoff_accept = other.current_deal_accept - other.cumulated_TA_costs
 
                 
 
-                if other.field_maybe_none('amount_proposed') == None:
-                    group.first_proposal_by = data['latest_proposal_by']
+        #         if other.field_maybe_none('amount_proposed') == None:
+        #             group.first_proposal_by = data['latest_proposal_by']
 
             
-            player.amount_proposed_list = json.dumps(amount_proposed_list)
-            player.offer_time_list = json.dumps(offer_time_list)
+        #     player.amount_proposed_list = json.dumps(amount_proposed_list)
+        #     player.offer_time_list = json.dumps(offer_time_list)
 
-        elif 'terminated_by' in data:
-            group.is_finished = True
-            group.terminated = True
-            group.termination_time = data['termination_time']
-            group.terminated_by = data['terminated_by']
-            group.deal_price = 0
+        # elif 'terminated_by' in data:
+        #     group.is_finished = True
+        #     group.terminated = True
+        #     group.termination_time = data['termination_time']
+        #     group.terminated_by = data['terminated_by']
+        #     group.deal_price = pd.NA
 
-            return {0: dict(finished=True)}
+        #     return {0: dict(finished=True)}
 
 
-        current_proposals = []
-        #current_payoffs_accept = []
-        current_payoffs_other_accepts = []
-        for p in [player, other]:
-            amount_proposed = p.field_maybe_none('amount_proposed')
-            current_payoff_accept = p.field_maybe_none('current_payoff_accept')
-            current_payoff_other_accepts = p.field_maybe_none('current_payoff_other_accepts')
+        # current_proposals = []
+        # #current_payoffs_accept = []
+        # current_payoffs_other_accepts = []
+        # for p in [player, other]:
+        #     amount_proposed = p.field_maybe_none('amount_proposed')
+        #     current_payoff_accept = p.field_maybe_none('current_payoff_accept')
+        #     current_payoff_other_accepts = p.field_maybe_none('current_payoff_other_accepts')
             
-            if amount_proposed is not None:
-                current_proposals.append([p.id_in_group, amount_proposed])
-            #if current_payoff_accept is not None:
-            #    current_payoffs_accept.append([p.id_in_group, current_payoff_accept])
-            #if current_payoff_other_accepts is not None:
-            #   current_payoffs_other_accepts.append([p.id_in_group, current_payoff_other_accepts])
+        #     if amount_proposed is not None:
+        #         current_proposals.append([p.id_in_group, amount_proposed])
+        #     #if current_payoff_accept is not None:
+        #     #    current_payoffs_accept.append([p.id_in_group, current_payoff_accept])
+        #     #if current_payoff_other_accepts is not None:
+        #     #   current_payoffs_other_accepts.append([p.id_in_group, current_payoff_other_accepts])
 
-        amount_proposed = player.field_maybe_none('amount_proposed')
-        other_amount_proposed = other.field_maybe_none('amount_proposed')
-        latest_proposal_by = player.group.field_maybe_none('latest_proposal_by')
+        # amount_proposed = player.field_maybe_none('amount_proposed')
+        # other_amount_proposed = other.field_maybe_none('amount_proposed')
+        # latest_proposal_by = player.group.field_maybe_none('latest_proposal_by')
 
-        if amount_proposed is not None and latest_proposal_by == player.id_in_group:
-            latest_proposal = [player.id_in_group, amount_proposed]
+        my_current_proposed_amount = player.field_maybe_none('current_amount_proposed')
+        other_current_proposed_amount = other.field_maybe_none('current_amount_proposed')
 
-            latest_proposal_by = latest_proposal[0]
+        # if amount_proposed is not None and latest_proposal_by == player.id_in_group:
+        #     latest_proposal = [player.id_in_group, amount_proposed]
+
+        #     latest_proposal_by = latest_proposal[0]
         
         return {0: {
-                'current_proposals':current_proposals, 
-                'latest_proposal_by':latest_proposal_by,
+                # 'current_proposals':current_proposals, 
+                # 'latest_proposal_by':latest_proposal_by,
                 #'current_payoffs_accept':current_payoffs_accept,
                 #'current_payoffs_other_accepts':current_payoffs_other_accepts,
                 'current_TA_costs':player.current_TA_costs,
@@ -338,7 +373,9 @@ class Bargain(Page):
                 'total_delay_y_values':total_delay_y_values,
                 'x_axis_values_TA_graph':json.loads(player.x_axis_values_TA_graph),
                 'x_axis_values_delay_graph':json.loads(player.x_axis_values_delay_graph),
-                'current_transaction_costs':current_transaction_costs
+                'current_transaction_costs':current_transaction_costs, 
+                'my_current_proposed_amount': my_current_proposed_amount,
+                'other_current_proposed_amount': other_current_proposed_amount
                 }
                 }
     
