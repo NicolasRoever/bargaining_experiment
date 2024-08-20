@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 from typing import List, Tuple, Dict, Any
 import pandas as pd
 import time
 import json
+=======
+from typing import List, Tuple, Any, Dict
+import pandas as pd
+import json
+import time
+>>>>>>> 9ee08ec (Functioning implementation of offer sending and payoff display for everybody.)
 
 def calculate_total_delay_list(bargaining_time: int, delay_multiplier: float) -> List[float]:
     """
@@ -53,6 +60,7 @@ def calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: 
 
     return cumulative_cost_list, current_cost_list
 
+<<<<<<< HEAD
 def update_player_costs_and_payoff(player: Any, group: Any, broadcast: Dict[str, Any]) -> Dict[str, Any]:
     """
     Updates the broadcast dictionary with the current transaction costs, cumulative transaction costs, 
@@ -90,10 +98,65 @@ def update_player_list(player: Any, list_name: str, data: Dict[str, Any], key: s
         list_name (str): The name of the list to be updated in the player's data.
         data (Dict[str, Any]): The data dictionary containing the new value to be appended.
         key (str, optional): The key to extract the value from the data dictionary. Defaults to 'amount'.
+=======
+def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: Dict[int, Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
+    """
+    Updates the broadcast dictionary with transaction costs, payoffs, delays, and other values based on 
+    the current state of the player and group.
+
+    Args:
+        player (Any): The player object containing the necessary fields and lists.
+        group (Any): The group object containing the bargaining start time.
+        broadcast (Dict[int, Dict[str, Any]]): The dictionary to be updated.
+        my_current_proposed_amount (Any): The current proposed amount by the player.
+        other_current_proposed_amount (Any): The current proposed amount by the other player.
+
+    Returns:
+        Dict[int, Dict[str, Any]]: The updated broadcast dictionary.
+    """
+    
+    # Calculate the elapsed bargaining time
+    bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+
+    # Parse the lists and calculate relevant values based on the elapsed time
+    total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed + 1]
+    total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed + 1]
+    current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
+
+    # Update player attributes
+    player.current_TA_costs = current_transaction_costs
+    player.cumulated_TA_costs = total_cost_y_values[-1]
+    player.current_payoff_terminate = -player.cumulated_TA_costs
+    player.payment_delay = total_delay_y_values[-1]
+
+    # Update the broadcast dictionary with the new values individually
+    broadcast['current_TA_costs'] = player.current_TA_costs
+    broadcast['cumulated_TA_costs'] = player.cumulated_TA_costs
+    broadcast['current_payoff_terminate'] = player.current_payoff_terminate
+    broadcast['payment_delay'] = player.payment_delay
+    broadcast['bargaining_time_elapsed'] = bargaining_time_elapsed
+    broadcast['total_cost_y_values'] = total_cost_y_values
+    broadcast['total_delay_y_values'] = total_delay_y_values
+    broadcast['x_axis_values_TA_graph'] = json.loads(player.x_axis_values_TA_graph)
+    broadcast['x_axis_values_delay_graph'] = json.loads(player.x_axis_values_delay_graph)
+    broadcast['current_transaction_costs'] = current_transaction_costs
+
+    return broadcast
+
+
+def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> None:
+    """
+    Updates the player's amount_proposed_list and offer_time_list fields with new proposal data.
+
+    Args:
+        player (Any): The player object containing the database fields.
+        data (Dict[str, Any]): A dictionary containing the 'amount' and 'offer_time' to be added.
+>>>>>>> 9ee08ec (Functioning implementation of offer sending and payoff display for everybody.)
 
     Returns:
         None
     """
+<<<<<<< HEAD
     # Load the specified list from the player's data, or start with an empty list if not present
     current_list = json.loads(player.field_maybe_none(list_name) or "[]")
     
@@ -102,3 +165,14 @@ def update_player_list(player: Any, list_name: str, data: Dict[str, Any], key: s
     
     # Save the updated list back to the player using the specified list name
     setattr(player, list_name, json.dumps(current_list))
+=======
+    # Update the amount_proposed_list field
+    amount_proposed_list = json.loads(player.field_maybe_none('amount_proposed_list') or "[]")
+    amount_proposed_list.append(data.get('amount'))
+    player.amount_proposed_list = json.dumps(amount_proposed_list)
+
+    # Update the offer_time_list field
+    offer_time_list = json.loads(player.field_maybe_none('offer_time_list') or "[]")
+    offer_time_list.append(data.get('offer_time'))
+    player.offer_time_list = json.dumps(offer_time_list)
+>>>>>>> 9ee08ec (Functioning implementation of offer sending and payoff display for everybody.)

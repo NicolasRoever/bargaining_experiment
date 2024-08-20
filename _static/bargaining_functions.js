@@ -48,7 +48,7 @@ function initializeSliders() {
 
 
 // This function is called when the player clicks the "Submit" button to make an offer. 
-function sendOffer({ buttonId, slider, startTime, myId }) {
+function sendOffer({ buttonId, slider, startTime, myId, myRole }) {
     const button = document.getElementById(buttonId);
     button.classList.add('active');
 
@@ -56,8 +56,11 @@ function sendOffer({ buttonId, slider, startTime, myId }) {
         type: 'propose',
         amount: slider.value(),
         offer_time: Math.floor(Date.now() / 1000 - startTime),
-        latest_proposal_by: myId // I would like to rename this as proposal_by, that is more accurate
+        proposal_by_id: myId, 
+        proposal_by_role: myRole
+
     };
+
 
     liveSend(offerDetails);
 }

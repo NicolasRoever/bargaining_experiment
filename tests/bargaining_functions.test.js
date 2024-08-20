@@ -74,27 +74,30 @@ describe('sendOffer function', () => {
         // Clear previous mock data
         liveSend.mockClear();
         mockSlider.value.mockClear();
+
         // Set up the DOM
         document.body.innerHTML = `<button id="btn-offer-slider"></button>`;
-        
-        
     });
 
-    it('Send the correct data', () => {
+    it('sends the correct data', () => {
+
+        // Set up mock data
+        mockSlider.value.mockReturnValue(5);
         
         sendOffer({
             buttonId: 'btn-offer-slider',
             slider: mockSlider,
-            startTime: 1620000000,  
-            myId: 123 
+            startTime: 1620000000,  // A specific start time
+            myId: 123,
+            myRole: 'buyer' // Example role
         });
-
 
         expect(liveSend).toHaveBeenCalledWith({
             type: 'propose',
             amount: 5,
             offer_time: expect.any(Number),
-            latest_proposal_by: 123
+            proposal_by_id: 123,
+            proposal_by_role: 'buyer' // Expected role in the sent data
         });
     });
 });

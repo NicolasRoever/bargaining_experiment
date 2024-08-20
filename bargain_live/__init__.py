@@ -5,7 +5,7 @@ import time
 import math
 import pandas as pd
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_player_costs_and_payoff, update_player_list
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal
 
 
 doc = """
@@ -209,43 +209,30 @@ class Bargain(Page):
         [other] = player.get_others_in_group()
         broadcast = {}
 
-        broadcast = update_player_costs_and_payoff(
-            player=player, 
-            group=group, 
-            broadcast=broadcast
-        )
+        broadcast = update_broadcast_dict_with_basic_values(player, group, broadcast)
 
         if data.get('type') == 'propose':
 
             if player.id_in_group == data.get('latest_proposal_by'):
 
-                broadcast["my_current_proposed_amount"] = data.get("amount")
-                
-                update_player_list(
-                    player=player, 
-                    list_name="amount_proposed_list", 
-                    data=data, 
-                    key="amount"
-                )
+               update_player_database_with_proposal(
+                   player=player,
+                   data=data
+               )
 
-                update_player_list(
-                    player=player, 
-                    list_name="offer_time_list",
-                    data=data, 
-                    key="offer_time" 
-                )
+            if data.get("proposal_by_role") == "Seller":
 
-            else:
-                
-                broadcast["other_current_proposed_amount"] = data.amount
+                broadcast["seller_proposal"] = data.get('amount')
+
+            elif data.get("proposal_by_role") == "Buyer":
+                    
+                broadcast["buyer_proposal"] = data.get('amount')
 
 
         elif data.get('type') == 'accept':
             pass
 
-                
-
-        
+    
 
             
         
@@ -348,14 +335,12 @@ class Bargain(Page):
         # other_amount_proposed = other.field_maybe_none('amount_proposed')
         # latest_proposal_by = player.group.field_maybe_none('latest_proposal_by')
 
-
         # if amount_proposed is not None and latest_proposal_by == player.id_in_group:
         #     latest_proposal = [player.id_in_group, amount_proposed]
 
         #     latest_proposal_by = latest_proposal[0]
         
-        return {0: broadcast
-                }
+        return {0: broadcast}
     
 
 

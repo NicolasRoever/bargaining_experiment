@@ -166,7 +166,6 @@ Price Negotiation
 
             <p style="margin-top:0.25cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts_live"> No offer yet. </div></p>
             <p style="margin-top:0.25cm;display: inline;">{{ other_role }}'s payoff: 
-
                     <div style="display: inline" id="other_payoff_other_accepts_live"> 
                         No offer yet. 
                     </div>
@@ -191,16 +190,11 @@ Price Negotiation
 
                     <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">No offer yet.</div></p>
                     <p style="display: inline;">{{ other_role }}'s payoff: 
-                        {% if my_role == "Seller" %}
-            
-                                ???
-            
-                        {% else %}
+
                             <div style="display: inline" id="other_payoff_accept"> 
                                 No offer yet. 
                             </div>
                         
-                        {% endif %}
                     </p>
 
     </div>
@@ -290,7 +284,8 @@ document.getElementById('btn-offer-slider').addEventListener('click', function()
         buttonId: 'btn-offer-slider',
         slider: my_slider,
         startTime: js_vars.start_time,
-        myId: js_vars.my_id
+        myId: js_vars.my_id, 
+        myRole: js_vars.my_role
     });
 });
 
@@ -314,6 +309,7 @@ document.getElementById('btn-terminate').addEventListener('click', function() {
 
 
 function liveRecv(data) {
+    console.log(data);  
 
     updateElementText(
         elementId='time_spent',
@@ -346,8 +342,7 @@ function liveRecv(data) {
     );
 
 
-
-    if (data.my_current_proposed_amount){
+    if (data.my_current_proposed_amount != null){
            
         updateCurrencyElement(
             elementId='my-proposal',
@@ -355,40 +350,42 @@ function liveRecv(data) {
 
         updateCurrencyElement(
             elementId ="other_payoff_other_accepts_live", 
-            value=(data.my_current_proposed_amount - js_vars.other_valuation - data.current_TA_costs)/100
+            value=data.my_current_proposed_amount - js_vars.other_valuation
         );
 
 
         updateCurrencyElement(
             elementId="my_payoff_other_accepts_live",
-            value=(js_vars.my_valuation - data.my_current_proposed_amount - data.current_TA_costs)/100
+            value=js_vars.my_valuation - data.my_current_proposed_amount
         );
 
-    };
+            updateCurrencyElement(
+                elementId="other_payoff_other_accepts_live", 
+                amount=(data.buyer_proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100
+            ); //TODO here how to calculate that
 
-    if (data.other_current_proposed_amount){
+    if (data.other_current_proposed_amount != null){
+
 
         updateCurrencyElement(
         elementId='other-proposal',
         value=data.other_current_proposed_amount);
 
-        // btnAccept.disabled = false;
+        btnAccept.disabled = false;
 
-        // slider_other.set(data.other_current_proposed_amount/100);
+        slider_other.set(data.other_current_proposed_amount/100);
 
 
-        // updateCurrencyElement(
-        //     elementId='other_payoff_accept',
-        //     value=(data.other_current_proposed_amount - data.cumulated_TA_costs - data.other_valuation)/100
-        // );
-        // //TO DO: This is not quite correct I need to get the cumulated TA costs of the opponent!
+        updateCurrencyElement(
+            elementId='other_payoff_accept',
+            value=((data.other_current_proposed_amount - data.cumulated_TA_costs - data.other_valuation)/100));
+        //TO DO: This is not quite correct I need to get the cumulated TA costs of the opponent!
 
-        // updateCurrencyElement(
-        //     elemendId="my_payoff_accept",
-        //     value=(js_vars.my_valuation - data.other_current_proposed_amount - data.cumulated_TA_costs)/100
-        // );
+        updateCurrencyElement(
+            elemendId="my_payoff_accept",
+            value=(js_vars.my_valuation - data.other_current_proposed_amount - data.cumulated_TA_costs)/100);
             
-    };
+    // };
 
 
         
