@@ -5,7 +5,7 @@ import time
 import math
 import pandas as pd
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_player_costs_and_payoff, update_player_list
 
 
 doc = """
@@ -207,48 +207,45 @@ class Bargain(Page):
         
         group = player.group
         [other] = player.get_others_in_group()
+        broadcast = {}
 
- 
-
-        # Adjust total transaction costs after each seconds
-        bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
-
-        total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed + 1]
-        total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed + 1]
-        current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
-
-        
-        #if bargaining_time_elapsed > 0:
-            
-        player.current_TA_costs = current_transaction_costs
-        player.cumulated_TA_costs = total_cost_y_values[-1]
-
-        # Termination payoff is just negative transaction costs
-        player.current_payoff_terminate = -player.cumulated_TA_costs
-        
-        # Total delay in payment increases every second by additional delay
-        player.payment_delay = total_delay_y_values[-1]
+        broadcast = update_player_costs_and_payoff(
+            player=player, 
+            group=group, 
+            broadcast=broadcast
+        )
 
         if data.get('type') == 'propose':
 
             if player.id_in_group == data.get('latest_proposal_by'):
 
-                print("Update proposal with", data.get('amount'))
+                broadcast["my_current_proposed_amount"] = data.get("amount")
+                
+                update_player_list(
+                    player=player, 
+                    list_name="amount_proposed_list", 
+                    data=data, 
+                    key="amount"
+                )
 
-                amount_proposed_list = json.loads(player.field_maybe_none('amount_proposed_list') or "[]")
-                amount_proposed_list.append(data.get('amount'))
-                player.amount_proposed_list = json.dumps(amount_proposed_list)
+                update_player_list(
+                    player=player, 
+                    list_name="offer_time_list",
+                    data=data, 
+                    key="offer_time" 
+                )
 
-                offer_time_list = json.loads(player.field_maybe_none('offer_time_list') or "[]")
-                offer_time_list.append(data.get('offer_time'))
-                player.offer_time_list = json.dumps(offer_time_list)
-
-                player.current_amount_proposed = data.get('amount')
-
+            else:
+                
+                broadcast["other_current_proposed_amount"] = data.amount
 
 
         elif data.get('type') == 'accept':
             pass
+
+                
+
+        
 
             
         
@@ -351,32 +348,13 @@ class Bargain(Page):
         # other_amount_proposed = other.field_maybe_none('amount_proposed')
         # latest_proposal_by = player.group.field_maybe_none('latest_proposal_by')
 
-        my_current_proposed_amount = player.field_maybe_none('current_amount_proposed')
-        other_current_proposed_amount = other.field_maybe_none('current_amount_proposed')
 
         # if amount_proposed is not None and latest_proposal_by == player.id_in_group:
         #     latest_proposal = [player.id_in_group, amount_proposed]
 
         #     latest_proposal_by = latest_proposal[0]
         
-        return {0: {
-                # 'current_proposals':current_proposals, 
-                # 'latest_proposal_by':latest_proposal_by,
-                #'current_payoffs_accept':current_payoffs_accept,
-                #'current_payoffs_other_accepts':current_payoffs_other_accepts,
-                'current_TA_costs':player.current_TA_costs,
-                'cumulated_TA_costs':player.cumulated_TA_costs,
-                'current_payoff_terminate':player.current_payoff_terminate,
-                'payment_delay':player.payment_delay,
-                'bargaining_time_elapsed':bargaining_time_elapsed,
-                'total_cost_y_values':total_cost_y_values,
-                'total_delay_y_values':total_delay_y_values,
-                'x_axis_values_TA_graph':json.loads(player.x_axis_values_TA_graph),
-                'x_axis_values_delay_graph':json.loads(player.x_axis_values_delay_graph),
-                'current_transaction_costs':current_transaction_costs, 
-                'my_current_proposed_amount': my_current_proposed_amount,
-                'other_current_proposed_amount': other_current_proposed_amount
-                }
+        return {0: broadcast
                 }
     
 

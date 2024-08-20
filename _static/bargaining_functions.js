@@ -59,8 +59,6 @@ function sendOffer({ buttonId, slider, startTime, myId }) {
         latest_proposal_by: myId // I would like to rename this as proposal_by, that is more accurate
     };
 
-    console.log("Offer sent from Client" );
-
     liveSend(offerDetails);
 }
 
