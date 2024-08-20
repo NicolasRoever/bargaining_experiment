@@ -342,51 +342,86 @@ function liveRecv(data) {
     );
 
 
-    if (data.my_current_proposed_amount != null){
-           
-        updateCurrencyElement(
-            elementId='my-proposal',
-            value=data.my_current_proposed_amount);
+    if (data.seller_proposal){
 
-        updateCurrencyElement(
-            elementId ="other_payoff_other_accepts_live", 
-            value=data.my_current_proposed_amount - js_vars.other_valuation
-        );
-
-
-        updateCurrencyElement(
-            elementId="my_payoff_other_accepts_live",
-            value=js_vars.my_valuation - data.my_current_proposed_amount
-        );
+        if (js_vars.my_role == "Seller"){
+             updateCurrencyElement(
+                elementId="my-proposal",
+                amount=data.seller_proposal
+            );
 
             updateCurrencyElement(
-                elementId="other_payoff_other_accepts_live", 
-                amount=(data.buyer_proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100
-            ); //TODO here how to calculate that
+                elementId="my_payoff_other_accepts_live",
+                amount=(data.seller_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
+            );
 
-    if (data.other_current_proposed_amount != null){
+            updateCurrencyElement(
+                elementId="other_payoff_other_accepts_live",
+                amount=(js_vars.my_valuation - data.seller_proposal - data.cumulated_TA_costs)
+            );
+        }
+           
+        else if (js_vars.my_role == "Buyer"){
+            updateCurrencyElement(
+                elementId="other-proposal",
+                amount=data.seller_proposal
+            );
+
+            updateCurrencyElement(
+                elementId="my_payoff_accept",
+                amount=(js_vars.my_valuation - data.seller_proposal - data.cumulated_TA_costs)
+            );
+
+            updateCurrencyElement(
+                elementId="other_payoff_accept",
+                amount=(data.seller_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
+            );
+        }
+
+    }
 
 
-        updateCurrencyElement(
-        elementId='other-proposal',
-        value=data.other_current_proposed_amount);
+    if (data.buyer_proposal) {
 
-        btnAccept.disabled = false;
+        if (js_vars.my_role == "Buyer"){
 
-        slider_other.set(data.other_current_proposed_amount/100);
+            updateCurrencyElement(
+                elementId="my-proposal",
+                amount=data.buyer_proposal
+            );
+
+            updateCurrencyElement(
+                elementId="my_payoff_other_accepts_live",
+                amount=(js_vars.my_valuation - data.buyer_proposal - data.cumulated_TA_costs)
+            );
+
+            updateCurrencyElement(
+                elementId="other_payoff_other_accepts_live",
+                amount=(data.buyer_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
+            );
+        }
+           
+        else if (js_vars.my_role == "Seller"){
+
+            updateCurrencyElement(
+                elementId="other-proposal",
+                amount=data.buyer_proposal
+            );
+
+            updateCurrencyElement(
+                elementId="my_payoff_accept",
+                amount=(data.buyer_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
+            );
+
+            updateCurrencyElement(
+                elementId="other_payoff_accept",
+                amount=(js_vars.my_valuation - data.buyer_proposal - data.cumulated_TA_costs)
+            );
+        }
 
 
-        updateCurrencyElement(
-            elementId='other_payoff_accept',
-            value=((data.other_current_proposed_amount - data.cumulated_TA_costs - data.other_valuation)/100));
-        //TO DO: This is not quite correct I need to get the cumulated TA costs of the opponent!
-
-        updateCurrencyElement(
-            elemendId="my_payoff_accept",
-            value=(js_vars.my_valuation - data.other_current_proposed_amount - data.cumulated_TA_costs)/100);
-            
-    // };
-
+    }
+        
 
         
     
