@@ -5,7 +5,7 @@ import time
 import math
 import pandas as pd
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance
 
 
 doc = """
@@ -204,13 +204,13 @@ class Bargain(Page):
     def live_method(player: Player, data):
 
         #Initialize variables
-        
         group = player.group
         [other] = player.get_others_in_group()
         broadcast = {}
-
         broadcast = update_broadcast_dict_with_basic_values(player, group, broadcast)
 
+        
+        # Update database and broadcast if a proposal was made
         if data.get('type') == 'propose':
 
             if player.id_in_group == data.get('latest_proposal_by'):
@@ -229,8 +229,18 @@ class Bargain(Page):
                 broadcast["buyer_proposal"] = data.get('amount')
 
 
-        elif data.get('type') == 'accept':
-            pass
+        #Update database and finish bargaining if a deal was accepted
+        if data.get('type') == 'accept':
+            
+            update_group_database_upon_acceptance(
+                group=group,
+                data=data
+            )
+
+            group.is_finished = True
+
+            broadcast["finished"] = True
+
 
     
 
@@ -347,35 +357,35 @@ class Bargain(Page):
 
 
 
-    @staticmethod
-    def before_next_page(player, timeout_happened):
-        if player.group.is_finished == True:
-            if player.group.terminated == False:
-                if player.role == "Buyer":
-                    player.payoff = (player.valuation - player.group.deal_price - player.cumulated_TA_costs)/100
+    # @staticmethod
+    # def before_next_page(player, timeout_happened):
+    #     if player.group.is_finished == True:
+    #         if player.group.terminated == False:
+    #             if player.role == "Buyer":
+    #                 player.payoff = (player.valuation - player.group.deal_price - player.cumulated_TA_costs)/100
                     
-                elif player.role == "Seller":
-                    player.payoff = (player.group.deal_price - player.valuation - player.cumulated_TA_costs)/100
-            elif player.group.terminated == True:
-                player.payoff = -player.cumulated_TA_costs/100
+    #             elif player.role == "Seller":
+    #                 player.payoff = (player.group.deal_price - player.valuation - player.cumulated_TA_costs)/100
+    #         elif player.group.terminated == True:
+    #             player.payoff = -player.cumulated_TA_costs/100
         
-        else:
-            player.payoff = 0
-            player.group.deal_price = 0
+    #     else:
+    #         player.payoff = 0
+    #         player.group.deal_price = 0
 
-        # Record total bargaininig time
-        if player.group.is_finished == True:
-            if player.group.field_maybe_none('acceptance_time') is not None:
-                player.group.bargain_duration = player.group.acceptance_time 
-            elif player.group.field_maybe_none('termination_time') is not None:
-                player.group.bargain_duration = player.group.termination_time 
-        else:
-            player.group.bargain_duration = C.TOTAL_BARGAINING_TIME
+    #     # Record total bargaininig time
+    #     if player.group.is_finished == True:
+    #         if player.group.field_maybe_none('acceptance_time') is not None:
+    #             player.group.bargain_duration = player.group.acceptance_time 
+    #         elif player.group.field_maybe_none('termination_time') is not None:
+    #             player.group.bargain_duration = player.group.termination_time 
+    #     else:
+    #         player.group.bargain_duration = C.TOTAL_BARGAINING_TIME
         
-        # Set final payoffs
-        if player.round_number == C.NUM_ROUNDS:
-            player.participant.random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
-            player.participant.payoff = player.in_round(player.participant.random_round).payoff
+    #     # Set final payoffs
+    #     if player.round_number == C.NUM_ROUNDS:
+    #         player.participant.random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
+    #         player.participant.payoff = player.in_round(player.participant.random_round).payoff
 
 
 
@@ -402,6 +412,8 @@ class RoundResults(Page):
                     other_role=player.get_others_in_group()[0].role, 
                     TA_costs = cu(player.cumulated_TA_costs / 100)
                     )
+    
+
 
 class FinalResults(Page):
     @staticmethod

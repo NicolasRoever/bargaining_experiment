@@ -118,3 +118,19 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     offer_time_list = json.loads(player.field_maybe_none('offer_time_list') or "[]")
     offer_time_list.append(data.get('offer_time'))
     player.offer_time_list = json.dumps(offer_time_list)
+
+def update_group_database_upon_acceptance(group, data):
+    """
+    Updates the group's database fields upon acceptance of a deal.
+
+    Args:
+        group: The group object containing the deal details.
+        data: A dictionary containing the 'amount', 'acceptance_time', and 'accepted_by' information.
+
+    Returns:
+        None
+    """
+    group.deal_price = data.get('amount')
+    group.acceptance_time = data.get('acceptance_time')
+    group.accepted_by = data.get('accepted_by')
+

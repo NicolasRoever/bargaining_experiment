@@ -35,13 +35,12 @@ function initializeSliders() {
     // my_slider.recall();
 
     // Initialize the second slider (slider_other)
-    window.slider_other = new mgslider("other_offer", 0, 10, 0.1);
-    slider_other.f2s = function (val) {
-        return '$' + val.toFixed(2);
-    };
-    slider_other.print(document.getElementById("slider_other"));
-    slider_other.set(0);
-    slider_other.disable();
+    // window.slider_other = new mgslider("other_offer", 0, 10, 0.1);
+    // slider_other.f2s = function (val) {
+    //     return '$' + val.toFixed(2);
+    // };
+    // slider_other.print(document.getElementById("slider_other"));
+    // slider_other.disable();
     // Optional: Recall the value across errors
     // slider_other.recall();
 }
@@ -182,6 +181,10 @@ function updateSliderDisplay(sliderComponent, proposalInCents) {
 
     // Update the inner HTML of the target element
     targetElement.innerHTML = formattedValue;
+}
+
+function enableButton(buttonId) {
+    document.getElementById(buttonId).disabled = false;
 }
 
 

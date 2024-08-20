@@ -180,11 +180,11 @@ Price Negotiation
         <h4 style="display:inline" style="margin-top: 0.25cm;">{{ other_role }}'s current submitted price offer:</h4>
                 <div style="display:inline; margin-left: 0.5cm; margin-top: 0.5cm;" id="other-proposal"> No offer yet. </div>
 
-                <div class="slider-container">
-                    <div class="mgslider-wrapper" id="slider_other" style="margin-top: 2cm;"></div>
-                
-                    <button type="button" class="btn btn-primary btn-lg" id="btn-accept" style="display: block; margin-bottom: 1cm;" disabled>Accept {{other_role}}'s offer</button>
-                </div>
+            <div class="slider-container">
+                <div class="mgslider-wrapper" id="slider_other" style="margin-top: 0.5cm;"></div>
+            
+                <button type="button" class="btn btn-primary btn-lg" id="btn-accept" style="display: block; margin-bottom: 0.5cm;" disabled>Accept {{other_role}}'s offer</button>
+            </div>
 
                 <h5>If you accept the {{ other_role }}'s offer: </h5>
 
@@ -308,8 +308,7 @@ document.getElementById('btn-terminate').addEventListener('click', function() {
 });
 
 
-function liveRecv(data) {
-    console.log(data);  
+function liveRecv(data) {  
 
     updateElementText(
         elementId='time_spent',
@@ -342,8 +341,12 @@ function liveRecv(data) {
     );
 
 
+
+
+    // This updates the page if the seller has sent a proposal. 
     if (data.seller_proposal){
 
+        // This changes what the seller sees on the page.
         if (js_vars.my_role == "Seller"){
              updateCurrencyElement(
                 elementId="my-proposal",
@@ -360,7 +363,7 @@ function liveRecv(data) {
                 amount=(js_vars.my_valuation - data.seller_proposal - data.cumulated_TA_costs)
             );
         }
-           
+         // This changes what the buyer sees on the page.  
         else if (js_vars.my_role == "Buyer"){
             updateCurrencyElement(
                 elementId="other-proposal",
@@ -376,13 +379,19 @@ function liveRecv(data) {
                 elementId="other_payoff_accept",
                 amount=(data.seller_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
             );
+
+            enableButton(
+                buttonId="btn-accept"
+            );
         }
 
     }
 
 
+    // This updates the page if the buyer has sent a proposal.
     if (data.buyer_proposal) {
 
+        // This changes what the buyer sees on the page.
         if (js_vars.my_role == "Buyer"){
 
             updateCurrencyElement(
@@ -400,7 +409,8 @@ function liveRecv(data) {
                 amount=(data.buyer_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
             );
         }
-           
+
+        // This changes what the seller sees on the page.   
         else if (js_vars.my_role == "Seller"){
 
             updateCurrencyElement(
@@ -417,15 +427,19 @@ function liveRecv(data) {
                 elementId="other_payoff_accept",
                 amount=(js_vars.my_valuation - data.buyer_proposal - data.cumulated_TA_costs)
             );
+
+            enableButton(
+                buttonId="btn-accept"
+            );
         }
 
 
     }
-        
 
+    if (data.finished) {
+        document.getElementById('form').submit()
+    };
         
-    
-
 
 
     // if ('current_proposals' in data) {
@@ -511,13 +525,9 @@ function liveRecv(data) {
     //     }
         
     // }
-    
-
-    if ('finished' in data) {
-        document.getElementById('form').submit()
-    };
 
 }
+
 
 
 // Update live page every second
