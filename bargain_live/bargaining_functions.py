@@ -2,6 +2,7 @@ from typing import List, Tuple, Any, Dict
 import pandas as pd
 import json
 import time
+import re
 
 def calculate_total_delay_list(bargaining_time: int, delay_multiplier: float) -> List[float]:
     """
@@ -130,7 +131,24 @@ def update_group_database_upon_acceptance(group, data):
     Returns:
         None
     """
-    group.deal_price = data.get('amount')
+    group.deal_price = float(re.sub(r'[^\d.]', '', data.get('amount'))) # This converts e.g. "$1.10" into 1.10
     group.acceptance_time = data.get('acceptance_time')
     group.accepted_by = data.get('accepted_by')
+
+
+def update_group_database_upon_termination(group, data):
+    """
+    Updates the group's database fields upon termination of the bargaining process.
+
+    Args:
+        group: The group object containing the termination details.
+        data: A dictionary containing the 'termination_time' and 'terminated_by' information.
+
+    Returns:
+        None
+    """
+    group.termination_time = data.get('termination_time')
+    group.terminated_by = data.get('terminated_by')
+    group.deal_price = None
+    group.terminated = True
 

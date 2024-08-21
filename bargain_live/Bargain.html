@@ -280,6 +280,7 @@ my_slider.onclick = function() {
 
 // Send offer information to server if submit button is clicked
 document.getElementById('btn-offer-slider').addEventListener('click', function() {
+
     sendOffer({
         buttonId: 'btn-offer-slider',
         slider: my_slider,
@@ -291,8 +292,11 @@ document.getElementById('btn-offer-slider').addEventListener('click', function()
 
 // Send offer information to server if submit button is clicked
 document.getElementById('btn-accept').addEventListener('click', function() {
+    console.log('Accept Button clicked');
+    console.log("Amount sent:", msgOtherProposal.textContent)
+    
     sendAccept({
-        otherProposal: otherProposal,
+        payoffElement: msgOtherProposal,
         startTime: js_vars.start_time,
         myId: js_vars.my_id
     });

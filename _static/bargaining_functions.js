@@ -11,7 +11,7 @@ function initializeElements() {
     window.msgOtherProposal = document.getElementById('other-proposal');
     window.msgMyProposal = document.getElementById('my-proposal');
     window.btnAccept = document.getElementById('btn-accept');
-    window.msgMyPayoffAccept = document.getElementById('my_payoff_accept');
+    window.MyPayoffAccept = document.getElementById('my_payoff_accept');
     window.otherProposal = null;
     window.isFirstClick = true;
     window.AlreadyRefreshed = false;
@@ -65,15 +65,24 @@ function sendOffer({ buttonId, slider, startTime, myId, myRole }) {
 }
 
 // This function is called when the player clicks the "Accept" button to accept an offer.
-function sendAccept({ otherProposal, startTime, myId }) {
+function sendAccept({ payoffElement, startTime, myId }) {
+    // Retrieve the text content from the provided element
+    const payoff = payoffElement.textContent;
 
-    liveSend({
+    console.log("Payoff inside acceppt function",payoff);
+
+    // Prepare the data to be sent via liveSend
+    const data = {
         type: 'accept',
-        amount: otherProposal,
+        amount: payoff,
         acceptance_time: Math.floor(Date.now() / 1000 - startTime),
-        accepted_by: myId
-    });
+        accepted_by: myId,
+    };
+
+    // Send the data
+    liveSend(data);
 }
+
 
 // This function is called when the player clicks the "Terminate" button to terminate the game.
 function sendTerminate({ startTime, myId }) {

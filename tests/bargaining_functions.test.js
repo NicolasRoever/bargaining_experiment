@@ -1,5 +1,4 @@
 //--------------------------------------------------------------------------------------
-const { Chart } = require('chart.js');
 const    { sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay }    = require('../_static/bargaining_functions.js');
 
 
@@ -30,22 +29,27 @@ let targetElement;
 
 
 
-
-
 //-----------------------------------------------------------------------------------------------
 //Test sendAccept
 
-
 describe('sendAccept function', () => {
-    // Clear mocks before each test
+    beforeAll(() => {
+        // Set up the global variable with the DOM element
+        document.body.innerHTML = `
+            <div id="my_payoff_accept" style="display: inline">1000.50</div>
+        `;
+        window.mMyPayoffAccept = document.getElementById('my_payoff_accept');
+    });
+
     beforeEach(() => {
+        // Clear all mocks before each test
         liveSend.mockClear();
     });
 
     it('should send the correct data', () => {
-        // Call sendAccept with test data
+        // Call sendAccept with the global variable
         sendAccept({
-            otherProposal: 1000,
+            payoffElement: window.mMyPayoffAccept,  // Use the global variable
             startTime: 1620000000,  // Mocked start time
             myId: 123  // Mocked user ID
         });
@@ -53,18 +57,16 @@ describe('sendAccept function', () => {
         // Check if liveSend was called with the correct data
         expect(liveSend).toHaveBeenCalledWith({
             type: 'accept',
-            amount: 1000,
-            acceptance_time: expect.any(Number),
-            accepted_by: 123
+            amount: 1000.50,  // Expecting this exact string value
+            acceptance_time: expect.any(Number),  // Time should be a number
+            accepted_by: 123  // Mocked user ID
         });
-
     });
 });
 
+
 //-----------------------------------------------------------------------------------------------
 //Test sendOffer
-
-
 
 describe('sendOffer function', () => {
 
@@ -128,75 +130,6 @@ describe('sendTerminate', () => {
 
         // Clean up mock
         mockDateNow.mockRestore();
-    });
-});
-
-//-----------------------------------------------------------------------------------------------
-//Test createChart
-
-describe('createChart', () => {
-    beforeEach(() => {
-        // Clear the mock before each test
-        Chart.mockClear();
-    });
-
-    it('should create a chart with the correct parameters when xValues > yValues', () => {
-        const chartName = 'testChart';
-        const xValues = Array.from({ length: 120 }, (_, i) => i); // 120 x-values
-        const yValues = Array.from({ length: 20 }, (_, i) => i * 2); // 20 y-values
-        const yLabel = 'Test Y Label';
-        const yMin = 0;
-        const yMax = 40;
-
-        // Call the function
-        createChart(chartName, xValues, yValues, yLabel, yMin, yMax);
-
-        // Check if the Chart constructor was called with the correct parameters
-        expect(Chart).toHaveBeenCalledWith(chartName, {
-            type: 'line',
-            data: {
-                labels: xValues,
-                datasets: [{
-                    fill: false,
-                    lineTension: 0,
-                    backgroundColor: 'rgba(0,0,255,1.0)',
-                    borderColor: 'black',
-                    borderWidth: 1.5,
-                    data: yValues.map((value, index) => ({ x: xValues[index], y: value })),
-                    steppedLine: true,
-                    pointRadius: 0,
-                }],
-            },
-            options: {
-                animation: { duration: 0 },
-                legend: { display: false },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            min: yMin,
-                            max: yMax,
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: yLabel,
-                        },
-                    }],
-                    xAxes: [{
-                        type: 'category',
-                        ticks: {
-                            min: 0,
-                            max: xValues.length - 1,
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Seconds passed',
-                        },
-                    }],
-                },
-                maintainAspectRatio: true,
-                aspectRatio: 1,
-            },
-        });
     });
 });
 

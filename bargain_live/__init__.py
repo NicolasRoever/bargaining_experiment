@@ -4,8 +4,9 @@ import random
 import time
 import math
 import pandas as pd
+import re
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination
 
 
 doc = """
@@ -28,7 +29,7 @@ class Subsession(BaseSubsession):
 
 
 class Group(BaseGroup):
-    deal_price = models.IntegerField()
+    deal_price = models.FloatField()
     is_finished = models.BooleanField(initial=False)
 
     acceptance_time = models.IntegerField()
@@ -231,13 +232,26 @@ class Bargain(Page):
 
         #Update database and finish bargaining if a deal was accepted
         if data.get('type') == 'accept':
-            
+
             update_group_database_upon_acceptance(
+                group=group, 
+                data=data)
+
+            group.is_finished = True
+
+            broadcast["finished"] = True
+
+        #Update database and finish bargaining if a deal was terminated
+        if data.get('terminated_by'):
+
+            
+            
+            update_group_database_upon_termination(
                 group=group,
                 data=data
             )
 
-            group.is_finished = True
+            group.is_finished = True #This ensures no error is thrown
 
             broadcast["finished"] = True
 
@@ -408,7 +422,9 @@ class Bargain(Page):
 class RoundResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(deal_price = cu(player.group.deal_price/100),
+        deal_price = player.group.field_maybe_none('deal_price')
+
+        return dict(deal_price=cu(deal_price) if deal_price is not None else "No deal",  # Provide a fallback value if there was a termination
                     other_role=player.get_others_in_group()[0].role, 
                     TA_costs = cu(player.cumulated_TA_costs / 100)
                     )
