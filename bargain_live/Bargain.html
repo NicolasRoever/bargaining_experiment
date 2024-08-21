@@ -294,7 +294,7 @@ document.getElementById('btn-offer-slider').addEventListener('click', function()
 document.getElementById('btn-accept').addEventListener('click', function() {
     console.log('Accept Button clicked');
     console.log("Amount sent:", msgOtherProposal.textContent)
-    
+
     sendAccept({
         payoffElement: msgOtherProposal,
         startTime: js_vars.start_time,
@@ -314,38 +314,13 @@ document.getElementById('btn-terminate').addEventListener('click', function() {
 
 function liveRecv(data) {  
 
-    updateElementText(
-        elementId='time_spent',
-        text=data.bargaining_time_elapsed
+
+    // Update all elements which change every second independent of the players actions
+
+    updateTimeChangingElements(
+        js_vars = js_vars, 
+        data = data
     );
-
-    updateElementText(
-        elementId="payment_delay",
-        text=data.payment_delay
-    );
-
-    updateCurrencyElement(
-        elementId='TA_costs',
-        value=data.current_TA_costs
-    );
-
-    updateCurrencyElement(
-        elementId="cumulated_TA_costs",
-        value=data.cumulated_TA_costs
-    );
-
-    updateCurrencyElement(
-        elementId="my_payoff_terminate",
-        value=data.current_payoff_terminate
-    );
-
-    updateCharts(
-        data=data,
-        js_vars=js_vars
-    );
-
-
-
 
     // This updates the page if the seller has sent a proposal. 
     if (data.seller_proposal){
@@ -440,95 +415,11 @@ function liveRecv(data) {
 
     }
 
+    // This goes to the Round Results page
     if (data.finished) {
         document.getElementById('form').submit()
     };
         
-
-
-    // if ('current_proposals' in data) {
-
-    //     for (let [id_in_group, proposal] of data.current_proposals) {
-
-    //         if (id_in_group === js_vars.my_id) {
-    //             msgMyProposal.innerHTML = USDollar.format(proposal/100);
-
-    //             // if (!AlreadyRefreshed) {
-    //             //     my_slider.set(proposal/100);
-    //             //     AlreadyRefreshed = true;
-    //             //     SliderClicked = true;
-    //             // }
-        
-    //         } else if (id_in_group === js_vars.other_id) {
-    //             msgOtherProposal.innerHTML = USDollar.format(proposal/100);
-    //             otherProposal = proposal;
-    //             btnAccept.disabled = false;
-    //             slider_other.set(proposal/100);
-    //             document.getElementById(slider_other.id("cur")).innerHTML = slider_other.f2s(proposal/100, false);
-
-    //             if (js_vars.my_role === "Buyer") {
-    //                 msgMyPayoffAccept.innerHTML = USDollar.format((js_vars.my_valuation - proposal - data.cumulated_TA_costs)/100);
-                    
-    //                 // if (js_vars.information_asymmetry === js_vars.other_role) {
-    //                 //     document.getElementById('other_payoff_accept').innerHTML = USDollar.format((proposal - js_vars.other_valuation - data.cumulated_TA_costs)/100);
-    //                 // }
-
-    //             } else if (js_vars.my_role === "Seller") {
-    //                 msgMyPayoffAccept.innerHTML = USDollar.format((proposal - js_vars.my_valuation - data.cumulated_TA_costs)/100);
-                    
-    //                 if (js_vars.information_asymmetry === js_vars.other_role) {
-    //                     document.getElementById('other_payoff_accept').innerHTML = USDollar.format((js_vars.other_valuation - proposal - data.cumulated_TA_costs)/100);
-    //                 }
-    //             }
-
-    //         }
-            
-    //     }
-
-    
-        
-        
-    //     if (data['latest_proposal_by'] === js_vars.my_id) {
-    //         //btnSliderSubmit.disabled = true;
-    //         //my_slider.submit();
-    //         //my_slider.disable();
-    //         slider_other.disable();
-
-    //         for (let [id_in_group, proposal] of data.current_proposals) {
-    //             if(id_in_group === js_vars.my_id) {
-    //                 //my_slider.set(proposal/100);
-    //                 //document.getElementById(my_slider.id("cur")).innerHTML = my_slider.f2s(proposal/100, false);
-    //             }
-    //         }
-            
-    //     } else if (data['latest_proposal_by'] === js_vars.other_id) {
-    //         btnSliderSubmit.disabled = false;
-    //         //my_slider.enable();
-    //         slider_other.disable();
-            
-
-    //     }
-    
-    // }
-
-    // if (SliderClicked) {
-    //     //console.log('Slider is clicked for', js_vars.my_id)
-    //     if (js_vars.my_role === "Buyer") {
-    //         document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.my_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
-            
-    //         if (js_vars.information_asymmetry === js_vars.other_role) {
-    //             document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.other_valuation - data.cumulated_TA_costs)/100);
-    //         }    
-
-    //     } else if (js_vars.my_role === "Seller") {
-    //         document.getElementById('my_payoff_other_accepts_live').innerHTML = USDollar.format((my_slider.value()*100 - js_vars.my_valuation - data.cumulated_TA_costs)/100);
-            
-    //         if (js_vars.information_asymmetry === js_vars.other_role) {
-    //             document.getElementById('other_payoff_other_accepts_live').innerHTML = USDollar.format((js_vars.other_valuation - my_slider.value()*100 - data.cumulated_TA_costs)/100);
-    //         }
-    //     }
-        
-    // }
 
 }
 

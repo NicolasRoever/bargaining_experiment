@@ -197,4 +197,20 @@ function enableButton(buttonId) {
 }
 
 
+function updateTimeChangingElements(js_vars, data) {
+    // Update text elements
+    updateElementText('time_spent', data.bargaining_time_elapsed);
+    updateElementText('payment_delay', data.payment_delay);
+
+    // Update currency elements
+    updateCurrencyElement('TA_costs', data.current_TA_costs);
+    updateCurrencyElement('cumulated_TA_costs', data.cumulated_TA_costs);
+    updateCurrencyElement('my_payoff_terminate', data.current_payoff_terminate);
+
+    // Update charts with the provided data and js_vars
+    updateCharts(data, js_vars);
+}
+
+
+
 module.exports = {  sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay } ; // Export the function for testing
