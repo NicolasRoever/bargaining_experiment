@@ -2,9 +2,9 @@
 
 This repository contains the code for the experiment we are running as part of a paper called "Time and Information and Bargaining."
 
-Corresponding Developer: 
-Nicolas Roever (University of Cologne)
-Email: nicoroever@gmail.com
+Corresponding Developer: \\
+Nicolas Roever (University of Cologne) \\
+Email: nicoroever@gmail.com \\
 
 ## Quick Start Guide
 
