@@ -3,6 +3,7 @@ import pandas as pd
 import json
 import time
 import re
+import numpy as np
 
 def calculate_total_delay_list(bargaining_time: int, delay_multiplier: float) -> List[float]:
     """
@@ -43,16 +44,14 @@ def calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: 
     base_cost = 0.25
 
     # Calculate costs at each second
-    total_cost_list = [base_cost * (decay_factor ** t) for t in range(total_bargaining_time)]
-
-    # Calculate cumulative costs
-    cumulative_cost_list = pd.Series(total_cost_list).cumsum().tolist()
+    cumulative_cost_list = [2.3 * np.log(t+1) for t in range(total_bargaining_time)]
 
     # Calculate differences between consecutive costs
-    current_cost_list = [total_cost_list[i] - total_cost_list[i + 1] for i in range(len(total_cost_list) - 1)]
+    current_cost_list = [cumulative_cost_list[i+1] - cumulative_cost_list[i] for i in range(len(cumulative_cost_list) - 1)]
     current_cost_list.append(0.0)  # Append 0 for the last entry as specified
 
     return cumulative_cost_list, current_cost_list
+
 
 def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: Dict[int, Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
     """
@@ -97,6 +96,31 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     broadcast['current_transaction_costs'] = current_transaction_costs
 
     return broadcast
+
+def update_broadcast_dict_with_other_player_values(player: Any, other: Any, broadcast: Dict[int, Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
+    """
+    Updates the broadcast dictionary with the other player's transaction costs, payoffs, delays, and other values based on
+
+    Args:
+        player (Any): The player object containing the necessary fields and lists.
+        other (Any): The other player object containing the necessary fields and lists.
+        broadcast (Dict[int, Dict[str, Any]]): The dictionary to be updated.
+
+    Returns:
+        Dict[int, Dict[str, Any]]: The updated broadcast dictionary.
+    
+    """
+
+    other_player_transaction_cost = other.cumulated_TA_costs
+
+    # Update the broadcast dictionary with the new values individually
+    broadcast['other_player_transaction_cost'] = other_player_transaction_cost
+
+
+    return broadcast
+                                                                                    
+                                                                                                                          
+
 
 
 def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> None:

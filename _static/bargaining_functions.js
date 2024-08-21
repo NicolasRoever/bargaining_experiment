@@ -16,19 +16,27 @@ function initializeElements() {
     window.isFirstClick = true;
     window.AlreadyRefreshed = false;
     window.SliderClicked = false;
-    // Initialize the USDollar formatter
-    window.USDollar = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    });
+    // Initialize the Euro formatter
+    window.EuroFormatter = {
+        format: function(amount) {
+            // Create a formatter with the desired locale (de-DE) but default formatting
+            const formatted = new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR',
+            }).format(amount);
+    
+            // Replace comma with dot for decimal separator
+            return formatted.replace(/\./g, '').replace(',', '.');
+        }
+    };
 }
 
 // Function to initialize the sliders
 function initializeSliders() {
     // Initialize the first slider (my_slider)
-    window.my_slider = new mgslider("offer", 0, 10, 0.1);
+    window.my_slider = new mgslider("offer", 0, 100, 1);
     my_slider.f2s = function (val) {
-        return '$' + val.toFixed(2);
+        return val.toFixed(2) + '€';
     };
     my_slider.print(document.getElementById("my_slider"));
     // Optional: Recall the value across errors
@@ -150,7 +158,7 @@ function createChart(chartName, xValues, yValues, yLabel, yMin, yMax) {
 }
 
 function updateCurrencyElement(elementId, amount) {
-    document.getElementById(elementId).innerHTML = USDollar.format(amount);
+    document.getElementById(elementId).innerHTML = EuroFormatter.format(amount);
 }
 
 function updateElementText(elementId, content) {
@@ -206,6 +214,7 @@ function updateTimeChangingElements(js_vars, data) {
     updateCurrencyElement('TA_costs', data.current_TA_costs);
     updateCurrencyElement('cumulated_TA_costs', data.cumulated_TA_costs);
     updateCurrencyElement('my_payoff_terminate', data.current_payoff_terminate);
+    updateCurrencyElement('other_payoff_terminate', - data.other_player_transaction_cost);
 
     // Update charts with the provided data and js_vars
     updateCharts(data, js_vars);

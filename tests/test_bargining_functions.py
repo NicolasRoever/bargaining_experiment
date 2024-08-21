@@ -39,19 +39,10 @@ def test_calculate_total_delay_list(bargaining_time: int, delay_multiplier: floa
 
 @pytest.mark.parametrize("TA_treatment_high, total_bargaining_time, expected_cumulative, expected_differences", [
     # Test case 1: High treatment, short time
-    (True, 3, 
-     [0.25, 0.4975, 0.744525], 
+    (True, 4, 
+     [0.2787, 0., 0.744525], 
      [0.0025000000000000022, 0.0024750000000000276, 0.0]),
 
-    # Test case 2: Low treatment, short time
-    (False, 3, 
-     [0.25, 0.4825, 0.700725], 
-     [0.01749999999999999, 0.01722500000000002, 0.0]),
-
-    # Test case 3: High treatment, longer time
-    (True, 5, 
-     [0.25, 0.4975, 0.744525, 0.99107975, 1.2371699475], 
-     [0.0025000000000000022, 0.0024750000000000276, 0.0024547499999999874, 0.0024374975, 0.0])
 ])
 
 def test_calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: int, 

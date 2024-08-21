@@ -5,8 +5,9 @@ import time
 import math
 import pandas as pd
 import re
+import numpy as np
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values
 
 
 doc = """
@@ -88,9 +89,11 @@ def creating_session(subsession):
 
         # Randomly draw valuations in each round
         if player.role == "Seller":
-            valuation_list = list(range(0, 501, 10))
+            valuation_list = np.zeros(100)
+
         elif player.role == "Buyer":
-            valuation_list = list(range(1000, 1501, 10))
+            valuation_list = list(range(0, 101, 1))
+
         player.valuation = random.choice(valuation_list)
 
 
@@ -168,8 +171,8 @@ class Bargain(Page):
 
         return dict(my_role=player.role,
                     other_role=player.get_others_in_group()[0].role, 
-                    valuation=cu(player.valuation/100),
-                    other_valuation=cu(player.get_others_in_group()[0].valuation/100),
+                    valuation=player.valuation,
+                    other_valuation=player.get_others_in_group()[0].valuation,
                     additional_delay=player.additional_delay,
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
                     treatment_communication=player.group.subsession.session.config['treatment_communication'],
@@ -208,8 +211,17 @@ class Bargain(Page):
         group = player.group
         [other] = player.get_others_in_group()
         broadcast = {}
-        broadcast = update_broadcast_dict_with_basic_values(player, group, broadcast)
+        broadcast = update_broadcast_dict_with_basic_values(
+            player=player,
+            group=group,
+            broadcast=broadcast
+        )
 
+        broadcast = update_broadcast_dict_with_other_player_values(
+            player=player,
+            other=other,
+            broadcast=broadcast
+        )
         
         # Update database and broadcast if a proposal was made
         if data.get('type') == 'propose':
@@ -248,7 +260,7 @@ class Bargain(Page):
                 group=group,
                 data=data
             )
-            
+
             group.is_finished = True #This ensures no error is thrown
 
             broadcast["finished"] = True
