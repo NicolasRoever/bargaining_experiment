@@ -173,12 +173,8 @@ Price Negotiation
 
         <div class="three_columns_right" style="flex: 0.5;">
             <h5>Delay in Payment</h5>
-            <p style="display:block">Delay in payment per second: {{ additional_delay }} 
-                {% if additional_delay == 1 %}
-                day.</p>
-                {% else %}
-                days.</p>
-                {% endif %}
+            <p style="display:block">Delay in payment per second: {{ delay_multiplier }} day(s).</p>
+       
             <p style="display:inline">Total delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
             <canvas id="delay_chart" style="width: 100%; min-height: 200px;" ></canvas>
         </div>
@@ -380,7 +376,7 @@ function liveRecv(data) {
 // Update live page every second
 setInterval(
     function () {
-        liveSend({})
+        liveSend({});
     },
     1000
 )

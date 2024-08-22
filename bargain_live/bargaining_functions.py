@@ -4,6 +4,8 @@ import json
 import time
 import re
 import numpy as np
+import random
+import math
 
 def calculate_total_delay_list(bargaining_time: int, delay_multiplier: float) -> List[float]:
     """
@@ -28,7 +30,7 @@ def calculate_total_delay_list(bargaining_time: int, delay_multiplier: float) ->
 
 def calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: int) -> Tuple[List[float], List[float]]:
     """
-    Calculate the cumulative costs over time with a decay factor depending on the treatment and
+    Calculate the cumulative costs over time with a decay factor depending on the treatment andotre
     compute the differences between each consecutive cost.
 
     Args:
@@ -41,16 +43,21 @@ def calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: 
         - A list of differences between each second's cost and the next.
     """
     decay_factor = 0.99 if TA_treatment_high else 0.93
-    base_cost = 0.25
 
-    # Calculate costs at each second
-    cumulative_cost_list = [2.3 * np.log(t+1) for t in range(total_bargaining_time)]
+    cumulative_costs = [0] * total_bargaining_time
+    current_costs = [0] * (total_bargaining_time)
 
-    # Calculate differences between consecutive costs
-    current_cost_list = [cumulative_cost_list[i+1] - cumulative_cost_list[i] for i in range(len(cumulative_cost_list) - 1)]
-    current_cost_list.append(0.0)  # Append 0 for the last entry as specified
+    for t in range(1, total_bargaining_time + 1):
+        if t % 2 == 0:  # Even seconds
+            cost_t = 0.25 * decay_factor**(t/2)
+            cumulative_costs[t-1] = cumulative_costs[t-2] + cost_t
+        else:  # Odd seconds
+            cumulative_costs[t-1] = cumulative_costs[t-2]
 
-    return cumulative_cost_list, current_cost_list
+    for t in range(total_bargaining_time - 2):
+        current_costs[t] = (cumulative_costs[t + 2] - cumulative_costs[t]) / 2
+
+    return cumulative_costs, current_costs
 
 
 def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: Dict[int, Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
@@ -73,21 +80,27 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
 
     # Parse the lists and calculate relevant values based on the elapsed time
-    total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed + 1]
-    total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed + 1]
-    current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
+    total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed]
+    total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed]
+    current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
+
 
     # Update player attributes
-    player.current_TA_costs = current_transaction_costs
-    player.cumulated_TA_costs = total_cost_y_values[-1]
-    player.current_payoff_terminate = -player.cumulated_TA_costs
-    player.payment_delay = total_delay_y_values[-1]
+    #The if clause ensures that we do not get an error for period 0.
+    if total_cost_y_values:
+
+        player.current_TA_costs = current_transaction_costs
+        player.cumulated_TA_costs = total_cost_y_values[-1]
+        player.current_payoff_terminate = -player.cumulated_TA_costs
+        player.payment_delay = total_delay_y_values[-1]
+
+    
 
     # Update the broadcast dictionary with the new values individually
-    broadcast['current_TA_costs'] = player.current_TA_costs
-    broadcast['cumulated_TA_costs'] = player.cumulated_TA_costs
-    broadcast['current_payoff_terminate'] = player.current_payoff_terminate
-    broadcast['payment_delay'] = player.payment_delay
+    broadcast['current_TA_costs'] = player.field_maybe_none('current_TA_costs')
+    broadcast['cumulated_TA_costs'] = player.field_maybe_none('cumulated_TA_costs')
+    broadcast['current_payoff_terminate'] = player.field_maybe_none('current_payoff_terminate')
+    broadcast['payment_delay'] = player.field_maybe_none('payment_delay')   
     broadcast['bargaining_time_elapsed'] = bargaining_time_elapsed
     broadcast['total_cost_y_values'] = total_cost_y_values
     broadcast['total_delay_y_values'] = total_delay_y_values
@@ -143,6 +156,8 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     offer_time_list = json.loads(player.field_maybe_none('offer_time_list') or "[]")
     offer_time_list.append(data.get('offer_time'))
     player.offer_time_list = json.dumps(offer_time_list)
+    player.proposal_made = True
+
 
 def update_group_database_upon_acceptance(group, data):
     """
@@ -175,4 +190,76 @@ def update_group_database_upon_termination(group, data):
     group.terminated_by = data.get('terminated_by')
     group.deal_price = None
     group.terminated = True
+
+
+def setup_player_valuation(player: Any) -> None:
+    """
+    Sets up the player's valuation and saves it in the SQL database.
+    This valuation setup is based on the theory model. 
+
+    Args:
+        player (Any): The player object containing the specific players database.
+
+    Returns:
+        None
+    """
+
+    if player.role == "Seller":
+        player.valuation = 0
+
+    elif player.role == "Buyer":
+        valuation_list = list(range(0, 101, 1))
+        player.valuation = random.choice(valuation_list)
+
+
+def setup_player_transaction_costs(player: Any, ta_treatment: bool, total_bargaining_time) -> None:
+    """This function sets up the player's transaction costs based on the treatment. and saves the data in the player database.
+
+    Args:
+        player: The player object containing the specific player's database.
+        ta_treatment: The treatment for Transaction Costs
+        total_bargaining_time: The total time for bargaining in seconds.
+
+    Returns:
+        None
+    """
+
+    #Calculate Transacion Costs
+    transaction_cost_list, current_costs_list = calculate_transaction_costs(
+    TA_treatment_high=ta_treatment, total_bargaining_time=total_bargaining_time)
+
+
+    #Save all values relevant for displaying transaction costs in the database
+    player.total_costs_list = json.dumps(transaction_cost_list)
+    player.current_costs_list = json.dumps(current_costs_list)
+    player.x_axis_values_TA_graph = json.dumps(list(range(0, total_bargaining_time + 1)))
+    player.y_axis_maximum_TA_graph = transaction_cost_list[-1]
+
+
+def setup_player_delay_list(player: Any, delay_treatment_high: bool, total_bargaining_time: int) -> None:
+    """
+    This function sets up the player's delay list and saves the data in the player database.
+
+    Args:
+        player: The player object containing the specific player's database.
+        delay_multiplier: The delay multiplier for the player.
+        total_bargaining_time: The total time for bargaining in seconds.
+
+    Returns:
+        None
+    """
+
+    delay_multiplier = 3.5 if delay_treatment_high else 1
+    player.delay_multiplier = delay_multiplier
+
+    # Calculate the total delay list
+    total_delay_list = calculate_total_delay_list(total_bargaining_time, delay_multiplier)
+
+    # Save all values relevant for displaying delays in the database
+    player.total_delay_list = json.dumps(total_delay_list)
+    player.x_axis_values_delay_graph = json.dumps(list(range(0, total_bargaining_time + 1)))
+    player.y_axis_maximum_delay_graph = math.ceil(total_bargaining_time * delay_multiplier)
+
+
+
 

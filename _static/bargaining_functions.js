@@ -16,6 +16,8 @@ function initializeElements() {
     window.isFirstClick = true;
     window.AlreadyRefreshed = false;
     window.SliderClicked = false;
+    window.firstSellerProposalMade = false;
+    window.firstBuyerProposalMade = false;
     // Initialize the Euro formatter
     window.EuroFormatter = {
         format: function(amount) {
@@ -210,7 +212,7 @@ function updateTimeChangingElements(js_vars, data) {
     updateElementText('time_spent', data.bargaining_time_elapsed);
     updateElementText('payment_delay', data.payment_delay);
 
-    // Update currency elements
+    // Update currency elements 
     updateCurrencyElement('TA_costs', data.current_TA_costs);
     updateCurrencyElement('cumulated_TA_costs', data.cumulated_TA_costs);
     updateCurrencyElement('my_payoff_terminate', data.current_payoff_terminate);

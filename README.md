@@ -2,9 +2,9 @@
 
 This repository contains the code for the experiment we are running as part of a paper called "Time and Information and Bargaining."
 
-Corresponding Developer: \\
-Nicolas Roever (University of Cologne) \\
-Email: nicoroever@gmail.com \\
+Corresponding Developer: 
+Nicolas Roever (University of Cologne) 
+Email: nicoroever@gmail.com 
 
 ## Quick Start Guide
 
@@ -30,7 +30,7 @@ Just open any browser and navigate to *http://localhost:8000* to see the app.
 
 ## General Information
 
-The experiment is written using oTree livepages. I consider this code to be a very good example of how to implement a livepage following best practices of functional programming and unit testing. \\
+The experiment is written using oTree livepages. I consider this code to be a very good example of how to implement a livepage following best practices of functional programming and unit testing. 
 
 The core components of the code are: 
 
@@ -75,6 +75,19 @@ Within the contraints of the oTree packages, I attempted to make the code as fun
 - The python functions are in *bargain_live/bargaining_functions.py* and the corresponding unit-tests are in *tests/test_bargining_functions.py*. I use the pytest package to test the python functions. 
 
 While some of the functions are quite long as they carry special functionalities in oTree (i.e. liveRecv()), I think I did a really good job at writing the code as functional and humanly readable as possible. Let me know what you think!
+
+## Current Open Questions and To-Do's
+
+This section is only for me as a developer. You can ignore it. 
+
+- I need to implement that the payoffs are updated every second, reflecting changes in transaction costs.
+
+- What is fixed over the entire session and what is changing each round (Player/Seller Role, Valuation)?
+
+- I would recommend not having a valuation of 0 for the seller, because people are confused by that
+
+
+
 
 
 

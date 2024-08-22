@@ -7,7 +7,7 @@ import pandas as pd
 import re
 import numpy as np
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list
 
 
 doc = """
@@ -19,7 +19,7 @@ doc = """
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 3
+    NUM_ROUNDS = 2
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
     TOTAL_BARGAINING_TIME = 2 * 60
@@ -49,6 +49,7 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
 
+    proposal_made = models.BooleanField(initial=False)
     amount_proposed = models.FloatField()#
     amount_accepted = models.IntegerField()#
     current_amount_proposed = models.FloatField()
@@ -66,11 +67,10 @@ class Player(BasePlayer):
     initial_TA_costs = models.IntegerField()#
     decrease_TA_costs_per_second = models.IntegerField()#
     current_TA_costs = models.FloatField()#
-    cumulated_TA_costs = models.FloatField()#
+    cumulated_TA_costs = models.FloatField(initial=0)#
 
+    delay_multiplier = models.FloatField()
     payment_delay = models.FloatField()
-    additional_delay = models.IntegerField()#
-    delay_multiplier = models.FloatField()#
 
     current_payoff_terminate = models.FloatField()#
 
@@ -84,55 +84,26 @@ class Player(BasePlayer):
 
 #-----------------------------------------------------------------------------------------------   
 # FUNCTIONS
+
+
 def creating_session(subsession):
+    """ 
+    This function is called before the session starts. It initializes the players' valuations and transaction costs. Thus, the player always has the same valuation and treatment among all rounds.
+    """
+    
     for player in subsession.get_players():
 
-        # Randomly draw valuations in each round
-        if player.role == "Seller":
-            valuation_list = np.zeros(100)
+        setup_player_valuation(player=player)
 
-        elif player.role == "Buyer":
-            valuation_list = list(range(0, 101, 1))
-
-        player.valuation = random.choice(valuation_list)
-
-
-        # Set transaction costs treatment
-        if player.group.subsession.session.config['TA_treatment_high'] == True:
-            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  100
-            player.decrease_TA_costs_per_second = 1
-        elif player.group.subsession.session.config['TA_treatment_high'] == False:
-            player.initial_TA_costs = player.current_TA_costs = player.cumulated_TA_costs =  50
-            player.decrease_TA_costs_per_second = 1
-
-        player.x_axis_values_TA_graph = json.dumps(list(range(0, C.TOTAL_BARGAINING_TIME + 1)))
-
-        player.current_payoff_terminate = -player.current_TA_costs
-
-        # Set payment delay treatment
-        if player.group.subsession.session.config['delay_treatment_high'] == True:
-            player.additional_delay = 2
-            player.delay_multiplier = 3.5
-        elif player.group.subsession.session.config['delay_treatment_high'] == False:
-            player.additional_delay = 1
-            player.delay_multiplier = 0.5
-
-        player.x_axis_values_delay_graph = json.dumps(list(range(0, C.TOTAL_BARGAINING_TIME + 1)))
-        player.y_axis_maximum_delay_graph = math.ceil(C.TOTAL_BARGAINING_TIME * player.delay_multiplier)
-
-        transaction_cost_list, current_costs_list = calculate_transaction_costs(
-        TA_treatment_high=player.group.subsession.session.config['TA_treatment_high'], 
-        total_bargaining_time=C.TOTAL_BARGAINING_TIME)
-
-        player.y_axis_maximum_TA_graph = transaction_cost_list[-1]
+        setup_player_transaction_costs(player=player, 
+                                       ta_treatment=subsession.session.config['TA_treatment_high'],
+                                       total_bargaining_time=C.TOTAL_BARGAINING_TIME)
         
-        total_delay_list = calculate_total_delay_list(
-            bargaining_time=C.TOTAL_BARGAINING_TIME, 
-            delay_multiplier=player.additional_delay)
-        
-        player.total_costs_list = json.dumps(transaction_cost_list)
-        player.current_costs_list = json.dumps(current_costs_list)
-        player.total_delay_list = json.dumps(total_delay_list)
+        setup_player_delay_list(player=player,
+                                delay_treatment_high=subsession.session.config['delay_treatment_high'],
+                                total_bargaining_time=C.TOTAL_BARGAINING_TIME
+                                )
+
         
 
     # Set up grouping mechanism of random grouping in each round with fixed roles across rounds
@@ -172,8 +143,8 @@ class Bargain(Page):
         return dict(my_role=player.role,
                     other_role=player.get_others_in_group()[0].role, 
                     valuation=player.valuation,
+                    delay_multiplier=player.delay_multiplier,   
                     other_valuation=player.get_others_in_group()[0].valuation,
-                    additional_delay=player.additional_delay,
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
                     treatment_communication=player.group.subsession.session.config['treatment_communication'],
                     )
@@ -190,10 +161,8 @@ class Bargain(Page):
                     my_valuation=player.valuation,
                     other_valuation=player.get_others_in_group()[0].valuation,
                     other_role=player.get_others_in_group()[0].role,
+                    delay_multiplier=player.delay_multiplier,
                     TA_treatment_high=player.group.subsession.session.config['TA_treatment_high'],
-                    initial_TA_costs=player.initial_TA_costs,
-                    decrease_TA_costs_per_second=player.decrease_TA_costs_per_second,
-                    additional_delay=player.additional_delay,
                     delay_treatment_high=player.group.subsession.session.config['delay_treatment_high'],
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
                     maximum_bargain_time=C.TOTAL_BARGAINING_TIME,
@@ -211,6 +180,7 @@ class Bargain(Page):
         group = player.group
         [other] = player.get_others_in_group()
         broadcast = {}
+
         broadcast = update_broadcast_dict_with_basic_values(
             player=player,
             group=group,
@@ -264,6 +234,7 @@ class Bargain(Page):
             group.is_finished = True #This ensures no error is thrown
 
             broadcast["finished"] = True
+        
 
 
         
