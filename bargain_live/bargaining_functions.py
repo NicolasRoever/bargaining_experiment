@@ -262,4 +262,93 @@ def setup_player_delay_list(player: Any, delay_treatment_high: bool, total_barga
 
 
 
+def record_player_payoff_from_round(player: Any) -> None:
+    """
+    Records the player's payoff from the round in the SQL database.
+
+    Args:
+        player (Any): The player object containing the specific player's database.
+        group (Any): The group object containing the deal price.
+
+    Returns:
+        None
+    """
+    
+    #Case 1: A deal was made
+    if player.group.field_maybe_none('deal_price'):
+
+        transaction_costs = player.cumulated_TA_costs
+
+        if player.role == "Seller":
+            player.payoff = player.group.deal_price - player.valuation - transaction_costs
+            print(player.payoff)
+
+        elif player.role == "Buyer":
+            player.payoff = player.valuation - player.group.deal_price - transaction_costs
+            print(player.payoff)
+
+    #Case 2: A deal was terminated
+    elif player.group.field_maybe_none('termination_time'):
+
+        transaction_costs = player.cumulated_TA_costs
+        player.payoff = -transaction_costs
+        print(player.payoff)
+
+    #Case 3: Time was up
+
+    else: 
+        player.payoff = -json.loads(player.total_costs_list)[-1]
+
+
+def record_bargaining_time_on_group_level(player: Any, C: Any) -> None:
+    """
+    Records the bargaining time on the group level in the SQL database.
+
+    Args:
+        player (Any): The player object containing the specific player's database.
+        C (Any): The Constants object 
+
+    Returns:
+        None
+    """
+
+
+    #Case 1: There was an acceptance
+
+    if player.group.field_maybe_none('acceptance_time'):
+
+        player.group.bargain_duration = player.group.acceptance_time - player.group.bargain_start_time
+
+    #Case 2: There was a termination
+    
+    elif player.group.field_maybe_none('termination_time'):
+
+        player.group.bargaining_duration = player.group.termination_time - player.group.bargain_start_time
+
+    #Case 3: Time was up
+    else:
+        player.group.bargaining_time = C.TOTAL_BARGAINING_TIME
+
+def set_final_player_payoff(player: Any, C: Any) -> None:
+    """
+    Chooses a random round to determine the final payoffs. 
+
+    Args:
+        player (Any): The player object containing the specific player's database.
+        C (Any): The Constants object containing the number of rounds.
+
+    Returns:
+        None
+    """
+
+    player.participant.random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
+    player.participant.payoff = player.in_round(player.participant.random_round).payoff
+
+
+    
+
+
+
+
+
 

@@ -11,12 +11,12 @@
         {% if group.accepted_by == player.id_in_group %}
 
         <p>
-            You accepted the price offer by the {{ other_role }} of {{ deal_price }}.
+            You accepted the price offer by the {{ other_role }} of {{ deal_price }}€.
         </p>
 
         {% elif group.accepted_by != player.id_in_group %}
         <p>
-            The {{ other_role }} accepted your offer of {{ deal_price }}.
+            The {{ other_role }} accepted your offer of {{ deal_price }}€.
         </p>
 
         {% endif %}
@@ -36,7 +36,7 @@
         
     {% endif %}
 
-    <p>If this match is drawn to be payoff-relevant, your payoff is going to be {{ player.payoff }} in {{ player.payment_delay }} days. </p>
+    <p>If this match is drawn to be payoff-relevant, your payoff is going to be {{ payoff }} in {{ player.payment_delay }} days. </p>
 
 
 {% else %}

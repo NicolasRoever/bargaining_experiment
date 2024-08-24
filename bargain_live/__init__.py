@@ -7,7 +7,7 @@ import pandas as pd
 import re
 import numpy as np
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff
 
 
 doc = """
@@ -44,7 +44,10 @@ class Group(BaseGroup):
     terminated_by = models.IntegerField()
 
     bargain_start_time = models.FloatField()
-    bargain_duration = models.IntegerField()
+    bargain_duration = models.FloatField()
+
+    current_seller_offer = models.FloatField()
+    current_buyer_offer = models.FloatField()
 
 
 class Player(BasePlayer):
@@ -205,11 +208,15 @@ class Bargain(Page):
 
             if data.get("proposal_by_role") == "Seller":
 
+                group.current_seller_offer = data.get('amount')
                 broadcast["seller_proposal"] = data.get('amount')
 
+
             elif data.get("proposal_by_role") == "Buyer":
-                    
+
+                group.current_buyer_offer = data.get('amount')    
                 broadcast["buyer_proposal"] = data.get('amount')
+
 
 
         #Update database and finish bargaining if a deal was accepted
@@ -234,6 +241,17 @@ class Bargain(Page):
             group.is_finished = True #This ensures no error is thrown
 
             broadcast["finished"] = True
+
+
+        #Update broadcast if offers were already sent so that the client updates the payoffs (which change every second because of the transaction costs)
+        if group.field_maybe_none('current_seller_offer'):
+
+            broadcast.setdefault("seller_proposal", group.current_seller_offer)
+
+        if group.field_maybe_none('current_buyer_offer'):
+
+            broadcast.setdefault("buyer_proposal", group.current_buyer_offer)
+
         
 
 
@@ -244,36 +262,15 @@ class Bargain(Page):
 
 
 
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
 
-    # @staticmethod
-    # def before_next_page(player, timeout_happened):
-    #     if player.group.is_finished == True:
-    #         if player.group.terminated == False:
-    #             if player.role == "Buyer":
-    #                 player.payoff = (player.valuation - player.group.deal_price - player.cumulated_TA_costs)/100
-                    
-    #             elif player.role == "Seller":
-    #                 player.payoff = (player.group.deal_price - player.valuation - player.cumulated_TA_costs)/100
-    #         elif player.group.terminated == True:
-    #             player.payoff = -player.cumulated_TA_costs/100
-        
-    #     else:
-    #         player.payoff = 0
-    #         player.group.deal_price = 0
+        record_player_payoff_from_round(player=player)
+        record_bargaining_time_on_group_level(player=player, C=C)
 
-    #     # Record total bargaininig time
-    #     if player.group.is_finished == True:
-    #         if player.group.field_maybe_none('acceptance_time') is not None:
-    #             player.group.bargain_duration = player.group.acceptance_time 
-    #         elif player.group.field_maybe_none('termination_time') is not None:
-    #             player.group.bargain_duration = player.group.termination_time 
-    #     else:
-    #         player.group.bargain_duration = C.TOTAL_BARGAINING_TIME
-        
-    #     # Set final payoffs
-    #     if player.round_number == C.NUM_ROUNDS:
-    #         player.participant.random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
-    #         player.participant.payoff = player.in_round(player.participant.random_round).payoff
+        if player.round_number == C.NUM_ROUNDS:
+            set_final_player_payoff(player=player, C=C)
+
 
 
 
@@ -297,10 +294,11 @@ class RoundResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
         deal_price = player.group.field_maybe_none('deal_price')
+        payoff = player.payoff  
 
-        return dict(deal_price=cu(deal_price) if deal_price is not None else "No deal",  # Provide a fallback value if there was a termination
+        return dict(deal_price=deal_price if deal_price is not None else "No deal",  # Provide a fallback value if there was a termination
                     other_role=player.get_others_in_group()[0].role, 
-                    TA_costs = cu(player.cumulated_TA_costs / 100)
+                    payoff=payoff
                     )
     
 

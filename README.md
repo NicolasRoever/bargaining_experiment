@@ -80,7 +80,7 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
-- I need to implement that the payoffs are updated every second, reflecting changes in transaction costs.
+- I need to fix that the total bargaining time is not correctly recorded.
 
 - What is fixed over the entire session and what is changing each round (Player/Seller Role, Valuation)?
 
