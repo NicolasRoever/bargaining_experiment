@@ -82,6 +82,8 @@ This section is only for me as a developer. You can ignore it.
 
 - I need to fix that the total bargaining time is not correctly recorded.
 
+- The final payoffs seem to be incorrect, also make sure that they are stored in the database.
+
 - What is fixed over the entire session and what is changing each round (Player/Seller Role, Valuation)?
 
 - I would recommend not having a valuation of 0 for the seller, because people are confused by that
