@@ -335,7 +335,7 @@ function liveRecv(data) {
 
             updateCurrencyElement(
                 elementId="other_payoff_other_accepts_live",
-                amount=(data.buyer_proposal - js_vars.my_valuation - data.other_player_transaction_cost)
+                amount=(data.buyer_proposal - js_vars.other_valuation)
             );
         }
 
@@ -354,7 +354,7 @@ function liveRecv(data) {
 
             updateCurrencyElement(
                 elementId="other_payoff_accept",
-                amount=(data.buyer_proposal - data.other_valuation)
+                amount=(data.buyer_proposal - js_vars.other_valuation)
             );
 
             enableButton(
