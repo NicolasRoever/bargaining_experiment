@@ -327,7 +327,7 @@ def record_bargaining_time_on_group_level(player: Any, C: Any) -> None:
 
     #Case 3: Time was up
     else:
-        player.group.bargaining_time = C.TOTAL_BARGAINING_TIME
+        player.group.bargaining_duration = C.TOTAL_BARGAINING_TIME
 
 def set_final_player_payoff(player: Any, C: Any) -> None:
     """

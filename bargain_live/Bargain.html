@@ -354,7 +354,7 @@ function liveRecv(data) {
 
             updateCurrencyElement(
                 elementId="other_payoff_accept",
-                amount=(js_vars.my_valuation - data.buyer_proposal - data.other_player_transaction_cost)
+                amount=(data.buyer_proposal - data.other_valuation)
             );
 
             enableButton(
