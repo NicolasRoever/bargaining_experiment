@@ -91,21 +91,33 @@ class Player(BasePlayer):
 
 def creating_session(subsession):
     """ 
-    This function is called before the session starts. It initializes the players' valuations and transaction costs. Thus, the player always has the same valuation and treatment among all rounds.
+    This function is called before each subsession starts. In its current implementation, it initializes the players' valuations and transaction costs, thus, valuations are new in each subsession. 
     """
     
     for player in subsession.get_players():
 
+        #Record the time when the bargaining starts for each subsession
+        player.group.bargain_start_time = time.time() 
+
+        #Initialize valuation, transaction costs and delay list for each player
+
         setup_player_valuation(player=player)
 
         setup_player_transaction_costs(player=player, 
-                                       ta_treatment=subsession.session.config['TA_treatment_high'],
-                                       total_bargaining_time=C.TOTAL_BARGAINING_TIME)
+                                    ta_treatment=subsession.session.config['TA_treatment_high'],
+                                    total_bargaining_time=C.TOTAL_BARGAINING_TIME)
         
         setup_player_delay_list(player=player,
                                 delay_treatment_high=subsession.session.config['delay_treatment_high'],
                                 total_bargaining_time=C.TOTAL_BARGAINING_TIME
                                 )
+        
+
+    #Randomly determine the round in which the final payoffs are calculated
+    if subsession.round_number == 1:
+    
+        for player in subsession.get_players():
+            player.participant.vars['random_round'] = random.randint(1, C.NUM_ROUNDS)
 
         
 
@@ -133,7 +145,6 @@ class BargainWaitPage(WaitPage):
     @staticmethod
     def after_all_players_arrive(group):
         group.bargain_start_time = time.time()
-        print(group.bargain_start_time)
 
 
 class Bargain(Page):
@@ -155,7 +166,6 @@ class Bargain(Page):
 
     @staticmethod
     def js_vars(player: Player):
-
 
         return dict(my_id=player.id_in_group, 
                     other_id=player.get_others_in_group()[0].id_in_group,
@@ -311,12 +321,13 @@ class FinalResults(Page):
                     payoff_group_terminated = player.in_round(player.participant.random_round).group.field_maybe_none('terminated'),
                     payoff_group_terminated_by = player.in_round(player.participant.random_round).group.field_maybe_none('terminated_by'),
                     payoff_group_accepted_by = player.in_round(player.participant.random_round).group.field_maybe_none('accepted_by'),
-                    payoff_valuation = cu(player.in_round(player.participant.random_round).valuation / 100),
-                    payoff_TA_costs = cu(player.in_round(player.participant.random_round).cumulated_TA_costs / 100),
+                    payoff_valuation = cu(player.in_round(player.participant.random_round).valuation),
+                    payoff_TA_costs = cu(player.in_round(player.participant.random_round).cumulated_TA_costs),
                     payoff_delay = player.in_round(player.participant.random_round).payment_delay,
                     payoff_bargaining_time = player.in_round(player.participant.random_round).group.bargain_duration,
-                    payoff_deal_price = cu(player.in_round(player.participant.random_round).group.deal_price/100),
+                    payoff_deal_price = cu(player.in_round(player.participant.random_round).group.deal_price),
                     other_role=player.get_others_in_group()[0].role, 
+                    payoff_plus_participation_fee = cu(player.in_round(player.participant.random_round).payoff + player.in_round(player.participant.random_round).group.subsession.session.config['participation_fee']),
                     )
     
     @staticmethod

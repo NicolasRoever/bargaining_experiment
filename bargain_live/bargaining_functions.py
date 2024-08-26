@@ -135,7 +135,6 @@ def update_broadcast_dict_with_other_player_values(player: Any, other: Any, broa
                                                                                                                           
 
 
-
 def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> None:
     """
     Updates the player's amount_proposed_list and offer_time_list fields with new proposal data.
@@ -173,6 +172,7 @@ def update_group_database_upon_acceptance(group, data):
     group.deal_price = float(re.sub(r'[^\d.]', '', data.get('amount'))) # This converts e.g. "$1.10" into 1.10
     group.acceptance_time = data.get('acceptance_time')
     group.accepted_by = data.get('accepted_by')
+
 
 
 def update_group_database_upon_termination(group, data):
@@ -281,11 +281,11 @@ def record_player_payoff_from_round(player: Any) -> None:
 
         if player.role == "Seller":
             player.payoff = player.group.deal_price - player.valuation - transaction_costs
-            print(player.payoff)
+
 
         elif player.role == "Buyer":
             player.payoff = player.valuation - player.group.deal_price - transaction_costs
-            print(player.payoff)
+
 
     #Case 2: A deal was terminated
     elif player.group.field_maybe_none('termination_time'):
@@ -317,13 +317,13 @@ def record_bargaining_time_on_group_level(player: Any, C: Any) -> None:
 
     if player.group.field_maybe_none('acceptance_time'):
 
-        player.group.bargain_duration = player.group.acceptance_time - player.group.bargain_start_time
+        player.group.bargain_duration = player.group.acceptance_time
 
     #Case 2: There was a termination
     
     elif player.group.field_maybe_none('termination_time'):
 
-        player.group.bargaining_duration = player.group.termination_time - player.group.bargain_start_time
+        player.group.bargaining_duration = player.group.termination_time 
 
     #Case 3: Time was up
     else:
