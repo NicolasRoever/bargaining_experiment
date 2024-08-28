@@ -130,7 +130,7 @@ Price Negotiation
     <div class="three_columns_container">
         <div class="three_columns_left" style="flex: 0.5;">
             <h5>Negotiation Costs</h5>
-            <p style="display:inline">Current negotiation costs per second: <div style="display: inline" id ="TA_costs"></div></p>
+            <p style="display:inline">Current negotiation costs per 2 seconds: <div style="display: inline" id ="TA_costs"></div></p>
             <p style="display:inline"> Total negotiation costs: <div style="display: inline" id ="cumulated_TA_costs"></div></p>
             <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px;"></canvas>
         </div>
@@ -190,7 +190,7 @@ Price Negotiation
 
         <div class="three_columns_right" style="flex: 0.5;">
             <h5>Delay in Payment</h5>
-            <p style="display:block">Delay in payment per second: {{ delay_multiplier }} day(s).</p>
+            <p style="display:block">Delay in payment per 2 seconds: {{ double_delay_multiplier }} day(s).</p>
        
             <p style="display:inline">Total delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
             <canvas id="delay_chart" style="width: 100%; min-height: 200px;" ></canvas>

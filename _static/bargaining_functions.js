@@ -213,7 +213,7 @@ function updateTimeChangingElements(js_vars, data) {
     updateElementText('payment_delay', data.payment_delay);
 
     // Update currency elements 
-    updateCurrencyElement('TA_costs', data.current_TA_costs);
+    updateCurrencyElement('TA_costs', data.current_TA_costs * 2);
     updateCurrencyElement('cumulated_TA_costs', data.cumulated_TA_costs);
     updateCurrencyElement('my_payoff_terminate', data.current_payoff_terminate);
 
