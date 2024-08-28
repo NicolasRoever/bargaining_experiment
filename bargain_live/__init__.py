@@ -44,8 +44,8 @@ class Group(BaseGroup):
     terminated_by = models.IntegerField()
 
     bargain_start_time = models.FloatField()
-    bargain_duration = models.FloatField()
-
+    bargaining_duration = models.FloatField()
+   
     current_seller_offer = models.FloatField()
     current_buyer_offer = models.FloatField()
 
@@ -324,7 +324,7 @@ class FinalResults(Page):
                     payoff_valuation = cu(player.in_round(player.participant.random_round).valuation),
                     payoff_TA_costs = cu(player.in_round(player.participant.random_round).cumulated_TA_costs),
                     payoff_delay = player.in_round(player.participant.random_round).payment_delay,
-                    payoff_bargaining_time = player.in_round(player.participant.random_round).group.bargain_duration,
+                    payoff_bargaining_time = player.in_round(player.participant.random_round).group.bargaining_duration,
                     payoff_deal_price = cu(player.in_round(player.participant.random_round).group.deal_price),
                     other_role=player.get_others_in_group()[0].role, 
                     payoff_plus_participation_fee = cu(player.in_round(player.participant.random_round).payoff + player.in_round(player.participant.random_round).group.subsession.session.config['participation_fee']),

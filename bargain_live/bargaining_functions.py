@@ -205,10 +205,10 @@ def setup_player_valuation(player: Any) -> None:
     """
 
     if player.role == "Seller":
-        player.valuation = 0
+        player.valuation = 50
 
     elif player.role == "Buyer":
-        valuation_list = list(range(0, 101, 1))
+        valuation_list = list(range(1, 101, 1))
         player.valuation = random.choice(valuation_list)
 
 

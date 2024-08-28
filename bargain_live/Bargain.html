@@ -119,7 +119,11 @@ Price Negotiation
     <div class="three_columns_container">
         <p style="background-color: #f2f2f2; padding: 15px; width: 150%;">  
             In this match, your value of the object is <b>{{ valuation }}€.</b><br/><br/>
+            {% if my_role == "Buyer" %}
             The {{ other_role }}'s value of the object is {{ other_valuation }}€.
+            {% else %}
+            The Buyer's value of the object will be randomly drawn between 0 and 100 €.
+            {% endif %}
         </p>
     </div>
 
@@ -146,9 +150,16 @@ Price Negotiation
                 <h5>If the {{ other_role }} accepts your current offer: </h5>
                 <p style="margin-top:0.25cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts_live"> No offer yet. </div></p>
                 <p style="margin-top:0.25cm;display: inline;">{{ other_role }}'s Surplus: 
-                    <div style="display: inline" id="other_payoff_other_accepts_live"> 
+                {% if my_role == "Buyer" %}
+                    <div style="display: inline" id="other_payoff_other_accepts_live_buyer"> 
                         No offer yet. 
                     </div>
+                {% else %}
+                <div style="display: inline" id="other_payoff_other_accepts_live_seller"> 
+                    No offer yet. 
+                </div>
+                {% endif %}
+
                 </p>
             </div>
 
@@ -164,9 +175,15 @@ Price Negotiation
                 <h5>If you accept the {{ other_role }}'s offer: </h5>
                 <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">No offer yet.</div></p>
                 <p style="display: inline;">{{ other_role }}'s Surplus: 
-                    <div style="display: inline" id="other_payoff_accept"> 
+                {% if my_role == "Buyer" %}
+                    <div style="display: inline" id="other_payoff_accept_buyer"> 
                         No offer yet. 
                     </div>
+                {% else %}
+                <div style="display: inline" id="other_payoff_accept_seller"> 
+                    No offer yet.
+                </div>
+                {% endif %}
                 </p>
             </div>
         </div>
@@ -187,7 +204,7 @@ Price Negotiation
             <button type="button" class="btn btn-danger btn-lg" id="btn-terminate" style="display: block; margin-bottom: 0.25cm;">Terminate</button>
             <h5>If you terminate the negotiation:</h5>
             <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
-            <p style="display: inline;">{{ other_role }}'s Surplus: <div style="display: inline" id="other_payoff_terminate" ></div></p>
+            <p style="display: inline;">{{ other_role }}'s Payoff: <div style="display: inline" id="other_payoff_terminate" > ??? </div></p>
         </div>
         <div class="three_columns_right" style="background-color: #ffffff; flex: 0.5"></div>
     </div>
@@ -287,9 +304,9 @@ function liveRecv(data) {
                 amount=(data.seller_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
             );
 
-            updateCurrencyElement(
-                elementId="other_payoff_other_accepts_live",
-                amount=(js_vars.other_valuation - data.seller_proposal)
+            updateElementText(
+                elementId="other_payoff_other_accepts_live_seller",
+                content="Buyer's valuation - " + data.seller_proposal + "€"
             );
         }
          // This changes what the buyer sees on the page.  
@@ -305,7 +322,7 @@ function liveRecv(data) {
             );
 
             updateCurrencyElement(
-                elementId="other_payoff_accept",
+                elementId="other_payoff_accept_buyer",
                 amount=(data.seller_proposal - js_vars.other_valuation)
             );
 
@@ -334,7 +351,7 @@ function liveRecv(data) {
             );
 
             updateCurrencyElement(
-                elementId="other_payoff_other_accepts_live",
+                elementId="other_payoff_other_accepts_live_buyer",
                 amount=(data.buyer_proposal - js_vars.other_valuation)
             );
         }
@@ -352,9 +369,9 @@ function liveRecv(data) {
                 amount=(data.buyer_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
             );
 
-            updateCurrencyElement(
-                elementId="other_payoff_accept",
-                amount=(data.buyer_proposal - js_vars.other_valuation)
+            updateElementText(
+                elementId="other_payoff_accept_seller",
+                content=data.buyer_proposal + "€ - Buyer's valuation"
             );
 
             enableButton(
