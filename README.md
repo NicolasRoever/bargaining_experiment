@@ -85,6 +85,10 @@ This section is only for me as a developer. You can ignore it.
 
 - I would recommend not having a valuation of 0 for the seller, because people are confused by that
 
+- rsync --delete -Pa bargaining_experiment  otree15@otree2.uni-koeln.de:Projects/
+
+-  ssh otree15@otree2.uni-koeln.de
+
 
 
 

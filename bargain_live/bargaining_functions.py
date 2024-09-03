@@ -345,10 +345,97 @@ def set_final_player_payoff(player: Any, C: Any) -> None:
     player.participant.payoff = player.in_round(player.participant.random_round).payoff
 
 
+
+def create_random_values_dataframe(number_of_groups: int, buyer_valuations: pd.Series) -> pd.DataFrame:
+    """
+    Creates a dataframe with all random values needed in the experiment.
+
+    Args:
+        number_of_groups (int): The number of groups; each group consists of eight participants.
+        buyer_valuations (pd.Series): The vector of buyer valuations to draw from.
+
+    Returns:
+        pd.Dataframe: A dataframe with all random values.
+        Columns:
+        - Participant_ID: The unique ID of the participant.
+        - Group_ID: The unique ID of the group.
+        - Role: The role of the participant.
+        - Valuation: The valuation of the participant.
+        - Transaction_Costs: The transaction costs of the participant.
+        - Delay_Treatment: The delay multiplier of the participant.
+        - Match_Round_X: The participant_ID with whom the player is matched in the respective round X. 
+    """
+
+    # Initialize Participant Number
+    participant_ids = list(range(1, 8 * number_of_groups + 1)) 
+    df = pd.DataFrame({'Participant_ID': participant_ids})
+
+    #Initialize Group ID's
+    group_ids = np.repeat(range(1, number_of_groups + 1), 8)
+    np.random.shuffle(group_ids)
+    df['Group_ID'] = group_ids
+
+    #Initialize Roles
+    df["Role"] =  df.groupby('Group_ID')['Participant_ID'].transform(
+    lambda x: np.random.permutation(['Seller'] * 4 + ['Buyer'] * 4))
+
+    #Initialize Transaction Cost Treatment
+    df["TA_Treatment"] = df.groupby('Group_ID')['Participant_ID'].transform(lambda x: np.random.permutation(['High'] * 4 + ['Low'] * 4))
+
+    #Initialize Delay Treatment
+    df["Delay_Treatment"] = df.groupby('Group_ID')['Participant_ID'].transform(
+    lambda x: np.random.permutation(['High'] * 4 + ['Low'] * 4))
+
+    #Initialize Valuation
+    df['Valuation'] = np.where(
+    df['Role'] == 'Buyer', 
+    np.random.choice(buyer_valuations, size=len(df)), 
+    0)
+
+    #Add Matches for individual round
+    df_with_matches = create_matches_for_rounds(df.copy())
+
+    return df_with_matches
+
+
+
+# Function to create match rounds
+def create_matches_for_rounds(df, num_rounds=20):
+    """
+    Creates columns for match rounds where each buyer is randomly matched with a seller from the same group.
     
+    Parameters:
+    - df: DataFrame containing participant IDs, group numbers, and roles.
+    - num_rounds: Number of match rounds to create.
+    
+    Returns:
+    - DataFrame with added columns for each match round.
+    """
 
+    # Create columns for each match round
+    for round_num in range(1, num_rounds + 1):
+        match_column_name = f'Match_Round_{round_num}'
 
+        # Initialize the column with NaN
+        df[match_column_name] = np.nan
 
+        # Loop over each group
+        for group, group_data in df.groupby('Group_ID'):
+            # Get buyers and sellers within the group
+            buyers = group_data[group_data['Role'] == 'Buyer']['Participant_ID'].tolist()
+            sellers = group_data[group_data['Role'] == 'Seller']['Participant_ID'].tolist()
+
+            # Randomly shuffle sellers to create random matches
+            np.random.shuffle(sellers)
+
+            # Assign matches to buyers and sellers
+            for i in range(len(buyers)):
+                # Match buyer with a seller
+                df.loc[df['Participant_ID'] == buyers[i], match_column_name] = sellers[i]
+                # Match seller with a buyer
+                df.loc[df['Participant_ID'] == sellers[i], match_column_name] = buyers[i]
+    
+    return df
 
 
 
