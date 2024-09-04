@@ -438,4 +438,124 @@ def create_matches_for_rounds(df, num_rounds=20):
     return df
 
 
+def create_participant_data(number_of_groups: int, buyer_valuations: pd.Series) -> pd.DataFrame:
+    """
+    Creates a dataframe with group assignments, roles treatments and valuations for each participant.
+
+    Args:
+        number_of_groups (int): The number of groups; each group consists of eight participants.
+
+    Returns:
+        pd.Dataframe: A dataframe with group assignments.
+        Columns:
+        - Participant_ID: The unique ID of the participant.
+        - Group_ID: The unique ID of the group.
+    """
+
+    # Initialize Participant Number
+    participant_ids = list(range(1, 8 * number_of_groups + 1)) 
+    df = pd.DataFrame({'Participant_ID': participant_ids})
+
+    # Initialize Group ID's
+    group_ids = np.repeat(range(1, number_of_groups + 1), 8)
+    np.random.shuffle(group_ids)
+    df['Group_ID'] = group_ids
+
+    #Initialize Roles
+    df["Role"] =  df.groupby('Group_ID')['Participant_ID'].transform(
+    lambda x: np.random.permutation(['Seller'] * 4 + ['Buyer'] * 4))
+
+    #Initialize Transaction Cost Treatment
+    df["TA_Treatment"] = df.groupby('Group_ID')['Participant_ID'].transform(lambda x: np.random.permutation(['High'] * 4 + ['Low'] * 4))
+
+    #Initialize Delay Treatment
+    df["Delay_Treatment"] = df.groupby('Group_ID')['Participant_ID'].transform(
+    lambda x: np.random.permutation(['High'] * 4 + ['Low'] * 4))
+
+    #Initialize Valuation
+    df['Valuation'] = np.where(
+    df['Role'] == 'Buyer', 
+    np.random.choice(buyer_valuations, size=len(df)), 
+    0)
+
+    return df
+
+
+
+
+def create_group_matrix_for_individual_round(group_dataframe: pd.DataFrame, random_seed = 40) -> List[List[int]]:
+    """
+    Creates a matrix of group assignments for each participant in a single round.
+    Each match is unique, all matched participants are in the same group, 
+    and a "Buyer" is matched with a "Seller".
+
+    Args:
+        group_dataframe (pd.DataFrame): A dataframe with group assignments for each participant,
+                                        the ID of each participant, and their roles.
+
+    Returns:
+        List[List]: A matrix of group assignments for each participant in a single round.
+    """
+    # Set the random seed for reproducibility
+    np.random.seed(random_seed)
+
+    # Initialize the matrix to store the matches
+    group_matrix = []
+
+    # Iterate through each group in the dataframe
+    for group_id, group_data in group_dataframe.groupby('Group_ID'):
+        # Separate buyers and sellers within the group
+        buyers = group_data[group_data['Role'] == 'Buyer']['Participant_ID'].tolist()
+        sellers = group_data[group_data['Role'] == 'Seller']['Participant_ID'].tolist()
+
+        # Shuffle the lists to create random matches
+        np.random.shuffle(buyers)
+        np.random.shuffle(sellers)
+
+        # Pair each buyer with a seller
+        for buyer, seller in zip(buyers, sellers):
+            group_matrix.append([seller, buyer])  # Pair the seller with the buyer
+
+    return group_matrix
+
+
+
+
+def create_group_matrices_for_all_rounds(group_dataframe: pd.DataFrame) -> List[List[List]]:
+    """
+    Creates a matrix of group assignments for each participant in all 20 rounds. It is of the following shape:  
+    [[[1, 2],
+     [5, 4],
+     [3, 6],
+      ...],
+     [[1, 2],
+     [5, 4],
+     [3, 6],
+      ...],
+      ...].
+      The requirements are that (1) each match of two participants is unique, (2) all matched participants are in the same group (3) a participant with the role "Buyer" is matched with a participant with the role "Seller".
+
+    Args:
+        group_dataframe (pd.DataFrame): A dataframe with group assignments for each participant, the id of each participant and the roles of the participants. 
+
+    Returns:
+        List[List[List]]: A matrix of group assignments for each participant in all rounds.
+    """
+
+    # Initialize a list to store the matrices for all rounds
+    all_rounds_matrix = []
+
+    # Create group assignments for 20 rounds
+    for round_number in range(20):
+        # Count the random seed upwards starting from 40
+        random_seed = 40 + round_number
+
+        # Generate the group matrix for the current round
+        round_matrix = create_group_matrix_for_individual_round(group_dataframe, random_seed)
+
+        # Append the matrix for the current round to the list
+        all_rounds_matrix.append(round_matrix)
+
+    return all_rounds_matrix
+
 

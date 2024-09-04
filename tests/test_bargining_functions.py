@@ -3,8 +3,7 @@ import pandas as pd
 import numpy as np
 from typing import List, Tuple
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe
-
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds
 
 
 #-------------------------
@@ -165,6 +164,131 @@ def test_correct_transaction_costs_and_delay_treatments(number_of_groups, buyer_
         low_delay = group_data['Delay_Treatment'].tolist().count('Low')
         assert high_treatment == 4 and low_treatment == 4, f"Incorrect TA_Treatment distribution in group {group_id}."
         assert high_delay == 4 and low_delay == 4, f"Incorrect Delay_Treatment distribution in group {group_id}."
+
+
+#-------------------------
+# Test cases for create_participant_data
+
+
+def test_correct_number_of_participants(number_of_groups, buyer_valuations):
+    # Test that the dataframe has the correct number of participants
+    df = create_participant_data(number_of_groups, buyer_valuations)
+    expected_number_of_participants = number_of_groups * 8
+    assert len(df) == expected_number_of_participants, "The number of participants is incorrect."
+
+def test_half_buyers_half_sellers_per_group(number_of_groups, buyer_valuations):
+    # Test that each group has exactly 4 buyers and 4 sellers
+    df = create_participant_data(number_of_groups, buyer_valuations)
+    for group_id, group_data in df.groupby('Group_ID'):
+        buyers = group_data[group_data['Role'] == 'Buyer']
+        sellers = group_data[group_data['Role'] == 'Seller']
+        assert len(buyers) == 4, f"Group {group_id} does not have 4 buyers."
+        assert len(sellers) == 4, f"Group {group_id} does not have 4 sellers."
+
+def test_correct_valuations_assignment(number_of_groups, buyer_valuations):
+    # Test that buyers have valuations from the buyer_valuations and sellers have valuation 0
+    df = create_participant_data(number_of_groups, buyer_valuations)
+    for index, row in df.iterrows():
+        if row['Role'] == 'Buyer':
+            assert row['Valuation'] in buyer_valuations.values, "Buyer has an incorrect valuation."
+        elif row['Role'] == 'Seller':
+            assert row['Valuation'] == 0, "Seller does not have a valuation of 0."
+
+def test_correct_treatment_assignments(number_of_groups, buyer_valuations):
+    # Test that the transaction costs and delay treatments are correctly assigned
+    df = create_participant_data(number_of_groups, buyer_valuations)
+    for group_id, group_data in df.groupby('Group_ID'):
+        high_ta_treatment = group_data['TA_Treatment'].tolist().count('High')
+        low_ta_treatment = group_data['TA_Treatment'].tolist().count('Low')
+        high_delay_treatment = group_data['Delay_Treatment'].tolist().count('High')
+        low_delay_treatment = group_data['Delay_Treatment'].tolist().count('Low')
+        assert high_ta_treatment == 4 and low_ta_treatment == 4, f"Incorrect TA_Treatment distribution in group {group_id}."
+        assert high_delay_treatment == 4 and low_delay_treatment == 4, f"Incorrect Delay_Treatment distribution in group {group_id}."
+
+def test_unique_group_assignments(number_of_groups, buyer_valuations):
+    # Test that each participant is uniquely assigned to a group
+    df = create_participant_data(number_of_groups, buyer_valuations)
+    assert df['Group_ID'].nunique() == number_of_groups, "The number of unique groups is incorrect."
+
+
+#-------------------------
+# Test cases for create_group_matrix_for_individual_round
+
+
+@pytest.fixture
+def sample_input():
+    return pd.DataFrame({
+        'Participant_ID': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        'Group_ID': [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2],
+        'Role': ['Seller', 'Seller', 'Buyer', 'Buyer', 'Seller', 'Seller', 'Buyer', 'Buyer',
+                 'Seller', 'Seller', 'Buyer', 'Buyer', 'Seller', 'Seller', 'Buyer', 'Buyer'],
+        'TA_Treatment': ['High', 'Low', 'High', 'Low', 'High', 'Low', 'High', 'Low',
+                         'High', 'Low', 'High', 'Low', 'High', 'Low', 'High', 'Low'],
+        'Delay_Treatment': ['Low', 'High', 'Low', 'High', 'Low', 'High', 'Low', 'High',
+                            'Low', 'High', 'Low', 'High', 'Low', 'High', 'Low', 'High'],
+        'Valuation': [0, 0, 75.4, 62.3, 0, 0, 88.1, 47.8, 
+                      0, 0, 55.7, 38.9, 0, 0, 91.2, 69.4]
+    })
+
+def test_create_group_matrix_for_individual_round_for_sample_seed(sample_input):
+
+    expected_output = [
+        [6, 8], [2, 3], [5, 4], [1, 7], [9, 16], [10, 12], [13, 15], [14, 11]
+    ]
+
+    actual_output = create_group_matrix_for_individual_round(sample_input, random_seed=40)
+
+    assert actual_output == expected_output, "The group matrix is incorrect."
+
+
+@pytest.mark.parametrize("seed", [10, 20, 30, 40, 50])
+def test_unique_matches(sample_input, seed):
+    # Test that each match of two participants is unique
+    matrix = create_group_matrix_for_individual_round(sample_input, random_seed=seed)
+    unique_pairs = set(tuple(sorted(pair)) for pair in matrix)
+    assert len(unique_pairs) == len(matrix), f"Each match should be unique for seed {seed}."
+
+@pytest.mark.parametrize("seed", [10, 20, 30, 40, 50])
+def test_same_group(sample_input, seed):
+    # Test that all matched participants are in the same group
+    matrix = create_group_matrix_for_individual_round(sample_input, random_seed=seed)
+    group_dict = sample_input.set_index('Participant_ID')['Group_ID'].to_dict()
+    for seller, buyer in matrix:
+        assert group_dict[seller] == group_dict[buyer], f"All matched participants should be in the same group for seed {seed}."
+
+@pytest.mark.parametrize("seed", [10, 20, 30, 40, 50])
+def test_buyer_seller_match(sample_input, seed):
+    # Test that a buyer is matched with a seller
+    matrix = create_group_matrix_for_individual_round(sample_input, random_seed=seed)
+    role_dict = sample_input.set_index('Participant_ID')['Role'].to_dict()
+    for seller, buyer in matrix:
+        assert role_dict[seller] == 'Seller', f"Seller in match is not correct for seed {seed}."
+        assert role_dict[buyer] == 'Buyer', f"Buyer in match is not correct for seed {seed}."
+
+@pytest.mark.parametrize("seed", [10, 20, 30, 40, 50])
+def test_number_of_matches(sample_input, seed):
+    # Test that the number of matches is correct (4 matches per group, total of 8 matches for 2 groups)
+    matrix = create_group_matrix_for_individual_round(sample_input, random_seed=seed)
+    assert len(matrix) == 8, f"Number of matches should be 8 for seed {seed}."
+
+
+
+
+
+#-------------------------
+# Test cases for create_group_matrices_for_all_rounds
+
+
+def test_round_2_different_from_round_1(sample_input):
+    # Generate the group matrix for all rounds
+    all_rounds_matrix = create_group_matrices_for_all_rounds(sample_input)
+
+    # Get the matrices for round 1 and round 2
+    round_1_matrix = all_rounds_matrix[0]
+    round_2_matrix = all_rounds_matrix[1]
+
+    # Check that the matrix for round 2 is different from round 1
+    assert round_1_matrix != round_2_matrix, "The group matrix for round 2 should be different from round 1."
 
 
 

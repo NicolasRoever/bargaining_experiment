@@ -6,12 +6,15 @@ import math
 import pandas as pd
 import re
 import numpy as np
+import pathlib
 
 from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff
 
 
 doc = """
 """
+
+CURRENT_PATH = pathlib.Path(__file__).parent
 
 
 #-----------------------------------------------------------------------------------------------
@@ -93,6 +96,8 @@ def creating_session(subsession):
     """ 
     This function is called before each subsession starts. In its current implementation, it initializes the players' valuations and transaction costs, thus, valuations are new in each subsession. 
     """
+
+    participant_data = pd.read_pickle(CURRENT_PATH/ 'randomization_values' / f'participant_data_{subsession.session.config["number_of_groups"]}_groups.pkl')
     
     for player in subsession.get_players():
 
@@ -101,16 +106,28 @@ def creating_session(subsession):
 
         #Initialize valuation, transaction costs and delay list for each player
 
-        setup_player_valuation(player=player)
+        player.valuation = participant_data.loc[
+        participant_data['Participant_ID'] == player.participant.id_in_session, 'Valuation'
+        ].values[0]
 
         setup_player_transaction_costs(player=player, 
-                                    ta_treatment=subsession.session.config['TA_treatment_high'],
+                                    ta_treatment=participant_data.loc[
+                                    participant_data['Participant_ID'] == player.participant.id_in_session, 'TA_Treatment'
+                                    ].values[0],
                                     total_bargaining_time=C.TOTAL_BARGAINING_TIME)
         
         setup_player_delay_list(player=player,
-                                delay_treatment_high=subsession.session.config['delay_treatment_high'],
+                                delay_treatment_high=participant_data.loc[
+                                    participant_data['Participant_ID'] == player.participant.id_in_session, 'Delay_Treatment'
+                                    ].values[0],
                                 total_bargaining_time=C.TOTAL_BARGAINING_TIME
                                 )
+        
+    subsession_number = subsession.round_number
+    group_matrix = pd.read_pickle(CURRENT_PATH/ 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups.pkl')
+    group_matrix = group_matrix[subsession_number-1]
+
+
         
 
     #Randomly determine the round in which the final payoffs are calculated
@@ -119,11 +136,6 @@ def creating_session(subsession):
         for player in subsession.get_players():
             player.participant.vars['random_round'] = random.randint(1, C.NUM_ROUNDS)
 
-        
-
-    # Set up grouping mechanism of random grouping in each round with fixed roles across rounds
-    ###### Disable for testing ######
-    #subsession.group_randomly(fixed_id_in_group = True) 
     
 
 #-----------------------------------------------------------------------------------------------
@@ -176,8 +188,6 @@ class Bargain(Page):
                     other_valuation=player.get_others_in_group()[0].valuation,
                     other_role=player.get_others_in_group()[0].role,
                     delay_multiplier=player.delay_multiplier,
-                    TA_treatment_high=player.group.subsession.session.config['TA_treatment_high'],
-                    delay_treatment_high=player.group.subsession.session.config['delay_treatment_high'],
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
                     maximum_bargain_time=C.TOTAL_BARGAINING_TIME,
                     x_values_TA_graph=json.loads(player.x_axis_values_TA_graph),

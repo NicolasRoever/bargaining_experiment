@@ -1,17 +1,27 @@
 from os import environ
+import pandas as pd
+
+import pathlib
+
+SOURCE_DIR = pathlib.Path(__file__)
 
 SESSION_CONFIGS = [
     dict(
     name = "bargain_live",
     app_sequence = ["bargain_live"],
-    num_demo_participants=2,
+    num_demo_participants=24,
+    number_of_groups = 3, 
     TA_treatment_high = False,
     delay_treatment_high = True,
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
+    doc="""
+    Adjust the number of groups dependent on the number of participants. There are 8 participants per group. YOU HAVE TO HAVE 24/32 PARTICIPANTS!!!"""
     )
     
 ]
+    
+
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
 # in SESSION_CONFIGS, except those that explicitly override it.
