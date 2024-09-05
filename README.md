@@ -80,31 +80,36 @@ While some of the functions are quite long as they carry special functionalities
 
 - We use groups of 8 with 4 buyers and 4 sellers each who play 20 rounds against each other to have multiple independent samples
 
-- Every participant has the same transaction cost and delay treatment over all 20 rounds.
+- We only use between subject variation, so in every session, we set the transaction cost and delay treatment as the same for everyone
 
-- Every participant has the same valuation over all 20 rounds
+- We pre-draw 4x20 valuations. They are used for the buyers in every group of 8 (the sellers always have a valuation of 0.)
+
 
 
 ### Coding the Randomization procedure in oTree
 
+- The transaction cost treatment and the delay treatment are part of the session configuration.
+
 - I have a notebook called *randomization values.ipynb*, doing the following:
 
-    1. I have a vector of 100 randomly drawn buyer valuations. 
-    2.  I prepare the groups for the case of 16, 24 and 32 players. For each case, I prepare the following output: 20 group matrices to be used in the set_group_matrix() function. 
-    3. I prepare a dataframe with the individual role, transaction cost treatment and delay treatment.
+    1. I draw 4x20 valuations. They are the valuations for the buyers in each group. 
+    3. I prepare a dataframe with the individual role, the group and the valuations for the 20 rounds. This dataframe exists for the case of 8,16,24 and 32 players. It is exported and stored.
+    2.  I prepare the groups for the case of 8, 16, 24 and 32 players. For each case, I prepare the following output: 20 group matrices to be used in the set_group_matrix() function. 
+
+- In the first round, I set the roles for the players. 
 
 - In every round, I set the group matrix in the creating_subsession() function
 
-- I also set player valuations and delay treatments in the creating_subsession() function 
-
-- I generate all random numbers with the random number generator set to **40** or I count upwards from 40 if necessary. 
+- I also set player valuations in the creating_subsession() function 
 
 - [This](https://otree.readthedocs.io/en/latest/multiplayer/groups.html) is the correct page in the documentation
+
 
 ## Current Open Questions and To-Do's
 
 This section is only for me as a developer. You can ignore it. 
 
+- Please look if the dataframe participant_data was created correctly and is loaded correctly. Beacuse I am unsure. 
 
 - rsync --delete -Pa bargaining_experiment  otree15@otree2.uni-koeln.de:Projects/
 
