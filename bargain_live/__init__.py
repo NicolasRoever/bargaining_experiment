@@ -107,6 +107,8 @@ def creating_session(subsession):
 
     is_valid_list(groups_data, "groups_data")
 
+    subsession.set_group_matrix(groups_data[subsession_number-1])
+
     for player in subsession.get_players():
 
         #Record the time when the bargaining starts for each subsession
@@ -117,17 +119,7 @@ def creating_session(subsession):
         player.valuation = participant_data.loc[
         participant_data['Participant_ID'] == player.participant.id_in_session, 'Valuation'
         ].values[0][subsession_number-1]
-        
 
-        group_matrix = pd.read_pickle(CURRENT_PATH/ 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups.pkl')
-
-        print(group_matrix[subsession_number-1])
-        group_matrix = group_matrix[subsession_number-1]
-
-
-
-    #Randomly determine the round in which the final payoffs are calculated
-    if subsession_number == 1:
 
         setup_player_transaction_costs(player=player, 
                                     ta_treatment=subsession.session.config['TA_treatment_high'],
@@ -137,8 +129,11 @@ def creating_session(subsession):
                                 delay_treatment_high=subsession.session.config['delay_treatment_high'],
                                 total_bargaining_time=C.TOTAL_BARGAINING_TIME
                                 )
-
+        
     
+    #Randomly determine the round in which the final payoffs are calculated
+    if subsession_number == 1:
+
         for player in subsession.get_players():
             player.participant.vars['random_round'] = random.randint(1, C.NUM_ROUNDS)
 

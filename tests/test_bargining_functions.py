@@ -305,6 +305,8 @@ def test_round_2_different_from_round_1(sample_input):
     round_1_matrix = all_rounds_matrix[0]
     round_2_matrix = all_rounds_matrix[1]
 
+    breakpoint()
+
     # Check that the matrix for round 2 is different from round 1
     assert round_1_matrix != round_2_matrix, "The group matrix for round 2 should be different from round 1."
 
