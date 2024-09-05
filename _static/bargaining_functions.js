@@ -118,13 +118,13 @@ function createChart(chartName, xValues, yValues, yLabel, yMin, yMax) {
             labels: xValues,
             datasets: [{
                 fill: false,
-                lineTension: 0,
+                lineTension: 0.4,  // Increase line tension for a smoother curve
                 backgroundColor: "rgba(0,0,255,1.0)",
                 borderColor: "black",
                 borderWidth: 1.5,
-                data: limitedData,  // Use the mapped data
-                steppedLine: true,
-                pointRadius: 0,
+                data: limitedData,
+                steppedLine: false,  // Disable stepped line to make it smooth
+                pointRadius: 0,  // Adjust point radius if you want points to be visible
             }],
         },
         options: {
@@ -145,7 +145,7 @@ function createChart(chartName, xValues, yValues, yLabel, yMin, yMax) {
                     type: 'category',
                     ticks: {
                         min: 0, 
-                        max: xValues.length - 1,  // Keep the full x-axis
+                        max: xValues.length - 1,
                     },
                     scaleLabel: {
                         display: true, 
