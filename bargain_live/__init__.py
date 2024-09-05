@@ -229,6 +229,7 @@ class Bargain(Page):
             other=other,
             broadcast=broadcast
         )
+
         
         # Update database and broadcast if a proposal was made
         if data.get('type') == 'propose':

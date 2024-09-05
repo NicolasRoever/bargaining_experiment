@@ -216,6 +216,7 @@ function updateTimeChangingElements(js_vars, data) {
     updateCurrencyElement('TA_costs', data.current_TA_costs * 2);
     updateCurrencyElement('cumulated_TA_costs', data.cumulated_TA_costs);
     updateCurrencyElement('my_payoff_terminate', data.current_payoff_terminate);
+    updateCurrencyElement('other_payoff_terminate', -data.other_player_transaction_cost);
 
     // Update charts with the provided data and js_vars
     updateCharts(data, js_vars);

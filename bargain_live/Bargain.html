@@ -203,8 +203,10 @@ Price Negotiation
             <h4>Terminate the Negotiation</h4>
             <button type="button" class="btn btn-danger btn-lg" id="btn-terminate" style="display: block; margin-bottom: 0.25cm;">Terminate</button>
             <h5>If you terminate the negotiation:</h5>
+
             <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
-            <p style="display: inline;">{{ other_role }}'s Payoff: <div style="display: inline" id="other_payoff_terminate" > ??? </div></p>
+
+            <p style="display: inline;">{{ other_role }}'s Payoff: <div style="display: inline" id="other_payoff_terminate" > </div></p>
         </div>
         <div class="three_columns_right" style="background-color: #ffffff; flex: 0.5"></div>
     </div>
@@ -281,6 +283,8 @@ document.getElementById('btn-terminate').addEventListener('click', function() {
 
 
 function liveRecv(data) {  
+
+    console.log(data.other_player_transaction_cost)
 
 
     // Update all elements which change every second independent of the players actions
