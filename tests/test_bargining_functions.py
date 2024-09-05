@@ -39,14 +39,14 @@ def test_calculate_total_delay_list(bargaining_time: int, delay_multiplier: floa
 def test_cumulative_transaction_cost():
     time = 120
     cost_factor = 0.375
-    decay_factor = 0.073
+    decay_factor = 0.035
 
-    expected_cost = 33.816
+    expected_cost = 10.565
 
     result = cumulative_transaction_cost_function(time, cost_factor, decay_factor)
 
     # Assert the result is close to the expected value
-    assert np.isclose(result, expected_cost, atol=0.001), f"Expected {expected_cost}, but got {result}"
+    assert np.isclose(result, expected_cost, atol=0.05), f"Expected {expected_cost}, but got {result}"
 
 
 

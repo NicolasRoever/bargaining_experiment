@@ -53,7 +53,7 @@ def calculate_transaction_costs(TA_treatment_high: bool, delay_treatment_high: b
     
     cost_factor = 0.375 if TA_treatment_high else 0.125
     
-    decay_factor = 0.073 if delay_treatment_high else 0.01
+    decay_factor = 0.035 if delay_treatment_high else 0.01
 
     time_values = np.arange(0, total_bargaining_time + 1)
 
