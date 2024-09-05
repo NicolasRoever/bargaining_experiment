@@ -99,6 +99,14 @@ def creating_session(subsession):
 
     subsession_number = subsession.round_number
 
+    participant_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'participant_data_{subsession.session.config["number_of_groups"]}_groups.pkl')
+
+    is_valid_dataframe(participant_data, "participant_data")
+
+    groups_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups.pkl')
+
+    is_valid_list(groups_data, "groups_data")
+
     for player in subsession.get_players():
 
         #Record the time when the bargaining starts for each subsession
@@ -108,21 +116,18 @@ def creating_session(subsession):
 
         player.valuation = participant_data.loc[
         participant_data['Participant_ID'] == player.participant.id_in_session, 'Valuation'
-        ][subsession.round_number-1]
+        ].values[0][subsession_number-1]
+        
 
         group_matrix = pd.read_pickle(CURRENT_PATH/ 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups.pkl')
+
+        print(group_matrix[subsession_number-1])
         group_matrix = group_matrix[subsession_number-1]
+
+
 
     #Randomly determine the round in which the final payoffs are calculated
     if subsession_number == 1:
-
-        participant_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'participant_data_{subsession.session.config["number_of_groups"]}_groups.pkl')
-
-        is_valid_dataframe(participant_data, "participant_data")
-
-        groups_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups.pkl')
-
-        is_valid_list(groups_data, "groups_data")
 
         setup_player_transaction_costs(player=player, 
                                     ta_treatment=subsession.session.config['TA_treatment_high'],
