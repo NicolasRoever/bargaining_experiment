@@ -123,6 +123,7 @@ def creating_session(subsession):
 
         setup_player_transaction_costs(player=player, 
                                     ta_treatment=subsession.session.config['TA_treatment_high'],
+                                    delay_treatment=subsession.session.config['delay_treatment_high'],
                                     total_bargaining_time=C.TOTAL_BARGAINING_TIME)
         
         setup_player_delay_list(player=player,

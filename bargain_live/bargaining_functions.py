@@ -28,7 +28,15 @@ def calculate_total_delay_list(bargaining_time: int, delay_multiplier: float) ->
     return total_delay_list
 
 
-def calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: int) -> Tuple[List[float], List[float]]:
+def cumulative_transaction_cost_function(time: float, cost_factor: float, decay_factor: float) -> float:
+    """This function spells out the cumulative transaction cost function dependent on time"""
+
+    cumulative_transaction_cost = cost_factor * ((1-np.exp(-decay_factor*time)) / decay_factor) 
+
+    return cumulative_transaction_cost
+
+
+def calculate_transaction_costs(TA_treatment_high: bool, delay_treatment_high: bool, total_bargaining_time: int) -> Tuple[List[float], List[float]]:
     """
     Calculate the cumulative costs over time with a decay factor depending on the treatment andotre
     compute the differences between each consecutive cost.
@@ -42,22 +50,19 @@ def calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: 
         - A list of cumulative costs at each second.
         - A list of differences between each second's cost and the next.
     """
-    decay_factor = 0.99 if TA_treatment_high else 0.93
+    
+    cost_factor = 0.375 if TA_treatment_high else 0.125
+    
+    decay_factor = 0.073 if delay_treatment_high else 0.01
 
-    cumulative_costs = [0] * total_bargaining_time
-    current_costs = [0] * (total_bargaining_time)
+    time_values = np.arange(0, total_bargaining_time + 1)
 
-    for t in range(1, total_bargaining_time + 1):
-        if t % 2 == 0:  # Even seconds
-            cost_t = 0.25 * decay_factor**(t/2)
-            cumulative_costs[t-1] = cumulative_costs[t-2] + cost_t
-        else:  # Odd seconds
-            cumulative_costs[t-1] = cumulative_costs[t-2]
+    cumulative_costs = cumulative_transaction_cost_function(time_values, cost_factor, decay_factor)
 
-    for t in range(total_bargaining_time - 2):
-        current_costs[t] = (cumulative_costs[t + 2] - cumulative_costs[t]) / 2
+    # Calculate the differences between each second's cost and the next
+    cost_differences = np.append(np.diff(cumulative_costs), 0)
 
-    return cumulative_costs, current_costs
+    return cumulative_costs.tolist(), cost_differences.tolist() 
 
 
 def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: Dict[int, Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
@@ -212,7 +217,7 @@ def setup_player_valuation(player: Any) -> None:
         player.valuation = random.choice(valuation_list)
 
 
-def setup_player_transaction_costs(player: Any, ta_treatment: bool, total_bargaining_time) -> None:
+def setup_player_transaction_costs(player: Any, ta_treatment: bool, delay_treatment: bool, total_bargaining_time) -> None:
     """This function sets up the player's transaction costs based on the treatment. and saves the data in the player database.
 
     Args:
@@ -226,7 +231,9 @@ def setup_player_transaction_costs(player: Any, ta_treatment: bool, total_bargai
 
     #Calculate Transacion Costs
     transaction_cost_list, current_costs_list = calculate_transaction_costs(
-    TA_treatment_high=ta_treatment, total_bargaining_time=total_bargaining_time)
+    TA_treatment_high=ta_treatment, 
+    delay_treatment_high=delay_treatment,
+    total_bargaining_time=total_bargaining_time)
 
 
     #Save all values relevant for displaying transaction costs in the database

@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from typing import List, Tuple
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function
 
 
 #-------------------------
@@ -32,6 +32,21 @@ def test_calculate_total_delay_list(bargaining_time: int, delay_multiplier: floa
     # Assert: Check if the actual result matches the expected result
     assert actual == pytest.approx(expected, rel=1e-9), f"Expected {expected}, but got {actual}"
 
+
+#-------------------------
+# Test cases for cumulative_transaction_cost_function
+
+def test_cumulative_transaction_cost():
+    time = 120
+    cost_factor = 0.375
+    decay_factor = 0.073
+
+    expected_cost = 33.816
+
+    result = cumulative_transaction_cost_function(time, cost_factor, decay_factor)
+
+    # Assert the result is close to the expected value
+    assert np.isclose(result, expected_cost, atol=0.001), f"Expected {expected_cost}, but got {result}"
 
 
 
