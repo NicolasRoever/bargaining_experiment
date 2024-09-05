@@ -438,12 +438,13 @@ def create_matches_for_rounds(df, num_rounds=20):
     return df
 
 
-def create_participant_data(number_of_groups: int, buyer_valuations: pd.Series) -> pd.DataFrame:
+def create_participant_data(number_of_groups: int, buyer_valuations: List[List]) -> pd.DataFrame:
     """
     Creates a dataframe with group assignments, roles treatments and valuations for each participant.
 
     Args:
         number_of_groups (int): The number of groups; each group consists of eight participants.
+        buyer_valuations (List[List]): This is a list of four lists, each containing the 20  valuations of the buyers in a group.
 
     Returns:
         pd.Dataframe: A dataframe with group assignments.
@@ -465,19 +466,14 @@ def create_participant_data(number_of_groups: int, buyer_valuations: pd.Series) 
     df["Role"] =  df.groupby('Group_ID')['Participant_ID'].transform(
     lambda x: np.random.permutation(['Seller'] * 4 + ['Buyer'] * 4))
 
-    #Initialize Transaction Cost Treatment
-    df["TA_Treatment"] = df.groupby('Group_ID')['Participant_ID'].transform(lambda x: np.random.permutation(['High'] * 4 + ['Low'] * 4))
-
-    #Initialize Delay Treatment
-    df["Delay_Treatment"] = df.groupby('Group_ID')['Participant_ID'].transform(
-    lambda x: np.random.permutation(['High'] * 4 + ['Low'] * 4))
-
-    #Initialize Valuation
-    df['Valuation'] = np.where(
-    df['Role'] == 'Buyer', 
-    np.random.choice(buyer_valuations, size=len(df)), 
-    0)
-
+    # Initialize Valuations
+    df['Valuation'] = [np.zeros(20).tolist()] * len(df)
+    for group_id, group_data in df.groupby('Group_ID'):
+        buyers_indices = group_data[group_data['Role'] == 'Buyer'].index
+        for i, buyer_index in enumerate(buyers_indices):
+            df.at[buyer_index, 'Valuation'] = buyer_valuations[i].tolist()
+        
+  
     return df
 
 
@@ -559,3 +555,44 @@ def create_group_matrices_for_all_rounds(group_dataframe: pd.DataFrame) -> List[
     return all_rounds_matrix
 
 
+
+def is_valid_dataframe(obj, name_of_object: str) -> bool:
+    """
+    Checks if the given object is a valid pandas DataFrame.
+
+    Args:
+        obj: The object to check.
+
+    Returns:
+        bool: True if the object is a valid DataFrame, False otherwise.
+    """
+    # Check if the object is an instance of pd.DataFrame
+    if isinstance(obj, pd.DataFrame):
+        # Additional checks to ensure the DataFrame is not empty and has columns
+        if not obj.empty and obj.columns is not None:
+            return True
+        else:
+            print(f"Error: The DataFrame {name_of_object} is empty or has no columns.")
+            return False
+    else:
+        print(f"Error: The object {name_of_object} is not a DataFrame.")
+        return False
+
+
+def is_valid_list(obj, name_of_object: str) -> bool:
+    """
+    Checks if the given object is a valid pandas DataFrame.
+
+    Args:
+        obj: The object to check.
+
+    Returns:
+        bool: True if the object is a valid DataFrame, False otherwise.
+    """
+    # Check if the object is an instance of pd.DataFrame
+    if isinstance(obj, List):
+ 
+            return True
+    else:
+        print(f"Error: The object {name_of_object} is not a List.")
+        return False

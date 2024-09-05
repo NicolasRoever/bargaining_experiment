@@ -169,6 +169,16 @@ def test_correct_transaction_costs_and_delay_treatments(number_of_groups, buyer_
 #-------------------------
 # Test cases for create_participant_data
 
+@pytest.fixture
+def buyer_valuations():
+    buyer_valuations = [
+        np.arange(1, 21),
+        np.arange(21, 41),
+        np.arange(41, 61),
+        np.arange(61, 81)
+    ]
+    return buyer_valuations
+
 
 def test_correct_number_of_participants(number_of_groups, buyer_valuations):
     # Test that the dataframe has the correct number of participants
@@ -185,31 +195,46 @@ def test_half_buyers_half_sellers_per_group(number_of_groups, buyer_valuations):
         assert len(buyers) == 4, f"Group {group_id} does not have 4 buyers."
         assert len(sellers) == 4, f"Group {group_id} does not have 4 sellers."
 
-def test_correct_valuations_assignment(number_of_groups, buyer_valuations):
-    # Test that buyers have valuations from the buyer_valuations and sellers have valuation 0
-    df = create_participant_data(number_of_groups, buyer_valuations)
-    for index, row in df.iterrows():
-        if row['Role'] == 'Buyer':
-            assert row['Valuation'] in buyer_valuations.values, "Buyer has an incorrect valuation."
-        elif row['Role'] == 'Seller':
-            assert row['Valuation'] == 0, "Seller does not have a valuation of 0."
-
-def test_correct_treatment_assignments(number_of_groups, buyer_valuations):
-    # Test that the transaction costs and delay treatments are correctly assigned
-    df = create_participant_data(number_of_groups, buyer_valuations)
-    for group_id, group_data in df.groupby('Group_ID'):
-        high_ta_treatment = group_data['TA_Treatment'].tolist().count('High')
-        low_ta_treatment = group_data['TA_Treatment'].tolist().count('Low')
-        high_delay_treatment = group_data['Delay_Treatment'].tolist().count('High')
-        low_delay_treatment = group_data['Delay_Treatment'].tolist().count('Low')
-        assert high_ta_treatment == 4 and low_ta_treatment == 4, f"Incorrect TA_Treatment distribution in group {group_id}."
-        assert high_delay_treatment == 4 and low_delay_treatment == 4, f"Incorrect Delay_Treatment distribution in group {group_id}."
-
 def test_unique_group_assignments(number_of_groups, buyer_valuations):
     # Test that each participant is uniquely assigned to a group
     df = create_participant_data(number_of_groups, buyer_valuations)
     assert df['Group_ID'].nunique() == number_of_groups, "The number of unique groups is incorrect."
 
+def test_buyer_valuations(number_of_groups, buyer_valuations):
+
+    np.random.seed(0)
+
+    expected_result = pd.DataFrame({
+         'Participant_ID': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        'Group_ID': [1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 2, 2, 1, 1, 1, 2],
+        'Role': ['Buyer', 'Seller', 'Seller', 'Buyer', 
+    'Buyer', 'Seller', 'Buyer', 'Buyer', 
+    'Seller', 'Buyer', 'Buyer', 'Seller', 
+    'Seller', 'Buyer', 'Seller', 'Seller'],
+        'Valuation':[
+             np.arange(1, 21).tolist(),           # [1, 2, 3, ..., 20]
+    np.zeros(20).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.zeros(20).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(1, 21).tolist(),           # [1, 2, 3, ..., 20]
+    np.arange(21, 41).tolist(),          # [21, 22, ..., 40]
+    np.zeros(20).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(21, 41).tolist(),          # [21, 22, ..., 40]
+    np.arange(41, 61).tolist(),          # [41, 42, ..., 60]
+    np.zeros(20).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(41, 61).tolist(),          # [41, 42, ..., 60]
+    np.arange(61, 81).tolist(),          # [61, 62, ..., 80]
+    np.zeros(20).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.zeros(20).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(61, 81).tolist(),          # [61, 62, ..., 80]
+    np.zeros(20).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.zeros(20).tolist()    
+
+        ]})
+    
+    actual_result = create_participant_data(number_of_groups, buyer_valuations)
+
+
+    pd.testing.assert_frame_equal(actual_result, expected_result, check_dtype=False)
 
 #-------------------------
 # Test cases for create_group_matrix_for_individual_round
@@ -222,12 +247,6 @@ def sample_input():
         'Group_ID': [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2],
         'Role': ['Seller', 'Seller', 'Buyer', 'Buyer', 'Seller', 'Seller', 'Buyer', 'Buyer',
                  'Seller', 'Seller', 'Buyer', 'Buyer', 'Seller', 'Seller', 'Buyer', 'Buyer'],
-        'TA_Treatment': ['High', 'Low', 'High', 'Low', 'High', 'Low', 'High', 'Low',
-                         'High', 'Low', 'High', 'Low', 'High', 'Low', 'High', 'Low'],
-        'Delay_Treatment': ['Low', 'High', 'Low', 'High', 'Low', 'High', 'Low', 'High',
-                            'Low', 'High', 'Low', 'High', 'Low', 'High', 'Low', 'High'],
-        'Valuation': [0, 0, 75.4, 62.3, 0, 0, 88.1, 47.8, 
-                      0, 0, 55.7, 38.9, 0, 0, 91.2, 69.4]
     })
 
 def test_create_group_matrix_for_individual_round_for_sample_seed(sample_input):
@@ -239,7 +258,6 @@ def test_create_group_matrix_for_individual_round_for_sample_seed(sample_input):
     actual_output = create_group_matrix_for_individual_round(sample_input, random_seed=40)
 
     assert actual_output == expected_output, "The group matrix is incorrect."
-
 
 @pytest.mark.parametrize("seed", [10, 20, 30, 40, 50])
 def test_unique_matches(sample_input, seed):

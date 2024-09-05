@@ -8,7 +8,7 @@ import re
 import numpy as np
 import pathlib
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list
 
 
 doc = """
@@ -97,8 +97,8 @@ def creating_session(subsession):
     This function is called before each subsession starts. In its current implementation, it initializes the players' valuations and transaction costs, thus, valuations are new in each subsession. 
     """
 
-    participant_data = pd.read_pickle(CURRENT_PATH/ 'randomization_values' / f'participant_data_{subsession.session.config["number_of_groups"]}_groups.pkl')
-    
+    subsession_number = subsession.round_number
+
     for player in subsession.get_players():
 
         #Record the time when the bargaining starts for each subsession
@@ -108,33 +108,46 @@ def creating_session(subsession):
 
         player.valuation = participant_data.loc[
         participant_data['Participant_ID'] == player.participant.id_in_session, 'Valuation'
-        ].values[0]
+        ][subsession.round_number-1]
+
+        group_matrix = pd.read_pickle(CURRENT_PATH/ 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups.pkl')
+        group_matrix = group_matrix[subsession_number-1]
+
+    #Randomly determine the round in which the final payoffs are calculated
+    if subsession_number == 1:
+
+        participant_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'participant_data_{subsession.session.config["number_of_groups"]}_groups.pkl')
+
+        is_valid_dataframe(participant_data, "participant_data")
+
+        groups_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups.pkl')
+
+        is_valid_list(groups_data, "groups_data")
 
         setup_player_transaction_costs(player=player, 
-                                    ta_treatment=participant_data.loc[
-                                    participant_data['Participant_ID'] == player.participant.id_in_session, 'TA_Treatment'
-                                    ].values[0],
+                                    ta_treatment=subsession.session.config['TA_treatment_high'],
                                     total_bargaining_time=C.TOTAL_BARGAINING_TIME)
         
         setup_player_delay_list(player=player,
-                                delay_treatment_high=participant_data.loc[
-                                    participant_data['Participant_ID'] == player.participant.id_in_session, 'Delay_Treatment'
-                                    ].values[0],
+                                delay_treatment_high=subsession.session.config['delay_treatment_high'],
                                 total_bargaining_time=C.TOTAL_BARGAINING_TIME
                                 )
-        
-    subsession_number = subsession.round_number
-    group_matrix = pd.read_pickle(CURRENT_PATH/ 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups.pkl')
-    group_matrix = group_matrix[subsession_number-1]
 
-
-        
-
-    #Randomly determine the round in which the final payoffs are calculated
-    if subsession.round_number == 1:
     
         for player in subsession.get_players():
             player.participant.vars['random_round'] = random.randint(1, C.NUM_ROUNDS)
+
+
+    
+  
+
+        
+
+
+
+        
+
+
 
     
 
