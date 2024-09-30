@@ -8,7 +8,7 @@ import re
 import numpy as np
 import pathlib
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors
 
 
 doc = """
@@ -77,12 +77,14 @@ class Player(BasePlayer):
 
     delay_multiplier = models.FloatField()
     payment_delay = models.FloatField()
+    current_discount_factor = models.FloatField()
 
     current_payoff_terminate = models.FloatField()#
 
     current_costs_list = models.LongStringField()
     total_costs_list = models.LongStringField()
     total_delay_list = models.LongStringField()
+    discount_factors_list = models.LongStringField()
     x_axis_values_TA_graph = models.LongStringField()
     x_axis_values_delay_graph = models.LongStringField()
     y_axis_maximum_TA_graph = models.FloatField()
@@ -131,6 +133,9 @@ def creating_session(subsession):
                                 total_bargaining_time=C.TOTAL_BARGAINING_TIME
                                 )
         
+        setup_player_shrinking_pie_discount_factors(player=player,
+                                                    delay_treatment_high=subsession.session.config['delay_treatment_high'],
+                                                    total_bargaining_time=C.TOTAL_BARGAINING_TIME)
     
     #Randomly determine the round in which the final payoffs are calculated
     if subsession_number == 1:

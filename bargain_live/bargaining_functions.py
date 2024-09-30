@@ -88,6 +88,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed]
     total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed]
     current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
+    current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed-1]
 
 
     # Update player attributes
@@ -98,6 +99,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
         player.cumulated_TA_costs = total_cost_y_values[-1]
         player.current_payoff_terminate = -player.cumulated_TA_costs
         player.payment_delay = total_delay_y_values[-1]
+        player.current_discount_factor = current_discount_factor
 
     
 
@@ -112,6 +114,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     broadcast['x_axis_values_TA_graph'] = json.loads(player.x_axis_values_TA_graph)
     broadcast['x_axis_values_delay_graph'] = json.loads(player.x_axis_values_delay_graph)
     broadcast['current_transaction_costs'] = current_transaction_costs
+    broadcast['current_discount_factor'] = current_discount_factor
 
     return broadcast
 
@@ -266,6 +269,23 @@ def setup_player_delay_list(player: Any, delay_treatment_high: bool, total_barga
     player.total_delay_list = json.dumps(total_delay_list)
     player.x_axis_values_delay_graph = json.dumps(list(range(0, total_bargaining_time + 1)))
     player.y_axis_maximum_delay_graph = math.ceil(total_bargaining_time * delay_multiplier)
+
+
+def setup_player_shrinking_pie_discount_factors(player: Any, delay_treatment_high: bool, total_bargaining_time: int) -> None:
+    """
+    This function sets up the player's discount factors for the shrinking pie in the bargaining game.
+
+    Args:
+        player: The player object containing the specific player's database.
+        delay_treatment_high: The delay treatment for the player.
+        total_bargaining_time: The total time for bargaining in seconds.
+    """
+
+    discount_factors = calculate_discount_factors_for_shrinking_pie(delay_treatment_high, total_bargaining_time)
+
+    player.discount_factors_list = json.dumps(discount_factors)
+
+
 
 
 
@@ -603,3 +623,26 @@ def is_valid_list(obj, name_of_object: str) -> bool:
     else:
         print(f"Error: The object {name_of_object} is not a List.")
         return False
+    
+
+def calculate_discount_factors_for_shrinking_pie(delay_treatment_high: bool, total_bargaining_time: int = 120) -> List[float]:
+    """This function gives out the percentages of the gains of trade the players get for all values of time. 
+    
+    Args:
+        delay_treatment_high (bool): Whether the delay treatment is high.
+        total_bargaining_time (int): Total time in seconds for which the discount factors are to be calculated.
+
+    Returns:
+        List[float]: A list of discount factors for each second of the bargaining period.
+    """
+
+    discount_rate = 0.04 if delay_treatment_high else 0.01
+    
+    time_values = np.arange(0, total_bargaining_time + 1)
+
+    discount_factors = 1 / (1 + discount_rate * time_values)
+
+    discount_factors = np.round(discount_factors, 1)
+
+    return discount_factors.tolist()
+

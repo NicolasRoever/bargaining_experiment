@@ -18,6 +18,8 @@ function initializeElements() {
     window.SliderClicked = false;
     window.firstSellerProposalMade = false;
     window.firstBuyerProposalMade = false;
+    window.chartInstance = null;
+
     // Initialize the Euro formatter
     window.EuroFormatter = {
         format: function(amount) {
@@ -106,55 +108,61 @@ function sendTerminate({ startTime, myId }) {
 
 
 function createChart(chartName, xValues, yValues, yLabel, yMin, yMax) {
-    // Create a new dataset that matches the length of yValues with the xValues
-    const limitedData = yValues.map((value, index) => ({
-        x: xValues[index], 
-        y: value
-    }));
+    const ctx = document.getElementById(chartName).getContext('2d');
 
-    new Chart(chartName, {
-        type: "line",
+    // If a chart instance already exists, destroy it before creating a new one
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    // Create the new chart and store the instance
+    chartInstance = new Chart(ctx, {
+        type: 'line',
         data: {
             labels: xValues,
             datasets: [{
                 fill: false,
-                lineTension: 0.4,  // Increase line tension for a smoother curve
+                tension: 0.4,  // Smooth curve
                 backgroundColor: "rgba(0,0,255,1.0)",
                 borderColor: "black",
                 borderWidth: 1.5,
-                data: limitedData,
-                steppedLine: false,  // Disable stepped line to make it smooth
-                pointRadius: 0,  // Adjust point radius if you want points to be visible
-            }],
+                data: yValues.map((value, index) => ({
+                    x: xValues[index],
+                    y: value
+                })),
+                stepped: false,
+                pointRadius: 0
+            }]
         },
         options: {
             animation: { duration: 0 },
-            legend: { display: false },
+            plugins: {
+                legend: { display: false }
+            },
             scales: {
-                yAxes: [{
-                    ticks: {
-                        min: yMin, 
-                        max: yMax
-                    },
-                    scaleLabel: {
-                        display: true, 
-                        labelString: yLabel,
-                    },
-                }],
-                xAxes: [{
+                y: {
+                    beginAtZero: false,
+                    min: yMin,
+                    max: yMax,
+                    title: {
+                        display: true,
+                        text: yLabel
+                    }
+                },
+                x: {
                     type: 'category',
                     ticks: {
-                        min: 0, 
-                        max: xValues.length - 1,
+                        min: 0,
+                        max: xValues.length - 1
                     },
-                    scaleLabel: {
-                        display: true, 
-                        labelString: "Seconds passed",
-                    },
-                }]
+                    title: {
+                        display: true,
+                        text: 'Seconds passed'
+                    }
+                }
             },
             maintainAspectRatio: true,
-            aspectRatio: 1,
+            aspectRatio: 1
         }
     });
 }
@@ -177,13 +185,10 @@ function updateCharts(data, js_vars) {
         yMax= js_vars.y_axis_maximum_TA_graph
     );
 
-    createChart(
+    createStackedBarChart(
         chartName= 'delay_chart',
-        xValues= data.x_axis_values_delay_graph, 
-        yValues= data.total_delay_y_values,
-        yLabel= "Total Delay in Payment",
-        yMin= 0, 
-        yMax= js_vars.y_axis_maximum_delay_graph
+        firstPercentage = data.current_discount_factor,
+        secondPercentage = 1 - data.current_discount_factor
     );
 }
 
@@ -222,6 +227,62 @@ function updateTimeChangingElements(js_vars, data) {
     updateCharts(data, js_vars);
 }
 
+function createStackedBarChart(chartName, firstPercentage, secondPercentage) {
+    const ctx = document.getElementById(chartName).getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Percentage'], // Single label for the stack
+            datasets: [{
+                label: `${firstPercentage}%`, // Label for first percentage
+                data: [firstPercentage],
+                backgroundColor: 'green', // Green bar for first percentage
+                borderColor: 'green',
+                borderWidth: 1
+            }, {
+                label: `${secondPercentage}%`, // Label for second percentage
+                data: [secondPercentage],
+                backgroundColor: 'red', // Red bar for second percentage
+                borderColor: 'red',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100, // Set y axis to 0-100%
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%'; // Add percentage sign on y-axis labels
+                        }
+                    },
+                    stacked: true // Enable stacking
+                },
+                x: {
+                    stacked: true // Enable stacking
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false // Hide default legend
+                },
+                tooltip: {
+                    enabled: false // Disable tooltip
+                },
+                datalabels: {
+                    display: true,
+                    color: 'black',
+                    formatter: (value, context) => {
+                        return value + '%'; // Display percentage next to the bars
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels] // Enable data labels plugin
+    });
+}
 
 
 module.exports = {  sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay } ; // Export the function for testing

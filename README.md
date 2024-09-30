@@ -26,8 +26,6 @@ otree devserver
 ```
 Just open any browser and navigate to *http://localhost:8000* to see the app. 
 
-
-
 ## General Information
 
 The experiment is written using oTree livepages. I consider this code to be a very good example of how to implement a livepage following best practices of functional programming and unit testing. 
@@ -109,7 +107,14 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
-- Please look if the dataframe participant_data was created correctly and is loaded correctly. Beacuse I am unsure. 
+- Right now, the new idea on discount factors is: 1% for patient and 3/4% for impatient.
+
+
+
+
+## Server Commands
+
+These are the commands for the university server we are using to run the experiment. 
 
 - rsync --delete -Pa bargaining_experiment  otree15@otree2.uni-koeln.de:Projects/
 

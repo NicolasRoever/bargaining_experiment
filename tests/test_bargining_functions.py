@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from typing import List, Tuple
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function, calculate_discount_factors_for_shrinking_pie
 
 
 #-------------------------
@@ -324,6 +324,28 @@ def test_round_2_different_from_round_1(sample_input):
 
     # Check that the matrix for round 2 is different from round 1
     assert round_1_matrix != round_2_matrix, "The group matrix for round 2 should be different from round 1."
+
+
+#-------------------------
+# Test cases for calculate_discount_factors_for_shrinking_pie
+
+def test_calculate_discount_factors_high_at_t50():
+    # Set up test parameters
+    total_bargaining_time = 120
+
+    # Test when delay_treatment_high = True
+    discount_factors_high = calculate_discount_factors_for_shrinking_pie(True, total_bargaining_time)
+    expected_value_high = 1 / (1 + 0.04 * 50)  # discount_rate = 0.04, time = 50
+    assert np.isclose(discount_factors_high[50], expected_value_high), f"Expected {expected_value_high}, but got {discount_factors_high[50]}"
+
+def test_calculate_discount_factors_low_at_t50():
+    # Set up test parameters
+    total_bargaining_time = 120
+
+    # Test when delay_treatment_high = False
+    discount_factors_low = calculate_discount_factors_for_shrinking_pie(False, total_bargaining_time)
+    expected_value_low = 1 / (1 + 0.01 * 50)  # discount_rate = 0.01, time = 50
+    assert np.isclose(discount_factors_low[50], expected_value_low), f"Expected {expected_value_low}, but got {discount_factors_low[50]}"
 
 
 
