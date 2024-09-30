@@ -132,7 +132,7 @@ Price Negotiation
             <h5>Negotiation Costs</h5>
             <p style="display:inline">Current negotiation costs per 1 second: <div style="display: inline" id ="TA_costs"></div></p>
             <p style="display:inline"> Total negotiation costs: <div style="display: inline" id ="cumulated_TA_costs"></div></p>
-            <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px;"></canvas>
+            <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px; height: 200px;"></canvas>
         </div>
 
         <div class="three_columns_middle" style="flex: 1;">
@@ -190,9 +190,8 @@ Price Negotiation
 
         <div class="three_columns_right" style="flex: 0.5;">
             <h5>Cost of Time Discounting</h5>
-            <p style="display:block">If you make an agreement now, you keep <div style="display: inline" id ="current_discount_factor"></div> % of the gains from trade.</p>
-    
-            <canvas id="delay_chart" style="width: 100%; min-height: 200px;" ></canvas>
+            <p style="display:block">If you make an agreement now, you keep <div style="display: inline" id="current_discount_factor"></div>% of the gains from trade.</p>
+            <canvas id="delay_chart" style="width: 100%; min-height: 200px; height: 300px;"></canvas>
         </div>
     </div>
 

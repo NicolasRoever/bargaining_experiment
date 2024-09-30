@@ -88,7 +88,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed]
     total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed]
     current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
-    current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed-1]
+    current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
 
 
     # Update player attributes

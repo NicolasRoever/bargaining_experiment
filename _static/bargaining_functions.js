@@ -216,7 +216,7 @@ function enableButton(buttonId) {
 function updateTimeChangingElements(js_vars, data) {
     // Update text elements
     updateElementText('time_spent', data.bargaining_time_elapsed);
-    updateElementText('current_discount_factor', data.current_discount_factor*100);
+    updateElementText('current_discount_factor', data.current_discount_factor * 100);
 
     // Update currency elements 
     updateCurrencyElement('TA_costs', data.current_TA_costs);
@@ -240,16 +240,16 @@ function createStackedBarChart(chartName, firstPercentage, secondPercentage) {
     stackedBarChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Percentage'], // Single label for the stack
+            labels: ['Percentage of Gains from Trade'], // Single label for the stack
             datasets: [{
-                label: `${firstPercentage}%`, // Label for first percentage
-                data: [Math.round(firstPercentage * 100)],
+                label: `You keep`, // Label for first percentage
+                data: [Math.round(firstPercentage * 1000) / 10],
                 backgroundColor: 'green', // Green bar for first percentage
                 borderColor: 'green',
                 borderWidth: 1
             }, {
-                label: `${secondPercentage}%`, // Label for second percentage
-                data: [Math.round(secondPercentage * 100)],
+                label: `You pay`, // Label for second percentage
+                data: [Math.round(secondPercentage * 1000) / 10],
                 backgroundColor: 'red', // Red bar for second percentage
                 borderColor: 'red',
                 borderWidth: 1
@@ -276,7 +276,15 @@ function createStackedBarChart(chartName, firstPercentage, secondPercentage) {
             },
             plugins: {
                 legend: {
-                    display: false // Hide default legend
+                    display: true, // Display legend
+                    position: 'top', // Legend position
+                    title: {
+                        display: true,
+                        text: 'Gains from Trade'
+                    },
+                    labels: {
+                        color: 'grey', // Color of the legend text
+                    }
                 },
                 tooltip: {
                     enabled: false // Disable tooltip
