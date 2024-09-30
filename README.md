@@ -108,6 +108,10 @@ While some of the functions are quite long as they carry special functionalities
 This section is only for me as a developer. You can ignore it. 
 
 - Right now, the new idea on discount factors is: 1% for patient and 3/4% for impatient.
+- I need to implement the discount factors and adjust the payoffs accordingly for the shrinking pie experiment. 
+- I also need to adjust the explanation and put it into the experiment.
+- I need to check that I can download the data from the experiment
+- I need to share the software after I have implemented the changes.
 
 
 
