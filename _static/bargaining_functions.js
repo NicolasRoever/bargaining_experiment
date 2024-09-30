@@ -19,6 +19,7 @@ function initializeElements() {
     window.firstSellerProposalMade = false;
     window.firstBuyerProposalMade = false;
     window.chartInstance = null;
+    window.stackedBarChartInstance = null;
 
     // Initialize the Euro formatter
     window.EuroFormatter = {
@@ -215,7 +216,7 @@ function enableButton(buttonId) {
 function updateTimeChangingElements(js_vars, data) {
     // Update text elements
     updateElementText('time_spent', data.bargaining_time_elapsed);
-    updateElementText('payment_delay', data.payment_delay);
+    updateElementText('current_discount_factor', data.current_discount_factor*100);
 
     // Update currency elements 
     updateCurrencyElement('TA_costs', data.current_TA_costs);
@@ -230,29 +231,38 @@ function updateTimeChangingElements(js_vars, data) {
 function createStackedBarChart(chartName, firstPercentage, secondPercentage) {
     const ctx = document.getElementById(chartName).getContext('2d');
 
-    new Chart(ctx, {
+    // If a chart instance already exists, destroy it before creating a new one
+    if (stackedBarChartInstance) {
+        stackedBarChartInstance.destroy();
+    }
+
+    // Create a new chart and store the instance
+    stackedBarChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ['Percentage'], // Single label for the stack
             datasets: [{
                 label: `${firstPercentage}%`, // Label for first percentage
-                data: [firstPercentage],
+                data: [Math.round(firstPercentage * 100)],
                 backgroundColor: 'green', // Green bar for first percentage
                 borderColor: 'green',
                 borderWidth: 1
             }, {
                 label: `${secondPercentage}%`, // Label for second percentage
-                data: [secondPercentage],
+                data: [Math.round(secondPercentage * 100)],
                 backgroundColor: 'red', // Red bar for second percentage
                 borderColor: 'red',
                 borderWidth: 1
             }]
         },
         options: {
+            animation: {
+                duration: 0 // Disable animation (bars will appear instantly)
+            },
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 100, // Set y axis to 0-100%
+                    max: 100, // Set y-axis to 0-100%
                     ticks: {
                         callback: function(value) {
                             return value + '%'; // Add percentage sign on y-axis labels
@@ -283,6 +293,5 @@ function createStackedBarChart(chartName, firstPercentage, secondPercentage) {
         plugins: [ChartDataLabels] // Enable data labels plugin
     });
 }
-
 
 module.exports = {  sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay } ; // Export the function for testing

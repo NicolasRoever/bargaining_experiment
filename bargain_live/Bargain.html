@@ -189,10 +189,9 @@ Price Negotiation
         </div>
 
         <div class="three_columns_right" style="flex: 0.5;">
-            <h5>Delay in Payment</h5>
-            <p style="display:block">Delay in payment per 1 second: {{ delay_multiplier }} day(s).</p>
-       
-            <p style="display:inline">Total delay in payment: <div style="display: inline" id ="payment_delay"></div> day(s).</p>
+            <h5>Cost of Time Discounting</h5>
+            <p style="display:block">If you make an agreement now, you keep <div style="display: inline" id ="current_discount_factor"></div> % of the gains from trade.</p>
+    
             <canvas id="delay_chart" style="width: 100%; min-height: 200px;" ></canvas>
         </div>
     </div>
