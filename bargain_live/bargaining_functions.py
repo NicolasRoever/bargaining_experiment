@@ -305,13 +305,14 @@ def record_player_payoff_from_round(player: Any) -> None:
     if player.group.field_maybe_none('deal_price'):
 
         transaction_costs = player.cumulated_TA_costs
+        discount_factor = player.current_discount_factor #Recall that this is a percentage of the money to keee.
 
         if player.role == "Seller":
-            player.payoff = player.group.deal_price - player.valuation - transaction_costs
+            player.payoff = (player.group.deal_price - player.valuation) * discount_factor - transaction_costs
 
 
         elif player.role == "Buyer":
-            player.payoff = player.valuation - player.group.deal_price - transaction_costs
+            player.payoff = (player.valuation - player.group.deal_price) * discount_factor - transaction_costs
 
 
     #Case 2: A deal was terminated
@@ -636,13 +637,11 @@ def calculate_discount_factors_for_shrinking_pie(delay_treatment_high: bool, tot
         List[float]: A list of discount factors for each second of the bargaining period.
     """
 
-    discount_rate = 0.04 if delay_treatment_high else 0.01
+    discount_rate = 0.03 if delay_treatment_high else 0.01
     
     time_values = np.arange(0, total_bargaining_time + 1)
 
-    discount_factors = 1 / (1 + discount_rate * time_values)
-
-    discount_factors = np.round(discount_factors, 1)
+    discount_factors = 1 / (1 + discount_rate)**time_values
 
     return discount_factors.tolist()
 
