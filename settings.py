@@ -16,7 +16,7 @@ SESSION_CONFIGS = [
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
     doc="""
-    Adjust the number of groups dependent on the number of participants. There are 8 participants per group. YOU HAVE TO HAVE 24/32 PARTICIPANTS!!!"""
+    Adjust the number of groups dependent on the number of participants. There are 8 participants per group."""
     )
     
 ]
@@ -29,7 +29,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1.00, participation_fee=1.00, doc=""
+    real_world_currency_per_point=1.00, participation_fee=20.00, doc=""
 )
 
 PARTICIPANT_FIELDS = [

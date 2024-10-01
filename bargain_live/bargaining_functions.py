@@ -345,7 +345,7 @@ def record_bargaining_time_on_group_level(player: Any, C: Any) -> None:
 
     if player.group.field_maybe_none('acceptance_time'):
 
-        player.group.bargain_duration = player.group.acceptance_time
+        player.group.bargaining_duration = player.group.acceptance_time
 
     #Case 2: There was a termination
     

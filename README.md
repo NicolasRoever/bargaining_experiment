@@ -107,11 +107,48 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
-- Right now, the new idea on discount factors is: 1% for patient and 3/4% for impatient.
-- I need to implement the discount factors and adjust the payoffs accordingly for the shrinking pie experiment. 
-- I also need to adjust the explanation and put it into the experiment.
+- My values for the discount factors are close to Peters but not quite. I e-mailed him. 
+- Right now, I discount everything gains from trade excluding transaction costs. Is this correct?
+- Please fix this error which occurs when time is running out:
+Application error (500)
+
+TypeError: unsupported operand type(s) for -: 'int' and 'NoneType'
+
+Traceback
+
+File bargain_live/__init__.py, line 356, in vars_for_template ‒
+
+353.
+
+354.
+
+355.         if player.role == "Buyer":
+
+356.             loss_from_discounting = (valuation - deal_price) * one_minus_discount_factor
+
+357.             negative_loss_from_discounting = -loss_from_discounting
+
+358.             gains_from_trade = valuation - deal_price
+
+359.             discounted_gains_from_trade = gains_from_trade * discount_factor
+
+player	Player(current_TA_costs=0.0019755854374..., round_number=1, total_costs_list='[0.0, 0.122837..., cum
+deal_price	None
+negative_deal_price	None
+transaction_costs	0.0019755854374392534
+negative_transaction_costs	-0.0019755854374392534
+discount_factor	0.029673601501916846
+negative_discount_factor	-0.029673601501916846
+one_minus_discount_factor	0.9703263984980831
+negative_one_minus_discount_factor	-0.9703263984980831
+valuation	68
+negative_valuation	-68
+payoff	-3.52cu
+participation_fee	20.00cu
+payoff_plus_participation_fee	16.48cu
 - I need to check that I can download the data from the experiment
 - I need to share the software after I have implemented the changes.
+- Ple
 
 
 

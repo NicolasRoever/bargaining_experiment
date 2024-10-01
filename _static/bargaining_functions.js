@@ -216,7 +216,7 @@ function enableButton(buttonId) {
 function updateTimeChangingElements(js_vars, data) {
     // Update text elements
     updateElementText('time_spent', data.bargaining_time_elapsed);
-    updateElementText('current_discount_factor', data.current_discount_factor * 100);
+    updateElementText('current_discount_factor', Math.round(data.current_discount_factor * 1000) / 10);
 
     // Update currency elements 
     updateCurrencyElement('TA_costs', data.current_TA_costs);

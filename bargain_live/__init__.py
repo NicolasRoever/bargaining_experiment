@@ -25,7 +25,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 2
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
-    TOTAL_BARGAINING_TIME = 2 * 60
+    TOTAL_BARGAINING_TIME = 120
 
 
 class Subsession(BaseSubsession):
@@ -69,6 +69,7 @@ class Player(BasePlayer):
 
     current_deal_other_accepts = models.IntegerField()#
     current_payoff_other_accepts = models.FloatField()#
+ 
 
     initial_TA_costs = models.IntegerField()#
     decrease_TA_costs_per_second = models.IntegerField()#
@@ -89,6 +90,7 @@ class Player(BasePlayer):
     x_axis_values_delay_graph = models.LongStringField()
     y_axis_maximum_TA_graph = models.FloatField()
     y_axis_maximum_delay_graph = models.FloatField()
+    
 
 #-----------------------------------------------------------------------------------------------   
 # FUNCTIONS
@@ -334,12 +336,50 @@ class Bargain(Page):
 class RoundResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
-        deal_price = player.group.field_maybe_none('deal_price')
-        payoff = player.payoff  
 
-        return dict(deal_price=deal_price if deal_price is not None else "No deal",  # Provide a fallback value if there was a termination
+        deal_price = player.group.field_maybe_none('deal_price')
+        negative_deal_price = -deal_price if deal_price is not None else None
+        transaction_costs = player.current_TA_costs
+        negative_transaction_costs = -transaction_costs
+        discount_factor = player.current_discount_factor
+        negative_discount_factor = -discount_factor
+        one_minus_discount_factor = 1 - discount_factor
+        negative_one_minus_discount_factor = -one_minus_discount_factor
+        valuation = player.valuation
+        negative_valuation = -valuation
+        payoff = player.payoff
+        participation_fee = player.group.subsession.session.config['participation_fee']
+        payoff_plus_participation_fee =cu(payoff + participation_fee)
+
+
+        if player.role == "Buyer":
+            loss_from_discounting = (valuation - deal_price) * one_minus_discount_factor
+            negative_loss_from_discounting = -loss_from_discounting
+            gains_from_trade = valuation - deal_price
+            discounted_gains_from_trade = gains_from_trade * discount_factor
+
+        else:
+            loss_from_discounting = (deal_price - valuation) * one_minus_discount_factor
+            negative_loss_from_discounting = -loss_from_discounting
+            gains_from_trade = deal_price - valuation
+            discounted_gains_from_trade = gains_from_trade * discount_factor
+            
+        return dict(deal_price=round(deal_price, 1) if deal_price is not None else "No deal",  # Provide a fallback value if there was a termination
+                    negative_deal_price=round(negative_deal_price, 1) if negative_deal_price is not None else "No deal",
+                    valuation=round(valuation, 1),
+                    negative_valuation=round(negative_valuation, 1),
+                    gains_from_trade=round(gains_from_trade, 1),
+                    negative_loss_from_discounting=round(negative_loss_from_discounting, 1),
+                    discounted_gains_from_trade=round(discounted_gains_from_trade, 1),
+                    discount_factor=round(discount_factor, 1),
+                    one_minus_discount_factor=round(one_minus_discount_factor, 1),
+                    negative_one_minus_discount_factor=round(negative_one_minus_discount_factor, 1),
+                    transaction_costs=round(transaction_costs, 1),
+                    negative_transaction_costs=round(negative_transaction_costs, 1),
                     other_role=player.get_others_in_group()[0].role, 
-                    payoff=payoff
+                    payoff=round(payoff, 1), 
+                    participation_fee=round(participation_fee, 1),
+                    payoff_plus_participation_fee=round(payoff_plus_participation_fee, 1)
                     )
     
 

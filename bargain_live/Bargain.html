@@ -1,6 +1,7 @@
 {{ block title }}
 Price Negotiation
 {{ endblock }}
+
 {{ block content }} 
 <style>
     .mgslider-wrapper {
@@ -122,7 +123,7 @@ Price Negotiation
             {% if my_role == "Buyer" %}
             The {{ other_role }}'s value of the object is {{ other_valuation }}€.
             {% else %}
-            The Buyer's value of the object will be randomly drawn between 0 and 100 €.
+            The Buyer's value of the object will be randomly drawn between 0 and 60€.
             {% endif %}
         </p>
     </div>
@@ -189,7 +190,7 @@ Price Negotiation
         </div>
 
         <div class="three_columns_right" style="flex: 0.5;">
-            <h5>Cost of Time Discounting</h5>
+            <h5>Cost of Time Delay</h5>
             <p style="display:block">If you make an agreement now, you keep <div style="display: inline" id="current_discount_factor"></div>% of the gains from trade.</p>
             <canvas id="delay_chart" style="width: 100%; min-height: 200px; height: 300px;"></canvas>
         </div>
