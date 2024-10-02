@@ -155,7 +155,9 @@ payoff_plus_participation_fee	16.48cu
 
 ## Server Commands
 
-These are the commands for the university server we are using to run the experiment. 
+These are the commands for the university server we are using to run the experiment.
+
+- Remember that you need to be one folder above bargaining_experiment when you do the rsync command
 
 - rsync --delete -Pa bargaining_experiment  otree15@otree2.uni-koeln.de:Projects/
 

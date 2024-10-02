@@ -8,7 +8,7 @@ import re
 import numpy as np
 import pathlib
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary
 
 
 doc = """
@@ -337,69 +337,20 @@ class RoundResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
 
-        deal_price = player.group.field_maybe_none('deal_price')
-        negative_deal_price = -deal_price if deal_price is not None else None
-        transaction_costs = player.current_TA_costs
-        negative_transaction_costs = -transaction_costs
-        discount_factor = player.current_discount_factor
-        negative_discount_factor = -discount_factor
-        one_minus_discount_factor = 1 - discount_factor
-        negative_one_minus_discount_factor = -one_minus_discount_factor
-        valuation = player.valuation
-        negative_valuation = -valuation
-        payoff = player.payoff
-        participation_fee = player.group.subsession.session.config['participation_fee']
-        payoff_plus_participation_fee =cu(payoff + participation_fee)
+        dictionary_with_results = calculate_round_results(player=player)
 
-
-        if player.role == "Buyer":
-            loss_from_discounting = (valuation - deal_price) * one_minus_discount_factor
-            negative_loss_from_discounting = -loss_from_discounting
-            gains_from_trade = valuation - deal_price
-            discounted_gains_from_trade = gains_from_trade * discount_factor
-
-        else:
-            loss_from_discounting = (deal_price - valuation) * one_minus_discount_factor
-            negative_loss_from_discounting = -loss_from_discounting
-            gains_from_trade = deal_price - valuation
-            discounted_gains_from_trade = gains_from_trade * discount_factor
-            
-        return dict(deal_price=round(deal_price, 1) if deal_price is not None else "No deal",  # Provide a fallback value if there was a termination
-                    negative_deal_price=round(negative_deal_price, 1) if negative_deal_price is not None else "No deal",
-                    valuation=round(valuation, 1),
-                    negative_valuation=round(negative_valuation, 1),
-                    gains_from_trade=round(gains_from_trade, 1),
-                    negative_loss_from_discounting=round(negative_loss_from_discounting, 1),
-                    discounted_gains_from_trade=round(discounted_gains_from_trade, 1),
-                    discount_factor=round(discount_factor, 1),
-                    one_minus_discount_factor=round(one_minus_discount_factor, 1),
-                    negative_one_minus_discount_factor=round(negative_one_minus_discount_factor, 1),
-                    transaction_costs=round(transaction_costs, 1),
-                    negative_transaction_costs=round(negative_transaction_costs, 1),
-                    other_role=player.get_others_in_group()[0].role, 
-                    payoff=round(payoff, 1), 
-                    participation_fee=round(participation_fee, 1),
-                    payoff_plus_participation_fee=round(payoff_plus_participation_fee, 1)
-                    )
+        return dictionary_with_results
     
 
 
 class FinalResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(
-                    payoff_group_finished = player.in_round(player.participant.random_round).group.is_finished,
-                    payoff_group_terminated = player.in_round(player.participant.random_round).group.field_maybe_none('terminated'),
-                    payoff_group_terminated_by = player.in_round(player.participant.random_round).group.field_maybe_none('terminated_by'),
-                    payoff_group_accepted_by = player.in_round(player.participant.random_round).group.field_maybe_none('accepted_by'),
-                    payoff_valuation = cu(player.in_round(player.participant.random_round).valuation),
-                    payoff_TA_costs = cu(player.in_round(player.participant.random_round).cumulated_TA_costs),
-                    payoff_delay = player.in_round(player.participant.random_round).payment_delay,
-                    payoff_bargaining_time = player.in_round(player.participant.random_round).group.bargaining_duration,
-                    payoff_deal_price = cu(player.in_round(player.participant.random_round).group.deal_price),
-                    other_role=player.get_others_in_group()[0].role, 
-                    payoff_plus_participation_fee = cu(player.in_round(player.participant.random_round).payoff + player.in_round(player.participant.random_round).group.subsession.session.config['participation_fee']),
-                    )
+
+        dictionary_with_results = create_payoff_dictionary(player=player)
+
+        return dictionary_with_results
+    
     
     @staticmethod
     def is_displayed(player):
