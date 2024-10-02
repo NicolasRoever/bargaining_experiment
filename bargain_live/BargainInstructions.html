@@ -68,7 +68,7 @@
 {% elif player.role == "Seller" %}
 <p>The experiment consists of 20 matches. You are the <b>seller of an object for all 20 matches.</b> At the beginning of each match, you will be randomly paired with another participant who is the buyer.</p>
 {% endif %}
-<p></p>After each match, participants will be randomly re-paired, and new pairs will be formed.</p>
+<p></p>Your partner changes in every match. </p>
 </div>
 
 <br>
@@ -76,7 +76,7 @@
 <hr>
 {% if player.role == "Buyer" %}
 <div style="background-color: rgb(250, 250, 250); padding: 10px;">
-<p>In each match, the buyer and seller will be asked to trade an object. <b>The value of the object for the seller is always 0.</b> The product's value for you - the buyer - will be randomly drawn between 0 and 60 euros before every match. Your oppnent - the seller - does not know your value. Negotiation will happen on the following screen, and the text below further explains your options:</p>
+<p>In each match, the buyer and seller trade an object. <b>The value of the object for the seller is always 0.</b> The product's value for you - the buyer - will be randomly drawn between 0 and 60 euros before every match. Your oppnent - the seller - does not know your value. Negotiation will happen on the following screen, and the text below further explains your options:</p>
 
 
 {% load static %}
@@ -114,7 +114,7 @@
     The total costs you incur are given by: 
     <p class="equation">Total Costs = Negotiation Cost + Delay Costs</p>
     <h4>1. Negotiation Cost</h4>
-    <p>Negotiation costs (you can think of costs for lawyers needed for a negotiation) are incurred for each second of the negotiation. The longer the negotiation, the higher the cost imposed on both participants. . The total accumulated negotiation costs first rise rather quickly at first and more slowly in the end. You can see the shape of the function in the screenshot above in the left graph titled “Negotiation Cost”. 
+    <p>Negotiation costs (you can think of costs for lawyers needed for a negotiation) are incurred for each second of the negotiation. The longer the negotiation, the higher the cost. The total accumulated negotiation costs first rise rather quickly at first and more slowly in the end. You can see the shape of the function in the screenshot above in the left graph titled “Negotiation Cost”. 
 
     <h4>2. Delay Costs</h4>
     <p>For each second of the negotiation, the trade is delayed. This is also costly (think of a manufacturing plant which can only produce later because the raw materials are delivered later). The later you trade, the higher this cost. This is reflected by a reduction in the gains from trade by a percentage value. The current reduction is presented to you in the right graph titled “Cost of Time Delay” (the green bar shows the percent you can keep, the red bar shows the cost).</p>

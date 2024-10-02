@@ -295,13 +295,8 @@ class Bargain(Page):
 
             broadcast.setdefault("buyer_proposal", group.current_buyer_offer)
 
-        
-
-
-        
         return {0: broadcast}
     
-
 
 
 
