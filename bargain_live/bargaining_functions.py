@@ -216,7 +216,7 @@ def setup_player_valuation(player: Any) -> None:
         player.valuation = 50
 
     elif player.role == "Buyer":
-        valuation_list = list(range(1, 101, 1))
+        valuation_list = list(range(1, 61, 1))
         player.valuation = random.choice(valuation_list)
 
 
@@ -675,6 +675,7 @@ def calculate_round_results(player: Any) -> Dict[str, Any]:
     participation_fee = player.group.subsession.session.config['participation_fee']
     payoff_plus_participation_fee = payoff + participation_fee
 
+
     if deal_price is not None:
         if player.role == "Buyer":
             loss_from_discounting = (valuation - deal_price) * one_minus_discount_factor
@@ -740,6 +741,9 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
     payoff = round_data.payoff
     participation_fee = round_data.group.subsession.session.config['participation_fee']
     payoff_plus_participation_fee = payoff + participation_fee
+    is_finished = round_data.group.is_finished
+    terminated = round_data.group.terminated
+    deal_accepted_by = round_data.group.accepted_by
 
     if deal_price is not None:
         if player.role == "Buyer":
@@ -771,10 +775,13 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
         negative_one_minus_discount_factor=round_or_fallback(negative_one_minus_discount_factor),
         transaction_costs=round_or_fallback(transaction_costs),
         negative_transaction_costs=round_or_fallback(negative_transaction_costs),
-        other_role=player.get_others_in_group()[0].role,
         payoff=round_or_fallback(payoff),
         participation_fee=round_or_fallback(participation_fee),
-        payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee)
+        payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee),
+        is_finished=is_finished,
+        terminated=terminated,
+        deal_accepted_by=deal_accepted_by,
+        chosen_round=chosen_round
     )
 
 

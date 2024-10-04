@@ -31,74 +31,68 @@
     }
 </style>
 
-
 <p>Match Number {{ chosen_round }} was chosen to be payoff-relevant. This means the money you get for this participating in the experiment is: {{ payoff_plus_participation_fee }}€. We calculate this as follows:</p>
 
+{% if is_finished == True %}
 
-{% if player.role == "Buyer" %}
-<p>
-  <div class="statement">
-   <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
-   <div>Price: <span class="amount"> {{ negative_deal_price }}</span></div>
-   <div class="line"></div>
-   <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
-   <div class="line"></div>
-   <div>Cost of Delay: <span class="amount">({{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) = {{ negative_loss_from_discounting }}</span></div>
-   <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
-   <div class="line"></div>
-   <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
-   <div class="line"></div>
-   <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
-   <div class="double-line"></div>
-       <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
-   </div>
-</p>
+    {% if terminated == False %}
 
-{% else %}
+        {% if player.role == "Buyer" %}
+         <p>
+           <div class="statement">
+            <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
+            <div>Price: <span class="amount"> {{ negative_deal_price }}</span></div>
+            <div class="line"></div>
+            <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
+            <div class="line"></div>
+            <div>Cost of Delay: <span class="amount">({{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) = {{ negative_loss_from_discounting }}</span></div>
+            <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+            <div class="line"></div>
+            <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+            <div class="line"></div>
+            <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
+            <div class="double-line"></div>
+                <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+            </div>
+         </p>
 
-<p>
-   <div class="statement">
-    <div>Price: <span class="amount">{{ deal_price }}</span></div>
-    <div>Value of the Object: <span class="amount"> {{ negative_valuation }}</span></div>
-    <div class="line"></div>
-    <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
-    <div class="line"></div>
-    <div>Cost of Delay: <span class="amount">( {{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) =  {{ negative_loss_from_discounting }}</span></div>
-    <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
-    <div class="line"></div>
-    <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
-    <div class="line"></div>
-    <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
-    <div class="double-line"></div>
-        <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
-    </div>
- </p>
+        {% else %}
 
-{% endif %}
+        <p>
+            <div class="statement">
+             <div>Price: <span class="amount">{{ deal_price }}</span></div>
+             <div>Value of the Object: <span class="amount"> {{ negative_valuation }}</span></div>
+             <div class="line"></div>
+             <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
+             <div class="line"></div>
+             <div>Cost of Delay: <span class="amount">( {{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) =  {{ negative_loss_from_discounting }}</span></div>
+             <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+             <div class="line"></div>
+             <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+             <div class="line"></div>
+             <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
+             <div class="double-line"></div>
+                 <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+             </div>
+          </p>
 
-
-
-{% elif group.terminated == True %}
-
-{% if group.terminated_by == player.id_in_group %}
-
-   <p>You terminated the negotation and no deal has been made. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}.</p>
-
-{% elif group.terminated_by != player.id_in_group %}
-   <p>
-       The bargaining was terminated by the {{ other_role }} and no deal has been made. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}.
-   </p>
-{% endif %}
+        {% endif %}
 
 
-{% endif %}
+
+    {% elif terminated == True %}
+
+        The deal was terminated. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}.
+    {% endif %}
 
 
 {% else %}
-
-<p> No deal was made in the given time frame. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}. </p>
+    
+   <p> No deal was made in the given time frame. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}. </p>
 
 {% endif %}
 
-    {{ endblock }}
+
+
+{{ endblock }}
 
