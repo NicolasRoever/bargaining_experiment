@@ -432,7 +432,7 @@ def round_or_fallback(value, fallback="No deal", precision=1):
 
 
 # Function to create match rounds
-def create_matches_for_rounds(df, num_rounds=20):
+def create_matches_for_rounds(df: pd.DataFrame, num_rounds: int = 20) -> pd.DataFrame:
     """
     Creates columns for match rounds where each buyer is randomly matched with a seller from the same group.
     
@@ -673,7 +673,7 @@ def calculate_round_results(player: Any) -> Dict[str, Any]:
     negative_valuation = -valuation
     payoff = player.payoff
     participation_fee = player.group.subsession.session.config['participation_fee']
-    payoff_plus_participation_fee = cu(payoff + participation_fee)
+    payoff_plus_participation_fee = payoff + participation_fee
 
     if deal_price is not None:
         if player.role == "Buyer":
@@ -711,8 +711,10 @@ def calculate_round_results(player: Any) -> Dict[str, Any]:
         payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee)
     )
 
+
+
 def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
-    """THis function creates the dictionary that the HTML page FinalResults.html needs to display the results of the game. 
+    """This function creates the dictionary that the HTML page FinalResults.html needs to display the results of the game. 
 
     Args:
         player (Any): The player object containing the specific player's database.
@@ -720,18 +722,59 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: A dictionary containing the results of the game.
     """
+    # Get the randomly chosen round
+    chosen_round = player.participant.random_round
+    round_data = player.in_round(chosen_round)
+
+    # Extract necessary values from the chosen round
+    deal_price = round_data.group.field_maybe_none('deal_price')
+    negative_deal_price = -deal_price if deal_price is not None else None
+    transaction_costs = round_data.current_TA_costs
+    negative_transaction_costs = -transaction_costs
+    discount_factor = round_data.current_discount_factor
+    negative_discount_factor = -discount_factor
+    one_minus_discount_factor = 1 - discount_factor
+    negative_one_minus_discount_factor = -one_minus_discount_factor
+    valuation = round_data.valuation
+    negative_valuation = -valuation
+    payoff = round_data.payoff
+    participation_fee = round_data.group.subsession.session.config['participation_fee']
+    payoff_plus_participation_fee = payoff + participation_fee
+
+    if deal_price is not None:
+        if player.role == "Buyer":
+            loss_from_discounting = (valuation - deal_price) * one_minus_discount_factor
+            negative_loss_from_discounting = -loss_from_discounting
+            gains_from_trade = valuation - deal_price
+            discounted_gains_from_trade = gains_from_trade * discount_factor
+        else:
+            loss_from_discounting = (deal_price - valuation) * one_minus_discount_factor
+            negative_loss_from_discounting = -loss_from_discounting
+            gains_from_trade = deal_price - valuation
+            discounted_gains_from_trade = gains_from_trade * discount_factor
+    else:
+        loss_from_discounting = None
+        negative_loss_from_discounting = None
+        gains_from_trade = None
+        discounted_gains_from_trade = None
+
     return dict(
-        payoff_group_finished=player.in_round(player.participant.random_round).group.is_finished,
-        payoff_group_terminated=player.in_round(player.participant.random_round).group.field_maybe_none('terminated'),
-        payoff_group_terminated_by=player.in_round(player.participant.random_round).group.field_maybe_none('terminated_by'),
-        payoff_group_accepted_by=player.in_round(player.participant.random_round).group.field_maybe_none('accepted_by'),
-        payoff_valuation=cu(player.in_round(player.participant.random_round).valuation),
-        payoff_TA_costs=cu(player.in_round(player.participant.random_round).cumulated_TA_costs),
-        payoff_delay=player.in_round(player.participant.random_round).payment_delay,
-        payoff_bargaining_time=player.in_round(player.participant.random_round).group.bargaining_duration,
-        payoff_deal_price=cu(player.in_round(player.participant.random_round).group.deal_price),
+        deal_price=round_or_fallback(deal_price),
+        negative_deal_price=round_or_fallback(negative_deal_price),
+        valuation=round_or_fallback(valuation),
+        negative_valuation=round_or_fallback(negative_valuation),
+        gains_from_trade=round_or_fallback(gains_from_trade),
+        negative_loss_from_discounting=round_or_fallback(negative_loss_from_discounting),
+        discounted_gains_from_trade=round_or_fallback(discounted_gains_from_trade),
+        discount_factor=round_or_fallback(discount_factor),
+        one_minus_discount_factor=round_or_fallback(one_minus_discount_factor),
+        negative_one_minus_discount_factor=round_or_fallback(negative_one_minus_discount_factor),
+        transaction_costs=round_or_fallback(transaction_costs),
+        negative_transaction_costs=round_or_fallback(negative_transaction_costs),
         other_role=player.get_others_in_group()[0].role,
-        payoff_plus_participation_fee=cu(player.in_round(player.participant.random_round).payoff + player.in_round(player.participant.random_round).group.subsession.session.config['participation_fee']),
+        payoff=round_or_fallback(payoff),
+        participation_fee=round_or_fallback(participation_fee),
+        payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee)
     )
 
 

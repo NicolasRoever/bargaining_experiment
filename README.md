@@ -109,6 +109,9 @@ This section is only for me as a developer. You can ignore it.
 
 - Right now, I discount everything gains from trade excluding transaction costs. Is this correct?
 - I need to check that I can download the data from the experiment and test the production server.
+- Double-check this error:   File "/Users/nicolasroever/Documents/Promotion/Bargaining/bargaining_experiment/bargain_live/bargaining_functions.py", line 90, in update_broadcast_dict_with_basic_values
+    current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
+IndexError: list index out of range
 
 
 

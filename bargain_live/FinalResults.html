@@ -4,56 +4,101 @@
 
 {{ block content }}
 
-<p>Match Number {{ player.participant.random_round }} was chosen to be payoff-relevant.</p>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    .statement {
+        max-width: 300px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #000;
+    }
+    .statement div {
+        margin: 10px 0;
+    }
+    .line {
+        border-bottom: 1px solid #000;
+        margin: 10px 0;
+    }
+    .double-line {
+        border-bottom: 2px solid #000;
+        margin: 10px 0;
+    }
+    .amount {
+        float: right;
+    }
+</style>
 
-<li>Your valuation in this match: {{ payoff_valuation }}</li>
 
-{% if payoff_group_finished == True %}
-
-    {% if payoff_group_terminated == False %}
-
-        {% if payoff_group_accepted_by == player.id_in_group %}
-
-        
-        <li>You accepted the price offer by the {{ other_role }} of {{ payoff_deal_price }}. </li>
-        
-
-        {% elif payoff_group_accepted_by != player.id_in_group %}
-        
-        <li>The {{ other_role }} accepted your offer of {{ payoff_deal_price }}. </li>
-
-        {% endif %}
+<p>Match Number {{ chosen_round }} was chosen to be payoff-relevant. This means the money you get for this participating in the experiment is: {{ payoff_plus_participation_fee }}€. We calculate this as follows:</p>
 
 
-    {% elif payoff_group_terminated == True %}
-
-        {% if payoff_group_terminated_by == player.id_in_group %}
-
-            <li>You terminated the negotation.</li>
-
-        {% elif payoff_group_terminated_by != player.id_in_group %}
-            
-            <li>The negotiation was terminated by the {{ other_role }}.</li>
-
-            
-        {% endif %}
-
-    {% endif %}
+{% if player.role == "Buyer" %}
+<p>
+  <div class="statement">
+   <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
+   <div>Price: <span class="amount"> {{ negative_deal_price }}</span></div>
+   <div class="line"></div>
+   <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
+   <div class="line"></div>
+   <div>Cost of Delay: <span class="amount">({{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) = {{ negative_loss_from_discounting }}</span></div>
+   <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+   <div class="line"></div>
+   <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+   <div class="line"></div>
+   <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
+   <div class="double-line"></div>
+       <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+   </div>
+</p>
 
 {% else %}
-    
-   <li> No deal was made in the given time frame. </li>
+
+<p>
+   <div class="statement">
+    <div>Price: <span class="amount">{{ deal_price }}</span></div>
+    <div>Value of the Object: <span class="amount"> {{ negative_valuation }}</span></div>
+    <div class="line"></div>
+    <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
+    <div class="line"></div>
+    <div>Cost of Delay: <span class="amount">( {{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) =  {{ negative_loss_from_discounting }}</span></div>
+    <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+    <div class="line"></div>
+    <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+    <div class="line"></div>
+    <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
+    <div class="double-line"></div>
+        <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+    </div>
+ </p>
 
 {% endif %}
 
-<li>Total time of negotiation: {{ payoff_bargaining_time }} seconds.</li>
-
-<li>Total transaction costs {{ payoff_TA_costs }}. </li>
 
 
-<li>Total payment: {{ payoff_plus_participation_fee }} 
-        (including the participation fee of {{ session.participation_fee }}) in {{ payoff_delay }} days.</li>
+{% elif group.terminated == True %}
 
+{% if group.terminated_by == player.id_in_group %}
+
+   <p>You terminated the negotation and no deal has been made. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}.</p>
+
+{% elif group.terminated_by != player.id_in_group %}
+   <p>
+       The bargaining was terminated by the {{ other_role }} and no deal has been made. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}.
+   </p>
+{% endif %}
+
+
+{% endif %}
+
+
+{% else %}
+
+<p> No deal was made in the given time frame. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}. </p>
+
+{% endif %}
 
     {{ endblock }}
 

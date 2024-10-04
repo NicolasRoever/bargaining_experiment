@@ -43,10 +43,10 @@ def test_cumulative_transaction_cost():
 
     expected_cost = 10.565
 
-    result = cumulative_transaction_cost_function(time, cost_factor, decay_factor)
+    actual_result = cumulative_transaction_cost_function(time, cost_factor, decay_factor)
 
     # Assert the result is close to the expected value
-    assert np.isclose(result, expected_cost, atol=0.05), f"Expected {expected_cost}, but got {result}"
+    assert np.isclose(expected_cost, actual_result, atol=1e-2)
 
 
 
@@ -319,8 +319,6 @@ def test_round_2_different_from_round_1(sample_input):
     # Get the matrices for round 1 and round 2
     round_1_matrix = all_rounds_matrix[0]
     round_2_matrix = all_rounds_matrix[1]
-
-    breakpoint()
 
     # Check that the matrix for round 2 is different from round 1
     assert round_1_matrix != round_2_matrix, "The group matrix for round 2 should be different from round 1."
