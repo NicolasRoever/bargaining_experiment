@@ -681,6 +681,7 @@ def calculate_round_results(player: Any) -> Dict[str, Any]:
     payoff_plus_participation_fee = payoff + participation_fee
 
 
+
     if deal_price is not None:
         if player.role == "Buyer":
             loss_from_discounting = (valuation - deal_price) * one_minus_discount_factor
@@ -749,7 +750,7 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
     payoff_plus_participation_fee = payoff + participation_fee
     is_finished = round_data.group.is_finished
     terminated = round_data.group.terminated
-    deal_accepted_by = round_data.field_maybe_none('accepted_by')
+    deal_accepted_by = round_data.group.field_maybe_none('accepted_by')
 
     if deal_price is not None:
         if player.role == "Buyer":

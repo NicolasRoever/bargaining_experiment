@@ -67,6 +67,7 @@ class Player(BasePlayer):
     current_deal_accept = models.IntegerField()#
     current_payoff_accept = models.FloatField()#
 
+
     current_deal_other_accepts = models.IntegerField()#
     current_payoff_other_accepts = models.FloatField()#
 
