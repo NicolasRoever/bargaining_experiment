@@ -87,8 +87,12 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     # Parse the lists and calculate relevant values based on the elapsed time
     total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed]
     total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed]
-    current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
-    current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
+    try:
+        current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
+        current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
+    except IndexError as e:
+        print(f"IndexError: {e}. Index: {bargaining_time_elapsed - 1}, List length: {len(json.loads(player.current_costs_list))}")
+        current_transaction_costs = None  # or handle it in another way
 
 
     # Update player attributes
@@ -241,6 +245,7 @@ def setup_player_transaction_costs(player: Any, ta_treatment: bool, delay_treatm
 
 
     #Save all values relevant for displaying transaction costs in the database
+    
     player.total_costs_list = json.dumps(transaction_cost_list)
     player.current_costs_list = json.dumps(current_costs_list)
     player.x_axis_values_TA_graph = json.dumps(list(range(0, total_bargaining_time + 1)))
@@ -321,7 +326,6 @@ def record_player_payoff_from_round(player: Any) -> None:
 
         transaction_costs = player.cumulated_TA_costs
         player.payoff = -transaction_costs
-        print(player.payoff)
 
     #Case 3: Time was up
 
@@ -664,7 +668,7 @@ def calculate_round_results(player: Any) -> Dict[str, Any]:
 
     deal_price = player.group.field_maybe_none('deal_price')
     negative_deal_price = -deal_price if deal_price is not None else None
-    transaction_costs = player.current_TA_costs
+    transaction_costs = player.cumulated_TA_costs
     negative_transaction_costs = -transaction_costs
     discount_factor = player.current_discount_factor
     negative_discount_factor = -discount_factor
@@ -710,7 +714,8 @@ def calculate_round_results(player: Any) -> Dict[str, Any]:
         other_role=player.get_others_in_group()[0].role,
         payoff=round_or_fallback(payoff),
         participation_fee=round_or_fallback(participation_fee),
-        payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee)
+        payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee),
+        round_number = player.round_number
     )
 
 
@@ -744,7 +749,7 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
     payoff_plus_participation_fee = payoff + participation_fee
     is_finished = round_data.group.is_finished
     terminated = round_data.group.terminated
-    deal_accepted_by = round_data.group.accepted_by
+    deal_accepted_by = round_data.field_maybe_none('accepted_by')
 
     if deal_price is not None:
         if player.role == "Buyer":

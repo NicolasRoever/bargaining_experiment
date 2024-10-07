@@ -176,6 +176,8 @@ class BargainInstructions(Page):
 
 
 class BargainWaitPage(WaitPage):
+    body_text = "Please wait while other players are getting ready. This can take up to a couple of minutes in some cases!"
+
     @staticmethod
     def after_all_players_arrive(group):
         group.bargain_start_time = time.time()
@@ -327,8 +329,6 @@ class Bargain(Page):
         deal_price = group.field_maybe_none('deal_price')
         return deal_price is None
     
-    
-
 
 class RoundResults(Page):
     @staticmethod

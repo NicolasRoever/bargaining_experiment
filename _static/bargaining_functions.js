@@ -39,7 +39,7 @@ function initializeElements() {
 // Function to initialize the sliders
 function initializeSliders() {
     // Initialize the first slider (my_slider)
-    window.my_slider = new mgslider("offer", 0, 100, 1);
+    window.my_slider = new mgslider("offer", 0, 60, 1);
     my_slider.f2s = function (val) {
         return val.toFixed(2) + '€';
     };
@@ -310,7 +310,7 @@ function showNotification(message) {
     // Hide the notification after 3 seconds
     setTimeout(function() {
         notification.style.display = "none";
-    }, 3000);
+    }, 2000);
 }
 
 // Function to temporarily change the text color of a specific element

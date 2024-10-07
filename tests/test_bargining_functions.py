@@ -2,8 +2,9 @@ import pytest
 import pandas as pd
 import numpy as np
 from typing import List, Tuple
+from unittest.mock import Mock
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function, calculate_discount_factors_for_shrinking_pie
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function, calculate_discount_factors_for_shrinking_pie, record_player_payoff_from_round
 
 
 #-------------------------
@@ -342,6 +343,73 @@ def test_calculate_discount_factors_low_at_t(t, expected):
     
     # Test the value at the given time t
     assert np.isclose(discount_factors_high[t], expected, atol=1e-2), f"Expected {expected} at t={t}, but got {discount_factors_high[t]}"
+
+
+#-------------------------
+# Test cases for record_player_payoff_from_round
+
+@pytest.fixture
+def mock_player():
+    player = Mock()
+    player.role = "Seller"
+    player.valuation = 0
+    player.cumulated_TA_costs = 5
+    player.current_discount_factor = 0.5
+    player.group = Mock()
+    player.group.deal_price = 20
+    player.group.field_maybe_none = lambda x: 20 if x == 'deal_price' else None
+    return player
+
+def test_record_player_payoff_from_round_seller(mock_player):
+    record_player_payoff_from_round(mock_player)
+    expected_payoff = (20 - 0) * 0.5 - 5  # (deal_price - valuation) * discount_factor - transaction_costs
+    assert np.isclose(mock_player.payoff, expected_payoff), f"Expected payoff {expected_payoff}, but got {mock_player.payoff}"
+
+@pytest.fixture
+def mock_buyer():
+    player = Mock()
+    player.role = "Buyer"
+    player.valuation = 50
+    player.cumulated_TA_costs = 5
+    player.current_discount_factor = 0.5
+    player.group = Mock()
+    player.group.deal_price = 20
+    player.group.field_maybe_none = lambda x: 20 if x == 'deal_price' else None
+    return player
+
+def test_record_player_payoff_from_round_buyer(mock_buyer):
+    record_player_payoff_from_round(mock_buyer)
+    expected_payoff = (50 - 20) * 0.5 - 5  # (valuation - deal_price) * discount_factor - transaction_costs
+    assert np.isclose(mock_buyer.payoff, expected_payoff), f"Expected payoff {expected_payoff}, but got {mock_buyer.payoff}"
+
+@pytest.fixture
+def mock_player_terminated():
+    player = Mock()
+    player.cumulated_TA_costs = 5
+    player.group = Mock()
+    player.group.field_maybe_none = lambda x: 'some_time' if x == 'termination_time' else None
+    return player
+
+def test_record_player_payoff_from_round_terminated(mock_player_terminated):
+    record_player_payoff_from_round(mock_player_terminated)
+    expected_payoff = -5  # -transaction_costs
+    assert mock_player_terminated.payoff == expected_payoff
+
+@pytest.fixture
+def mock_player_time_up():
+    player = Mock()
+    player.group = Mock()
+    player.group.field_maybe_none = lambda x: None
+    player.total_costs_list = '[1, 2, 3, 4, 5]'
+    return player
+
+def test_record_player_payoff_from_round_time_up(mock_player_time_up):
+    record_player_payoff_from_round(mock_player_time_up)
+    expected_payoff = -5  # -json.loads(player.total_costs_list)[-1]
+    assert mock_player_time_up.payoff == expected_payoff
+
+
+
 
 
 

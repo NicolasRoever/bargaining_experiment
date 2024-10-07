@@ -209,7 +209,7 @@ Price Negotiation
         </div>
         <div class="three_columns_right" style="background-color: #ffffff; flex: 0.5"></div>
     </div>
-    <div id="notification" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #f0ad4e; padding: 0px; border-radius: 0px; color: white; font-size: 1.5em; z-index: 9999; text-align: center; width: 80%; max-width: 400px;">Notification text</div>
+    <div id="notification" style="display:none; position: fixed; top: 30%; left: 60%; transform: translate(-50%, -50%); background-color: #f0ad4e; padding: 3%; border-radius: 2%; color: white; font-size: 1.5em; z-index: 9999; text-align: center; width: 80%; max-width: 400px;">Notification text</div>
 
     {% if treatment_communication %}
     <h5 style="margin-top: 1cm;">Please use this chat room to communicate with the {{ other_role }}:</h5>
@@ -402,13 +402,13 @@ function liveRecv(data) {
     // This changes the text color of the proposal to red for 2 seconds when a proposal is made
     if (data.notification_seller_proposal){
         if (js_vars.my_role == "Seller"){
-            changeTextColor("my-proposal", "red", 1400);
+            changeTextColor("my-proposal", "green", 1400);
         }
     }
 
     if (data.notification_buyer_proposal){
         if (js_vars.my_role == "Buyer"){
-            changeTextColor("my-proposal", "red",1400);
+            changeTextColor("my-proposal", "green",1400);
         }
     }
 
@@ -428,7 +428,7 @@ setInterval(
     function () {
         liveSend({});
     },
-    5000
+    3500
 )
 
 </script>
