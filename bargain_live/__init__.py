@@ -243,10 +243,6 @@ class Bargain(Page):
         # Update database and broadcast if a proposal was made
         if data.get('type') == 'propose':
 
-            print("Proposal was made and Python if is called.")
-            print("Player id is:", player.id_in_group)
-            print("Latest proposal by is:", data.get('proposal_by_id'))
-
             if player.id_in_group == data.get('proposal_by_id'):
 
                update_player_database_with_proposal(
@@ -258,13 +254,14 @@ class Bargain(Page):
 
                 group.current_seller_offer = data.get('amount')
                 broadcast["seller_proposal"] = data.get('amount')
+                broadcast["notification_seller_proposal"] = True 
 
 
             elif data.get("proposal_by_role") == "Buyer":
 
                 group.current_buyer_offer = data.get('amount')    
                 broadcast["buyer_proposal"] = data.get('amount')
-
+                broadcast["notification_buyer_proposal"] = True 
 
 
         #Update database and finish bargaining if a deal was accepted

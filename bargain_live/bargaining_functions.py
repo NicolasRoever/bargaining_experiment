@@ -154,7 +154,7 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     Returns:
         None
     """
-    print("Updating player database with proposal is called")
+    
     # Update the amount_proposed_list field
     amount_proposed_list = json.loads(player.amount_proposed_list)
     amount_proposed_list.append(data.get('amount'))

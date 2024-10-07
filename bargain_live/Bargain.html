@@ -141,7 +141,7 @@ Price Negotiation
                 <b><p style="display: inline;"> Time: <div style="display: inline;" id="time_spent"></div> seconds </p></b>
 
                 <h4 style="display:inline">Your current submitted price offer:</h4>
-                <div id="my-proposal" style="display: inline; margin-left: 0.5cm;"> No offer yet.</div>
+                <span id="my-proposal" style="display: inline; margin-left: 0.5cm; font-size: 1.5em;"> No offer yet.</span>
             
                 <div class="slider-container">
                     <div class="mgslider-wrapper" id="my_slider" style="margin-top: 1cm; margin-bottom: 27px;"></div>
@@ -166,7 +166,7 @@ Price Negotiation
 
             <div style="background-color: #f2f2f2; padding: 15px; margin-top: 15px;">
                 <h4 style="display:inline" style="margin-top: 0.25cm;">{{ other_role }}'s current submitted price offer:</h4>
-                <div style="display:inline; margin-left: 0.5cm; margin-top: 0.5cm;" id="other-proposal"> No offer yet. </div>
+                <div style="display:inline; margin-left: 0.5cm; margin-top: 0.5cm; font-size: 1.5em;" id="other-proposal"> No offer yet. </div>
 
                 <div class="slider-container">
                     <div class="mgslider-wrapper" id="slider_other" style="margin-top: 0.5cm;"></div>
@@ -209,6 +209,7 @@ Price Negotiation
         </div>
         <div class="three_columns_right" style="background-color: #ffffff; flex: 0.5"></div>
     </div>
+    <div id="notification" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #f0ad4e; padding: 0px; border-radius: 0px; color: white; font-size: 1.5em; z-index: 9999; text-align: center; width: 80%; max-width: 400px;">Notification text</div>
 
     {% if treatment_communication %}
     <h5 style="margin-top: 1cm;">Please use this chat room to communicate with the {{ other_role }}:</h5>
@@ -330,6 +331,7 @@ function liveRecv(data) {
             enableButton(
                 buttonId="btn-accept"
             );
+
         }
 
     }
@@ -378,10 +380,40 @@ function liveRecv(data) {
             enableButton(
                 buttonId="btn-accept"
             );
+
         }
 
 
     }
+
+    // This shows a notification if a proposal was made
+    if (data.notification_seller_proposal){
+        if (js_vars.my_role == "Buyer"){
+            showNotification("You received an offer from the Seller.");
+        }
+    }
+
+    if (data.notification_buyer_proposal){
+        if (js_vars.my_role == "Seller"){
+            showNotification("You received an offer from the Buyer.");
+        }
+    }
+
+    // This changes the text color of the proposal to red for 2 seconds when a proposal is made
+    if (data.notification_seller_proposal){
+        if (js_vars.my_role == "Seller"){
+            changeTextColor("my-proposal", "red", 1400);
+        }
+    }
+
+    if (data.notification_buyer_proposal){
+        if (js_vars.my_role == "Buyer"){
+            changeTextColor("my-proposal", "red",1400);
+        }
+    }
+
+
+
 
     // This goes to the Round Results page
     if (data.finished) {

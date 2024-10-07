@@ -302,4 +302,30 @@ function createStackedBarChart(chartName, firstPercentage, secondPercentage) {
     });
 }
 
+function showNotification(message) {
+    var notification = document.getElementById("notification");
+    notification.innerText = message;
+    notification.style.display = "block";
+
+    // Hide the notification after 3 seconds
+    setTimeout(function() {
+        notification.style.display = "none";
+    }, 3000);
+}
+
+// Function to temporarily change the text color of a specific element
+function changeTextColor(element_id, color, duration) {
+    var element = document.getElementById(element_id);
+    if (element) {
+        var originalColor = element.style.color; // Save the original color
+
+        element.style.color = color; // Change to the desired color
+
+        // Revert the color back after the specified duration
+        setTimeout(function() {
+            element.style.color = originalColor;
+        }, duration);
+    }
+}
+
 module.exports = {  sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay } ; // Export the function for testing
