@@ -22,7 +22,7 @@ CURRENT_PATH = pathlib.Path(__file__).parent
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 20
+    NUM_ROUNDS = 2
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
     TOTAL_BARGAINING_TIME = 120
@@ -60,8 +60,8 @@ class Player(BasePlayer):
     amount_accepted = models.IntegerField()#
     current_amount_proposed = models.FloatField()
 
-    amount_proposed_list = models.StringField()#
-    offer_time_list = models.StringField()#
+    amount_proposed_list = models.LongStringField(default="[]")
+    offer_time_list = models.LongStringField(default="[]")
 
     valuation = models.IntegerField()#
     current_deal_accept = models.IntegerField()#
@@ -69,6 +69,7 @@ class Player(BasePlayer):
 
     current_deal_other_accepts = models.IntegerField()#
     current_payoff_other_accepts = models.FloatField()#
+
  
 
     initial_TA_costs = models.IntegerField()#
@@ -242,7 +243,11 @@ class Bargain(Page):
         # Update database and broadcast if a proposal was made
         if data.get('type') == 'propose':
 
-            if player.id_in_group == data.get('latest_proposal_by'):
+            print("Proposal was made and Python if is called.")
+            print("Player id is:", player.id_in_group)
+            print("Latest proposal by is:", data.get('proposal_by_id'))
+
+            if player.id_in_group == data.get('proposal_by_id'):
 
                update_player_database_with_proposal(
                    player=player,

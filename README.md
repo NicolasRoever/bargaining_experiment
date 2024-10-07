@@ -108,10 +108,18 @@ While some of the functions are quite long as they carry special functionalities
 This section is only for me as a developer. You can ignore it. 
 
 - Right now, I discount everything gains from trade excluding transaction costs. Is this correct?
-- I need to check that I can download the data from the experiment and test the production server.
+- I need to add two practice rounds and an attention check. 
+- I need to add a Note that waiting for longer periods is normal
+- I need to add which round we are 
+- I need to add notifications when an offer was submitted or received
+- I need to adjust the results page for termination results.
 - Double-check this error:   File "/Users/nicolasroever/Documents/Promotion/Bargaining/bargaining_experiment/bargain_live/bargaining_functions.py", line 90, in update_broadcast_dict_with_basic_values
     current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
 IndexError: list index out of range
+- I need to fix the error on the results page some people got
+- You can press the submit button without selecting anything on the slider, this should be fixed
+- I need to adjust the instructions
+
 
 
 

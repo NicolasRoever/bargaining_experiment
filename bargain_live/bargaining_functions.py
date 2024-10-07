@@ -154,13 +154,14 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     Returns:
         None
     """
+    print("Updating player database with proposal is called")
     # Update the amount_proposed_list field
-    amount_proposed_list = json.loads(player.field_maybe_none('amount_proposed_list') or "[]")
+    amount_proposed_list = json.loads(player.amount_proposed_list)
     amount_proposed_list.append(data.get('amount'))
     player.amount_proposed_list = json.dumps(amount_proposed_list)
 
     # Update the offer_time_list field
-    offer_time_list = json.loads(player.field_maybe_none('offer_time_list') or "[]")
+    offer_time_list = json.loads(player.offer_time_list)
     offer_time_list.append(data.get('offer_time'))
     player.offer_time_list = json.dumps(offer_time_list)
     player.proposal_made = True
