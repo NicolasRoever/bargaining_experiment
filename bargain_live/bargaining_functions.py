@@ -176,7 +176,7 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     player.proposal_made = True
 
 
-def update_group_database_upon_acceptance(group: Any, data: Dict[str, Any], practice_round: bool) -> None:
+def update_group_database_upon_acceptance(group: Any, data: Dict[str, Any]) -> None:
     """
     Updates the group's database fields upon acceptance of a deal.
 
@@ -680,7 +680,7 @@ def calculate_discount_factors_for_shrinking_pie(delay_treatment_high: bool, tot
     return discount_factors.tolist()
 
 
-def calculate_round_results(player: Any) -> Dict[str, Any]:
+def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]:
     """
     Returns the dictionary that the HTML page RoundResults.html needs to display the results of a round. 
 
@@ -705,7 +705,8 @@ def calculate_round_results(player: Any) -> Dict[str, Any]:
     participation_fee = player.group.subsession.session.config['participation_fee']
     payoff_plus_participation_fee = payoff + participation_fee
 
-
+    if practice_round == True:
+        other_role = "Buyer" if player.role == "Seller" else "Seller"
 
     if deal_price is not None:
         if player.role == "Buyer":
@@ -737,11 +738,12 @@ def calculate_round_results(player: Any) -> Dict[str, Any]:
         negative_one_minus_discount_factor=round_or_fallback(negative_one_minus_discount_factor),
         transaction_costs=round_or_fallback(transaction_costs),
         negative_transaction_costs=round_or_fallback(negative_transaction_costs),
-        other_role=player.get_others_in_group()[0].role,
+        other_role=other_role,
         payoff=round_or_fallback(payoff),
         participation_fee=round_or_fallback(participation_fee),
         payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee),
-        round_number = player.round_number
+        round_number = player.round_number,
+        practice_round = practice_round
     )
 
 
@@ -764,10 +766,6 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
     negative_deal_price = -deal_price if deal_price is not None else None
     transaction_costs = round_data.current_TA_costs
     negative_transaction_costs = -transaction_costs
-    discount_factor = round_data.current_discount_factor
-    negative_discount_factor = -discount_factor
-    one_minus_discount_factor = 1 - discount_factor
-    negative_one_minus_discount_factor = -one_minus_discount_factor
     valuation = round_data.valuation
     negative_valuation = -valuation
     payoff = round_data.payoff
@@ -779,15 +777,9 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
 
     if deal_price is not None:
         if player.role == "Buyer":
-            loss_from_discounting = (valuation - deal_price) * one_minus_discount_factor
-            negative_loss_from_discounting = -loss_from_discounting
             gains_from_trade = valuation - deal_price
-            discounted_gains_from_trade = gains_from_trade * discount_factor
         else:
-            loss_from_discounting = (deal_price - valuation) * one_minus_discount_factor
-            negative_loss_from_discounting = -loss_from_discounting
             gains_from_trade = deal_price - valuation
-            discounted_gains_from_trade = gains_from_trade * discount_factor
     else:
         loss_from_discounting = None
         negative_loss_from_discounting = None
@@ -800,11 +792,6 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
         valuation=round_or_fallback(valuation),
         negative_valuation=round_or_fallback(negative_valuation),
         gains_from_trade=round_or_fallback(gains_from_trade),
-        negative_loss_from_discounting=round_or_fallback(negative_loss_from_discounting),
-        discounted_gains_from_trade=round_or_fallback(discounted_gains_from_trade),
-        discount_factor=round_or_fallback(discount_factor),
-        one_minus_discount_factor=round_or_fallback(one_minus_discount_factor),
-        negative_one_minus_discount_factor=round_or_fallback(negative_one_minus_discount_factor),
         transaction_costs=round_or_fallback(transaction_costs),
         negative_transaction_costs=round_or_fallback(negative_transaction_costs),
         payoff=round_or_fallback(payoff),

@@ -22,7 +22,7 @@ CURRENT_PATH = pathlib.Path(__file__).parent
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
-    NUM_PRACTICE_ROUNDS = 0
+    NUM_PRACTICE_ROUNDS = 3
     NUM_REAL_ROUNDS = 2
     NUM_ROUNDS = NUM_PRACTICE_ROUNDS + NUM_REAL_ROUNDS
     SELLER_ROLE = 'Seller'
@@ -247,6 +247,11 @@ class BargainPracticeTwoIntro(Page):
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 2
+    
+class BargainPracticeThreeIntro(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.subsession.round_number == 3
 
 class BargainInfoRealGame(Page):
     @staticmethod
@@ -259,7 +264,9 @@ class RoundResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
 
-        dictionary_with_results = calculate_round_results(player=player)
+        practice_round = player.subsession.is_practice_round
+
+        dictionary_with_results = calculate_round_results(player=player, practice_round=practice_round)
 
         return dictionary_with_results
     
@@ -396,6 +403,10 @@ class BargainPracticeTwo(Page):
 
         return {0: broadcast}
     
+    @staticmethod
+    def is_displayed(player):
+        return player.subsession.round_number == 2
+    
 
 class BargainPracticeThree(Page):
 
@@ -452,6 +463,10 @@ class BargainPracticeThree(Page):
         player.group.random_termination_time_current_round = 120
 
         return {0: broadcast}
+    
+    @staticmethod
+    def is_displayed(player):
+        return player.subsession.round_number == 3
     
 
 
@@ -535,6 +550,11 @@ class BargainReal(Page):
 
 page_sequence = [#WelcomeAndConsent, 
                  BargainInstructions,
+                 BargainPracticeOneIntro,
+                 BargainPracticeOne,
+                 BargainPracticeTwoIntro,
+                 BargainPracticeTwo,
+                 BargainPracticeThreeIntro,
                  BargainPracticeThree,
                  BargainWaitPage, 
                  BargainReal, 

@@ -1,5 +1,9 @@
 {{ block title }}
-    Results of this Round (Round {{ round_number }} of {{ C.NUM_ROUNDS }})
+    {{ if practice_round == True }}
+        Results of this Practice Round (Round {{ round_number }} of {{ C.NUM_PRACTICE_ROUNDS }})
+    {{ else }}
+        Results of this Round (Round {{ round_number }} of {{ C.NUM_REAL_ROUNDS }})
+    {{ endif }}
 {{ endblock }}
 
 {{ block content }}
@@ -64,7 +68,6 @@
             <div class="line"></div>
             <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
             <div class="line"></div>
-            <div>Cost of Delay: <span class="amount">({{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) = {{ negative_loss_from_discounting }}</span></div>
             <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
             <div class="line"></div>
             <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
@@ -84,7 +87,6 @@
              <div class="line"></div>
              <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
              <div class="line"></div>
-             <div>Cost of Delay: <span class="amount">( {{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) =  {{ negative_loss_from_discounting }}</span></div>
              <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
              <div class="line"></div>
              <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
@@ -113,7 +115,6 @@
                 <div class="line"></div>
                 <div>Gains from Trade: <span class="amount"> 0 </span></div>
                 <div class="line"></div>
-                <div>Cost of Delay: <span class="amount">0</span></div>
                 <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
                 <div class="line"></div>
                 <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
@@ -127,12 +128,11 @@
         {% else %}
         <p>
             <div class="statement">
-                <div>Price: <span class="amount">0</span></div>
+                <div>Price: <span class="amount">No Deal</span></div>
                 <div>Value of the Object: <span class="amount"> 0</span></div>
                 <div class="line"></div>
                 <div>Gains from Trade: <span class="amount">0</span></div>
                 <div class="line"></div>
-                <div>Cost of Delay: <span class="amount">0</span></div>
                 <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
                 <div class="line"></div>
                 <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
@@ -166,7 +166,6 @@
                 <div class="line"></div>
                 <div>Gains from Trade: <span class="amount"> 0 </span></div>
                 <div class="line"></div>
-                <div>Cost of Delay: <span class="amount">0</span></div>
                 <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
                 <div class="line"></div>
                 <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
@@ -185,7 +184,6 @@
                 <div class="line"></div>
                 <div>Gains from Trade: <span class="amount">0</span></div>
                 <div class="line"></div>
-                <div>Cost of Delay: <span class="amount">0</span></div>
                 <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
                 <div class="line"></div>
                 <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>

@@ -131,7 +131,7 @@
 
 {% if player.role == "Buyer" %}
     
-Here is an example for how your final payoff is calculated: If the price you negotiated is 31€ and your valuation is 68€, and you reach the agreement after some time, which results in delay (costing 30% of the gains from trade) and transaction costs (in this example 0.1€), the payoff is:</p>
+Here is an example for how your final payoff is calculated: If the price you negotiated is 31€ and your valuation is 68€, and you reach the agreement after some time, which results in transaction costs (in this example 0.1€), the payoff is:</p>
 
 <p>
   <div class="statement">
@@ -140,7 +140,6 @@ Here is an example for how your final payoff is calculated: If the price you neg
    <div class="line"></div>
    <div>Gains from Trade: <span class="amount">37</span></div>
    <div class="line"></div>
-   <div>Cost of Delay: <span class="amount">(-30% * 37)= -11</span></div>
    <div>Transaction Costs: <span class="amount">-0.1</span></div>
    <div class="line"></div>
    <div>Payoff from Match: <span class="amount">24.8</span></div>
@@ -156,7 +155,7 @@ Here is an example for how your final payoff is calculated: If the price you neg
 {% elif player.role == "Seller" %}
 
     
-Here is an example for how your final payoff is calculated: If the price you negotiated is 31€ and your valuation is 0€, and you reach the agreement after some time, which results in delay (costing 30% of the gains from trade) and transaction costs (in this example 0.1€), the payoff is:</p>
+Here is an example for how your final payoff is calculated: If the price you negotiated is 31€ and your valuation is 0€, and you reach the agreement after some time, which results in transaction costs (in this example 0.1€), the payoff is:</p>
 
     <p>
     <div class="statement">
@@ -165,7 +164,6 @@ Here is an example for how your final payoff is calculated: If the price you neg
      <div class="line"></div>
      <div>Gains from Trade: <span class="amount">31</span></div>
      <div class="line"></div>
-     <div>Cost of Delay: <span class="amount">(-30%*31) = -9.3</span></div>
      <div>Transaction Costs: <span class="amount">-0.1</span></div>
      <div class="line"></div>
      <div>Payoff from Match: <span class="amount">19.6</span></div>
