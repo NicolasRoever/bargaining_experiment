@@ -8,7 +8,7 @@ import re
 import numpy as np
 import pathlib
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions, write_bot_giving_offer_and_improving
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions, write_bot_giving_offer_and_improving, write_bot_giving_offer_and_accepting_the_second_offer
 
 
 doc = """
@@ -395,6 +395,66 @@ class BargainPracticeTwo(Page):
         player.group.random_termination_time_current_round = 60
 
         return {0: broadcast}
+    
+
+class BargainPracticeThree(Page):
+
+    template_name = "global/Bargain.html"
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return create_dictionary_with_html_variables_for_bargain_page(player=player, practice_round=True)
+    
+    @staticmethod
+    def js_vars(player: Player):
+        return create_dictionary_with_js_variables_for_bargain_page(player=player, C=C, practice_round=True)
+    
+    @staticmethod
+    def live_method(player: Player, data):
+
+        #Initialize variables
+        group = player.group
+        broadcast = {}
+        bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+        amount_proposed_list = json.loads(player.amount_proposed_list)
+
+        broadcast = update_broadcast_dict_with_basic_values(
+            player=player,
+            group=group,
+            broadcast=broadcast
+        )
+
+        broadcast = update_broadcast_dict_with_other_player_values(
+            player=player,
+            broadcast=broadcast,
+            practice_round=True
+        )
+
+        broadcast = update_broadcast_dict_based_on_actions(broadcast = broadcast, 
+                                                            data = data, 
+                                                            player = player, 
+                                                            group = group, 
+                                                            practice_round = True)
+        
+        
+        #Write bot logic 
+        broadcast = write_bot_giving_offer_and_accepting_the_second_offer(
+            broadcast=broadcast,
+            data=data,
+            player=player,
+            group=group,
+            initial_offer_from_bot=30,
+            bargaining_time_elapsed=bargaining_time_elapsed,
+            amount_proposed_list=amount_proposed_list
+        )
+
+        #Override the termination time to 120 for this practice round
+        player.group.random_termination_time_current_round = 120
+
+        return {0: broadcast}
+    
+
+
 
 
 class BargainReal(Page):
@@ -475,7 +535,7 @@ class BargainReal(Page):
 
 page_sequence = [#WelcomeAndConsent, 
                  BargainInstructions,
-                 BargainPracticeTwo,
+                 BargainPracticeThree,
                  BargainWaitPage, 
                  BargainReal, 
                  RoundResults, 

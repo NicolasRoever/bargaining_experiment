@@ -92,6 +92,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
         current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
     except IndexError as e:
         print(f"IndexError: {e}. Index: {bargaining_time_elapsed - 1}, List length: {len(json.loads(player.current_costs_list))}")
+        current_discount_factor = None
         current_transaction_costs = None  # or handle it in another way
 
 
@@ -166,6 +167,7 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     amount_proposed_list = json.loads(player.amount_proposed_list)
     amount_proposed_list.append(data.get('amount'))
     player.amount_proposed_list = json.dumps(amount_proposed_list)
+    player.current_amount_proposed = data.get('amount')
 
     # Update the offer_time_list field
     offer_time_list = json.loads(player.offer_time_list)
@@ -174,7 +176,7 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     player.proposal_made = True
 
 
-def update_group_database_upon_acceptance(group, data):
+def update_group_database_upon_acceptance(group: Any, data: Dict[str, Any], practice_round: bool) -> None:
     """
     Updates the group's database fields upon acceptance of a deal.
 
@@ -185,9 +187,11 @@ def update_group_database_upon_acceptance(group, data):
     Returns:
         None
     """
-    group.deal_price = float(re.sub(r'[^\d.]', '', data.get('amount'))) # This converts e.g. "$1.10" into 1.10
+
+    group.deal_price = float(re.sub(r'[^\d.]', '', str(data.get('amount')))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
     group.acceptance_time = data.get('acceptance_time')
     group.accepted_by = data.get('accepted_by')
+
 
 
 
@@ -1032,7 +1036,7 @@ def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], 
     return broadcast
 
 
-def write_bot_giving_offer_and_accepting_the_second_offer(broadcast: Dict, data: Dict[str, Any], player: Any, group: Any, offer_from_bot: float, bargaining_time_elapsed: int):
+def write_bot_giving_offer_and_accepting_the_second_offer(broadcast: Dict, data: Dict[str, Any], player: Any, group: Any, initial_offer_from_bot: float, bargaining_time_elapsed: int, amount_proposed_list: List[float]):
     """
     Writes the bot logic. The bot gives the offer after 10 seconds and accepts the second offer.
 
@@ -1047,9 +1051,67 @@ def write_bot_giving_offer_and_accepting_the_second_offer(broadcast: Dict, data:
         Dict: The updated broadcast dictionary.
     """
 
+    # Bot gives initial offer after 10 seconds
+    if np.isclose(bargaining_time_elapsed, 10, atol=1):
+        set_bot_offer(broadcast=broadcast, 
+                      player=player, 
+                      group=group, 
+                      offer_from_bot=initial_offer_from_bot)
+        
+    #bot accepts the second offer
+    print(len(amount_proposed_list))
+    print(amount_proposed_list)
+    
+    if len(amount_proposed_list) == 2:
+    
+        print("bot accepts the second offer")
+        if player.role == "Buyer":
+            accept_deal_as_bot(broadcast=broadcast, 
+                            player=player, 
+                            group=group,
+                            data=data)
+        else:  # player is Seller
+            accept_deal_as_bot(broadcast=broadcast, 
+                            player=player, 
+                            group=group,
+                            data=data)
+
+    return broadcast
+
+
+def accept_deal_as_bot(broadcast: Dict, player: Any, group: Any, data: Dict[str, Any]) -> None:
+    """
+    Accepts the deal as the bot.
+
+    Args:
+        broadcast (Dict): The broadcast dictionary.
+        player (Any): The player object.
+        group (Any): The group object.
+    """
+
+    data['type'] = 'accept'
+    data['proposal_by_role'] = player.role
+    data['proposal_by_id'] = player.id_in_group
+    data['amount'] = player.current_amount_proposed 
+    data['acceptance_time'] = int(time.time() - group.bargain_start_time)
+    data['accepted_by'] = player.id_in_group + 1
+
+    update_group_database_upon_acceptance(
+        group=group, 
+        data=data, 
+        practice_round=True
+    )
+
+    broadcast["finished"] = True
+    group.is_finished = True
+
+
+
+
     
 
-    pass
+
+    
 
 
 
