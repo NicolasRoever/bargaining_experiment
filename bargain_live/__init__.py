@@ -201,8 +201,15 @@ class Bargain(Page):
 
     timeout_seconds = C.TOTAL_BARGAINING_TIME
 
+    
+
     @staticmethod
     def vars_for_template(player: Player):
+
+        if player.group.subsession.session.config['termination_treatment'] == 'high_prob':
+            termination_probability = 0.02 
+        else:
+            termination_probability = 0.01
 
         return dict(my_role=player.role,
                     other_role=player.get_others_in_group()[0].role, 
@@ -212,6 +219,7 @@ class Bargain(Page):
                     other_valuation=player.get_others_in_group()[0].valuation,
                     information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
                     treatment_communication=player.group.subsession.session.config['treatment_communication'],
+                    termination_probability=termination_probability
                     )
 
 

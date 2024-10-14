@@ -185,12 +185,6 @@ function updateCharts(data, js_vars) {
         yMin= 0, 
         yMax= js_vars.y_axis_maximum_TA_graph
     );
-
-    createStackedBarChart(
-        chartName= 'delay_chart',
-        firstPercentage = data.current_discount_factor,
-        secondPercentage = 1 - data.current_discount_factor
-    );
 }
 
 
@@ -216,7 +210,6 @@ function enableButton(buttonId) {
 function updateTimeChangingElements(js_vars, data) {
     // Update text elements
     updateElementText('time_spent', data.bargaining_time_elapsed);
-    updateElementText('current_discount_factor', Math.round(data.current_discount_factor * 1000) / 10);
 
     // Update currency elements 
     updateCurrencyElement('TA_costs', data.current_TA_costs);
@@ -235,7 +228,6 @@ function createStackedBarChart(chartName, firstPercentage, secondPercentage) {
     if (stackedBarChartInstance) {
         stackedBarChartInstance.destroy();
     }
-
     // Create a new chart and store the instance
     stackedBarChartInstance = new Chart(ctx, {
         type: 'bar',
