@@ -388,7 +388,7 @@ class BargainPracticeTwo(Page):
                                                         data=data, 
                                                         player=player, 
                                                         group=group, 
-                                                        offer_from_bot=30, 
+                                                        initial_offer_from_bot=30, 
                                                         bargaining_time_elapsed=bargaining_time_elapsed)
         
         #Override the termination time to 30 for this practice round
