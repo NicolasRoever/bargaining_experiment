@@ -22,14 +22,17 @@ CURRENT_PATH = pathlib.Path(__file__).parent
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 2
+    NUM_PRACTICE_ROUNDS = 1
+    NUM_REAL_ROUNDS = 2
+    NUM_ROUNDS = NUM_PRACTICE_ROUNDS + NUM_REAL_ROUNDS
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
     TOTAL_BARGAINING_TIME = 120
 
 
 class Subsession(BaseSubsession):
-    pass
+    is_practice_round = models.BooleanField()
+    real_round_number = models.IntegerField()
 
 
 class Group(BaseGroup):
@@ -107,8 +110,7 @@ def creating_session(subsession):
     This function is called before each subsession starts. In its current implementation, it initializes the players' valuations and transaction costs, thus, valuations are new in each subsession. 
     """
 
-    subsession_number = subsession.round_number
-
+    #Load the pre-drawn groupings and participant data
     participant_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'participant_data_{subsession.session.config["number_of_groups"]}_groups.pkl')
 
     is_valid_dataframe(participant_data, "participant_data")
@@ -119,58 +121,89 @@ def creating_session(subsession):
 
     termination_times_list = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'termination_times_{subsession.session.config["termination_treatment"]}.pkl')
 
-    subsession.set_group_matrix(groups_data[subsession_number-1])
+    #Check if the subsession is a practice round
+    subsession.is_practice_round = (
+        subsession.round_number <= C.NUM_PRACTICE_ROUNDS
+    )
 
-    for player in subsession.get_players():
+    # For the practice rounds, I set the parameters from the first round
+    if subsession.is_practice_round:
 
-        #Record the time when the bargaining starts for each subsession
-        player.group.bargain_start_time = time.time() 
-
-        #Initialize valuation, transaction costs and delay list for each player
-
-        player.valuation = participant_data.loc[
-        participant_data['Participant_ID'] == player.participant.id_in_session, 'Valuation'
-        ].values[0][subsession_number-1]
-
-
-        setup_player_transaction_costs(player=player, 
-                                    ta_treatment=subsession.session.config['TA_treatment_high'],
-                                    delay_treatment=subsession.session.config['delay_treatment_high'],
-                                    total_bargaining_time=C.TOTAL_BARGAINING_TIME)
-        
-        setup_player_delay_list(player=player,
-                                delay_treatment_high=subsession.session.config['delay_treatment_high'],
-                                total_bargaining_time=C.TOTAL_BARGAINING_TIME
-                                )
-        
-        setup_player_shrinking_pie_discount_factors(player=player,
-                                                    delay_treatment_high=subsession.session.config['delay_treatment_high'],
-                                                    total_bargaining_time=C.TOTAL_BARGAINING_TIME)
-        
-    for group in subsession.get_groups():
-        group.random_termination_time_current_round = termination_times_list[subsession_number-1]
-    
-    #Randomly determine the round in which the final payoffs are calculated
-    if subsession_number == 1:
+        subsession.set_group_matrix(groups_data[0])
 
         for player in subsession.get_players():
-            player.participant.vars['random_round'] = random.randint(1, C.NUM_ROUNDS)
+
+            #Record the time when the bargaining starts for each subsession
+            player.group.bargain_start_time = time.time() 
+
+            #Initialize valuation, transaction costs and delay list for each player
+            player.valuation = participant_data.loc[
+            participant_data['Participant_ID'] == player.participant.id_in_session, 'Valuation'
+            ].values[0][0]
+
+
+            setup_player_transaction_costs(player=player, 
+                                        ta_treatment=subsession.session.config['TA_treatment_high'],
+                                        delay_treatment=subsession.session.config['delay_treatment_high'],
+                                        total_bargaining_time=C.TOTAL_BARGAINING_TIME)
+            
+            setup_player_delay_list(player=player,
+                                    delay_treatment_high=subsession.session.config['delay_treatment_high'],
+                                    total_bargaining_time=C.TOTAL_BARGAINING_TIME
+                                    )
+            
+            setup_player_shrinking_pie_discount_factors(player=player,
+                                                        delay_treatment_high=subsession.session.config['delay_treatment_high'],
+                                                        total_bargaining_time=C.TOTAL_BARGAINING_TIME)
+            
+        for group in subsession.get_groups():
+            group.random_termination_time_current_round = termination_times_list[0]
+
+    # This initializes the parameters for the real rounds
+    else:
+        subsession.real_round_number = (
+            subsession.round_number - C.NUM_PRACTICE_ROUNDS
+        )
+
+        subsession.set_group_matrix(groups_data[subsession.real_round_number-1])
+
+        for player in subsession.get_players():
+
+            #Record the time when the bargaining starts for each subsession
+            player.group.bargain_start_time = time.time() 
+
+            #Initialize valuation, transaction costs and delay list for each player
+            player.valuation = participant_data.loc[
+            participant_data['Participant_ID'] == player.participant.id_in_session, 'Valuation'
+            ].values[0][subsession.real_round_number-1]
+
+
+            setup_player_transaction_costs(player=player, 
+                                        ta_treatment=subsession.session.config['TA_treatment_high'],
+                                        delay_treatment=subsession.session.config['delay_treatment_high'],
+                                        total_bargaining_time=C.TOTAL_BARGAINING_TIME)
+            
+            setup_player_delay_list(player=player,
+                                    delay_treatment_high=subsession.session.config['delay_treatment_high'],
+                                    total_bargaining_time=C.TOTAL_BARGAINING_TIME
+                                    )
+            
+            setup_player_shrinking_pie_discount_factors(player=player,
+                                                        delay_treatment_high=subsession.session.config['delay_treatment_high'],
+                                                        total_bargaining_time=C.TOTAL_BARGAINING_TIME)
+            
+        for group in subsession.get_groups():
+            group.random_termination_time_current_round = termination_times_list[subsession.real_round_number-1]
+        
+        #Randomly determine the round in which the final payoffs are calculated
+        if subsession.real_round_number == 1:
+
+            for player in subsession.get_players():
+                player.participant.vars['random_round'] = random.randint(1, C.NUM_REAL_ROUNDS)
 
         
 
      
-
-
-    
-  
-
-        
-
-
-
-        
-
-
 
     
 
@@ -180,13 +213,13 @@ def creating_session(subsession):
 class WelcomeAndConsent(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
+        return player.subsession.round_number == 1
 
 
 class BargainInstructions(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
+        return player.subsession.round_number == 1
 
 
 class BargainWaitPage(WaitPage):
@@ -196,13 +229,158 @@ class BargainWaitPage(WaitPage):
     def after_all_players_arrive(group):
         group.bargain_start_time = time.time()
 
+    @staticmethod
+    def is_displayed(player):
+        return not player.subsession.is_practice_round
 
-class Bargain(Page):
+
+class BargainPracticeOneIntro(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.subsession.round_number == 1
+
+class BargainInfoRealGame(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.subsession.field_maybe_none('real_round_number') == 1
+
+class BargainPractice(Page):
+    template_name = "global/Bargain.html"
+
+    @staticmethod
+    def vars_for_template(player: Player):
+
+        if player.group.subsession.session.config['termination_treatment'] == 'high_prob':
+            termination_probability = 2
+        else:
+            termination_probability = 1
+
+        return dict(my_role=player.role,
+                    other_role=player.get_others_in_group()[0].role, 
+                    valuation=player.valuation,
+                    delay_multiplier=player.delay_multiplier,  
+                    double_delay_multiplier=player.delay_multiplier * 2, 
+                    other_valuation=player.get_others_in_group()[0].valuation,
+                    information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
+                    treatment_communication=player.group.subsession.session.config['treatment_communication'],
+                    termination_probability=termination_probability
+                    )
+
+
+    @staticmethod
+    def js_vars(player: Player):
+
+        return dict(my_id=player.id_in_group, 
+                    other_id=player.get_others_in_group()[0].id_in_group,
+                    start_time=player.group.bargain_start_time, 
+                    my_role=player.role,
+                    my_valuation=player.valuation,
+                    other_valuation=player.get_others_in_group()[0].valuation,
+                    other_role=player.get_others_in_group()[0].role,
+                    delay_multiplier=player.delay_multiplier,
+                    information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
+                    maximum_bargain_time=C.TOTAL_BARGAINING_TIME,
+                    x_values_TA_graph=json.loads(player.x_axis_values_TA_graph),
+                    x_values_delay_graph=json.loads(player.x_axis_values_delay_graph), 
+                    y_axis_maximum_TA_graph=player.y_axis_maximum_TA_graph,
+                    y_axis_maximum_delay_graph=player.y_axis_maximum_delay_graph
+                    )
+
+
+    @staticmethod
+    def live_method(player: Player, data):
+
+        #Initialize variables
+        group = player.group
+        [other] = player.get_others_in_group()
+        broadcast = {}
+
+        broadcast = update_broadcast_dict_with_basic_values(
+            player=player,
+            group=group,
+            broadcast=broadcast
+        )
+
+        broadcast = update_broadcast_dict_with_other_player_values(
+            player=player,
+            other=other,
+            broadcast=broadcast
+        )
+
+         # Update database and broadcast if a proposal was made
+        if data.get('type') == 'propose':
+
+            if player.id_in_group == data.get('proposal_by_id'):
+
+               update_player_database_with_proposal(
+                   player=player,
+                   data=data
+               )
+
+            if data.get("proposal_by_role") == "Seller":
+
+                group.current_seller_offer = data.get('amount')
+                broadcast["seller_proposal"] = data.get('amount')
+                broadcast["notification_seller_proposal"] = True 
+
+
+            elif data.get("proposal_by_role") == "Buyer":
+
+                group.current_buyer_offer = data.get('amount')    
+                broadcast["buyer_proposal"] = data.get('amount')
+                broadcast["notification_buyer_proposal"] = True 
+
+         #Update broadcast if offers were already sent so that the client updates the payoffs (which change every second because of the transaction costs)
+        if group.field_maybe_none('current_seller_offer'):
+
+            broadcast.setdefault("seller_proposal", group.current_seller_offer)
+
+        if group.field_maybe_none('current_buyer_offer'):
+
+            broadcast.setdefault("buyer_proposal", group.current_buyer_offer)
+
+        #Update database and finish bargaining if a deal was terminated
+        if data.get('terminated_by'):
+        
+            update_group_database_upon_termination(
+                group=group,
+                data=data
+            )
+
+            group.is_finished = True #This ensures no error is thrown
+
+            broadcast["finished"] = True
+
+        #Update database and finish bargaining if bargaining time is larger 30 seconds
+        bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+
+        if bargaining_time_elapsed >= 30:
+
+            update_group_database_upon_random_termination(
+                group=group
+            )
+
+            group.is_finished = True
+
+            broadcast["finished"] = True
+
+
+        return {0: broadcast}
+
+
+
+
+
+    @staticmethod
+    def is_displayed(player):
+        return player.subsession.is_practice_round
+
+
+class BargainReal(Page):
 
     timeout_seconds = C.TOTAL_BARGAINING_TIME
 
     template_name = "global/Bargain.html"
-
     
 
     @staticmethod
@@ -361,10 +539,7 @@ class Bargain(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        """Skip this page if a deal has already been made"""
-        group = player.group
-        deal_price = group.field_maybe_none('deal_price')
-        return deal_price is None
+        return not player.subsession.is_practice_round
     
 
 class RoundResults(Page):
@@ -374,6 +549,10 @@ class RoundResults(Page):
         dictionary_with_results = calculate_round_results(player=player)
 
         return dictionary_with_results
+    
+    @staticmethod
+    def is_displayed(player):
+        return not player.subsession.is_practice_round
     
 
 
@@ -393,7 +572,10 @@ class FinalResults(Page):
 
 page_sequence = [#WelcomeAndConsent, 
                  BargainInstructions,
+                 BargainPracticeOneIntro,
+                 BargainPractice,
+                 BargainInfoRealGame,
                  BargainWaitPage, 
-                 Bargain, 
+                 BargainReal, 
                  RoundResults, 
                  FinalResults]
