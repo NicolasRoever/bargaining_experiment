@@ -860,7 +860,10 @@ def create_dictionary_with_html_variables_for_bargain_page(player: Any,
         dictionary['other_valuation'] = player.get_others_in_group()[0].valuation
         dictionary['other_role'] = player.get_others_in_group()[0].role
     else:
-        dictionary['other_role'] = "Computer"
+        if player.role == "Buyer":
+            dictionary['other_role'] = "Seller"
+        else:
+            dictionary['other_role'] = "Buyer"
 
     if player.group.subsession.session.config['termination_treatment'] == 'high_prob':
         dictionary['termination_probability'] = 2
@@ -984,3 +987,49 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
 
     return broadcast
 
+
+
+def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], player: Any, group: Any, offer_from_bot: float, bargaining_time_elapsed: int):
+    """
+    Writes the simple bot logic. The bot gives the offer after 5 seconds and improves the offer by 105 every 10 seconds. THis means, if the player is a buyer, the offer will decrease, if the player is a seller, the offer will increase.
+
+    Args:
+        broadcast (Dict): The broadcast dictionary.
+        data (Dict[str, Any]): The data dictionary.
+        player (Any): The player object.
+        group (Any): The group object.
+        offer_from_bot (float): The offer from the bot.
+        bargaining_time_elapsed (int): The bargaining time elapsed.
+
+    Returns:
+        Dict: The updated broadcast dictionary.
+    """
+
+    # Bot gives initial offer after 10 seconds
+    if np.isclose(bargaining_time_elapsed, 10, atol=1):
+        if player.role == "Buyer":
+            broadcast["seller_proposal"] = offer_from_bot
+            broadcast["notification_seller_proposal"] = True
+            group.current_seller_offer = offer_from_bot
+        else:  # player is Seller
+            broadcast["buyer_proposal"] = offer_from_bot
+            broadcast["notification_buyer_proposal"] = True
+            group.current_buyer_offer = offer_from_bot
+
+    # Bot improves offer every 10 seconds after the initial offer
+    elif bargaining_time_elapsed > 5 and (bargaining_time_elapsed - 5) % 10 == 0:
+        improvement_factor = 1.05 ** ((bargaining_time_elapsed - 5) // 10)
+        
+        if player.role == "Buyer":
+            new_offer = offer_from_bot / improvement_factor
+            broadcast["seller_proposal"] = new_offer
+            broadcast["notification_seller_proposal"] = True
+            group.current_seller_offer = new_offer
+        else:  # player is Seller
+            new_offer = offer_from_bot * improvement_factor
+            broadcast["buyer_proposal"] = new_offer
+            broadcast["notification_buyer_proposal"] = True
+            group.current_buyer_offer = new_offer
+
+    return broadcast
+    
