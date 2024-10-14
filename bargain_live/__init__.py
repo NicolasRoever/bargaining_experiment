@@ -155,9 +155,10 @@ def creating_session(subsession):
             setup_player_shrinking_pie_discount_factors(player=player,
                                                         delay_treatment_high=subsession.session.config['delay_treatment_high'],
                                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
-            
+
+        # I want to override the random termination time for the practice rounds so that the computer does not terminate the bargaining too early
         for group in subsession.get_groups():
-            group.random_termination_time_current_round = termination_times_list[0]
+            group.random_termination_time_current_round = 120
 
     # This initializes the parameters for the real rounds
     else:
@@ -303,7 +304,6 @@ class BargainPracticeOne(Page):
 
         #Initialize variables
         group = player.group
-        [other] = player.get_others_in_group()
         broadcast = {}
 
         broadcast = update_broadcast_dict_with_basic_values(
@@ -315,65 +315,17 @@ class BargainPracticeOne(Page):
         broadcast = update_broadcast_dict_with_other_player_values(
             player=player,
             broadcast=broadcast, 
-            practice_round=False
+            practice_round=True
         )
 
-         # Update database and broadcast if a proposal was made
-        if data.get('type') == 'propose':
-
-            if player.id_in_group == data.get('proposal_by_id'):
-
-               update_player_database_with_proposal(
-                   player=player,
-                   data=data
-               )
-
-            if data.get("proposal_by_role") == "Seller":
-
-                group.current_seller_offer = data.get('amount')
-                broadcast["seller_proposal"] = data.get('amount')
-                broadcast["notification_seller_proposal"] = True 
-
-
-            elif data.get("proposal_by_role") == "Buyer":
-
-                group.current_buyer_offer = data.get('amount')    
-                broadcast["buyer_proposal"] = data.get('amount')
-                broadcast["notification_buyer_proposal"] = True 
-
-         #Update broadcast if offers were already sent so that the client updates the payoffs (which change every second because of the transaction costs)
-        if group.field_maybe_none('current_seller_offer'):
-
-            broadcast.setdefault("seller_proposal", group.current_seller_offer)
-
-        if group.field_maybe_none('current_buyer_offer'):
-
-            broadcast.setdefault("buyer_proposal", group.current_buyer_offer)
-
-        #Update database and finish bargaining if a deal was terminated
-        if data.get('terminated_by'):
+        broadcast = update_broadcast_dict_based_on_actions(broadcast = broadcast, 
+                                                            data = data, 
+                                                            player = player, 
+                                                            group = group, 
+                                                            practice_round = True)
         
-            update_group_database_upon_termination(
-                group=group,
-                data=data
-            )
-
-            group.is_finished = True #This ensures no error is thrown
-
-            broadcast["finished"] = True
-
-        #Update database and finish bargaining if bargaining time is larger 30 seconds
-        bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
-
-        if bargaining_time_elapsed >= 30:
-
-            update_group_database_upon_random_termination(
-                group=group
-            )
-
-            group.is_finished = True
-
-            broadcast["finished"] = True
+        #Override the termination time to 30 for this practice round
+        player.group.random_termination_time_current_round = 30
 
 
         return {0: broadcast}
@@ -430,7 +382,8 @@ class BargainReal(Page):
         broadcast = update_broadcast_dict_based_on_actions(broadcast = broadcast, 
                                                             data = data, 
                                                             player = player, 
-                                                            group = group)
+                                                            group = group, 
+                                                            practice_round = False)
                         
         return {0: broadcast}
     
@@ -464,6 +417,7 @@ class BargainReal(Page):
 
 page_sequence = [#WelcomeAndConsent, 
                  BargainInstructions,
+                 BargainPracticeOne,
                  BargainWaitPage, 
                  BargainReal, 
                  RoundResults, 

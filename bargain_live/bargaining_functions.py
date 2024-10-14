@@ -860,7 +860,7 @@ def create_dictionary_with_html_variables_for_bargain_page(player: Any,
         dictionary['other_valuation'] = player.get_others_in_group()[0].valuation
         dictionary['other_role'] = player.get_others_in_group()[0].role
     else:
-        dictionary['other_role'] = "computer"
+        dictionary['other_role'] = "Computer"
 
     if player.group.subsession.session.config['termination_treatment'] == 'high_prob':
         dictionary['termination_probability'] = 2
@@ -902,7 +902,7 @@ def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, pr
     return dictionary
 
 
-def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any], player: Any, group: Any):
+def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any], player: Any, group: Any, practice_round: bool = False):
     """
     Updates the broadcast dictionary based on the actions of the players.
 
