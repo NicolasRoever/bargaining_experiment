@@ -829,6 +829,72 @@ def draw_termination_times(number_of_rounds: int, probability_of_termination: fl
         termination_times.append(termination_time)
 
     return termination_times
-    
 
+
+def create_dictionary_with_html_variables_for_bargain_page(player: Any, 
+                                                      practice_round: bool = False) -> Dict[str, Any]:
+    """
+    Creates a dictionary with the variables needed for the HTML page Bargain.html.
+
+    Args:
+        player (Any): The player object containing the specific player's database.
+        practice_round (bool): Whether this is a practice round. Defaults to False.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the variables needed for the HTML page Bargain.html.
+    """
+    
+    dictionary = {}
+    
+    dictionary['my_role'] = player.role
+    dictionary['valuation'] = player.valuation
+    dictionary['delay_multiplier'] = player.delay_multiplier
+    dictionary['double_delay_multiplier'] = player.delay_multiplier * 2
+    dictionary['information_asymmetry'] = player.group.subsession.session.config['information_asymmetry']
+    dictionary['treatment_communication'] = player.group.subsession.session.config['treatment_communication']
+
+    if practice_round == False:
+        dictionary['other_valuation'] = player.get_others_in_group()[0].valuation
+        dictionary['other_role'] = player.get_others_in_group()[0].role
+    else:
+        dictionary['other_role'] = "computer"
+
+    if player.group.subsession.session.config['termination_treatment'] == 'high_prob':
+        dictionary['termination_probability'] = 2
+    else:
+        dictionary['termination_probability'] = 1
+
+    return dictionary
+
+
+def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, practice_round: bool = False) -> Dict[str, Any]:
+    """
+    Creates a dictionary with the variables needed for the JavaScript page Bargain.html.
+
+    Args:
+        player (Any): The player object containing the specific player's database.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the variables needed for the JavaScript page Bargain.html.
+    """
+    dictionary = {}
+    
+    dictionary['my_id'] = player.id_in_group
+    dictionary['start_time'] = player.group.bargain_start_time
+    dictionary['my_role'] = player.role
+    dictionary['my_valuation'] = player.valuation
+    dictionary['delay_multiplier'] = player.delay_multiplier
+    dictionary['information_asymmetry'] = player.group.subsession.session.config['information_asymmetry']
+    dictionary['maximum_bargain_time'] = C.TOTAL_BARGAINING_TIME
+    dictionary['x_values_TA_graph'] = json.loads(player.x_axis_values_TA_graph)
+    dictionary['x_values_delay_graph'] = json.loads(player.x_axis_values_delay_graph)
+    dictionary['y_axis_maximum_TA_graph'] = player.y_axis_maximum_TA_graph
+    dictionary['y_axis_maximum_delay_graph'] = player.y_axis_maximum_delay_graph
+
+    if practice_round == False:
+        dictionary['other_id'] = player.get_others_in_group()[0].id_in_group
+        dictionary['other_valuation'] = player.get_others_in_group()[0].valuation
+        dictionary['other_role'] = player.get_others_in_group()[0].role
+
+    return dictionary
 

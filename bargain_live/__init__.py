@@ -8,7 +8,7 @@ import re
 import numpy as np
 import pathlib
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page
 
 
 doc = """
@@ -22,7 +22,7 @@ CURRENT_PATH = pathlib.Path(__file__).parent
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
-    NUM_PRACTICE_ROUNDS = 1
+    NUM_PRACTICE_ROUNDS = 0
     NUM_REAL_ROUNDS = 2
     NUM_ROUNDS = NUM_PRACTICE_ROUNDS + NUM_REAL_ROUNDS
     SELLER_ROLE = 'Seller'
@@ -129,7 +129,7 @@ def creating_session(subsession):
     # For the practice rounds, I set the parameters from the first round
     if subsession.is_practice_round:
 
-        subsession.set_group_matrix(groups_data[0])
+        subsession.set_group_matrix([[p] for p in subsession.get_players()])
 
         for player in subsession.get_players():
 
@@ -210,6 +210,9 @@ def creating_session(subsession):
 #-----------------------------------------------------------------------------------------------
 # PAGES
 
+
+#--Short Static Pages--#
+
 class WelcomeAndConsent(Page):
     @staticmethod
     def is_displayed(player):
@@ -238,54 +241,61 @@ class BargainPracticeOneIntro(Page):
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
+    
+class BargainPracticeTwoIntro(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.subsession.round_number == 2
 
 class BargainInfoRealGame(Page):
     @staticmethod
     def is_displayed(player):
         return player.subsession.field_maybe_none('real_round_number') == 1
+    
 
-class BargainPractice(Page):
+
+class RoundResults(Page):
+    @staticmethod
+    def vars_for_template(player: Player):
+
+        dictionary_with_results = calculate_round_results(player=player)
+
+        return dictionary_with_results
+    
+
+class FinalResults(Page):
+    @staticmethod
+    def vars_for_template(player: Player):
+
+        dictionary_with_results = create_payoff_dictionary(player=player)
+
+        return dictionary_with_results
+    
+    
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == C.NUM_ROUNDS
+    
+
+#--Dynamic Bargain Pages--#
+
+class BargainPracticeOne(Page):
     template_name = "global/Bargain.html"
 
     @staticmethod
     def vars_for_template(player: Player):
 
-        if player.group.subsession.session.config['termination_treatment'] == 'high_prob':
-            termination_probability = 2
-        else:
-            termination_probability = 1
+        dictionary = create_dictionary_with_html_variables_for_bargain_page(player=player, practice_round=True)
 
-        return dict(my_role=player.role,
-                    other_role=player.get_others_in_group()[0].role, 
-                    valuation=player.valuation,
-                    delay_multiplier=player.delay_multiplier,  
-                    double_delay_multiplier=player.delay_multiplier * 2, 
-                    other_valuation=player.get_others_in_group()[0].valuation,
-                    information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
-                    treatment_communication=player.group.subsession.session.config['treatment_communication'],
-                    termination_probability=termination_probability
-                    )
+        return dictionary
 
 
     @staticmethod
     def js_vars(player: Player):
 
-        return dict(my_id=player.id_in_group, 
-                    other_id=player.get_others_in_group()[0].id_in_group,
-                    start_time=player.group.bargain_start_time, 
-                    my_role=player.role,
-                    my_valuation=player.valuation,
-                    other_valuation=player.get_others_in_group()[0].valuation,
-                    other_role=player.get_others_in_group()[0].role,
-                    delay_multiplier=player.delay_multiplier,
-                    information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
-                    maximum_bargain_time=C.TOTAL_BARGAINING_TIME,
-                    x_values_TA_graph=json.loads(player.x_axis_values_TA_graph),
-                    x_values_delay_graph=json.loads(player.x_axis_values_delay_graph), 
-                    y_axis_maximum_TA_graph=player.y_axis_maximum_TA_graph,
-                    y_axis_maximum_delay_graph=player.y_axis_maximum_delay_graph
-                    )
-
+        dictionary = create_dictionary_with_js_variables_for_bargain_page(player=player, C=C, practice_round=True)
+        
+        return dictionary
 
     @staticmethod
     def live_method(player: Player, data):
@@ -368,12 +378,12 @@ class BargainPractice(Page):
         return {0: broadcast}
 
 
-
-
-
     @staticmethod
     def is_displayed(player):
-        return player.subsession.is_practice_round
+        return player.subsession.round_number == 1
+    
+
+    
 
 
 class BargainReal(Page):
@@ -386,42 +396,16 @@ class BargainReal(Page):
     @staticmethod
     def vars_for_template(player: Player):
 
-        if player.group.subsession.session.config['termination_treatment'] == 'high_prob':
-            termination_probability = 2
-        else:
-            termination_probability = 1
+        dictionary = create_dictionary_with_html_variables_for_bargain_page(player=player, practice_round=False)
 
-        return dict(my_role=player.role,
-                    other_role=player.get_others_in_group()[0].role, 
-                    valuation=player.valuation,
-                    delay_multiplier=player.delay_multiplier,  
-                    double_delay_multiplier=player.delay_multiplier * 2, 
-                    other_valuation=player.get_others_in_group()[0].valuation,
-                    information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
-                    treatment_communication=player.group.subsession.session.config['treatment_communication'],
-                    termination_probability=termination_probability
-                    )
-
+        return dictionary
 
     @staticmethod
     def js_vars(player: Player):
 
-        return dict(my_id=player.id_in_group, 
-                    other_id=player.get_others_in_group()[0].id_in_group,
-                    start_time=player.group.bargain_start_time, 
-                    my_role=player.role,
-                    my_valuation=player.valuation,
-                    other_valuation=player.get_others_in_group()[0].valuation,
-                    other_role=player.get_others_in_group()[0].role,
-                    delay_multiplier=player.delay_multiplier,
-                    information_asymmetry=player.group.subsession.session.config['information_asymmetry'],
-                    maximum_bargain_time=C.TOTAL_BARGAINING_TIME,
-                    x_values_TA_graph=json.loads(player.x_axis_values_TA_graph),
-                    x_values_delay_graph=json.loads(player.x_axis_values_delay_graph), 
-                    y_axis_maximum_TA_graph=player.y_axis_maximum_TA_graph,
-                    y_axis_maximum_delay_graph=player.y_axis_maximum_delay_graph
-                    )
-
+        dictionary = create_dictionary_with_js_variables_for_bargain_page(player=player, C=C, practice_round=False)
+        
+        return dictionary
 
     @staticmethod
     def live_method(player: Player, data):
@@ -542,39 +526,10 @@ class BargainReal(Page):
         return not player.subsession.is_practice_round
     
 
-class RoundResults(Page):
-    @staticmethod
-    def vars_for_template(player: Player):
-
-        dictionary_with_results = calculate_round_results(player=player)
-
-        return dictionary_with_results
-    
-    @staticmethod
-    def is_displayed(player):
-        return not player.subsession.is_practice_round
-    
-
-
-class FinalResults(Page):
-    @staticmethod
-    def vars_for_template(player: Player):
-
-        dictionary_with_results = create_payoff_dictionary(player=player)
-
-        return dictionary_with_results
-    
-    
-    @staticmethod
-    def is_displayed(player):
-        return player.round_number == C.NUM_ROUNDS
 
 
 page_sequence = [#WelcomeAndConsent, 
                  BargainInstructions,
-                 BargainPracticeOneIntro,
-                 BargainPractice,
-                 BargainInfoRealGame,
                  BargainWaitPage, 
                  BargainReal, 
                  RoundResults, 
