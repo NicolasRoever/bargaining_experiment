@@ -4,7 +4,7 @@ import numpy as np
 from typing import List, Tuple
 from unittest.mock import Mock
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function, calculate_discount_factors_for_shrinking_pie, record_player_payoff_from_round
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function, calculate_discount_factors_for_shrinking_pie, record_player_payoff_from_round, draw_termination_times
 
 
 #-------------------------
@@ -409,8 +409,57 @@ def test_record_player_payoff_from_round_time_up(mock_player_time_up):
     assert mock_player_time_up.payoff == expected_payoff
 
 
+#-------------------------
+# Test cases for draw_termination_times
 
 
+@pytest.fixture
+def default_params():
+    return 5, 0.1
+
+def test_draw_termination_times_correct_length(default_params):
+    number_of_rounds, probability = default_params
+    result = draw_termination_times(number_of_rounds, probability)
+    assert len(result) == number_of_rounds
+
+def test_draw_termination_times_all_integers(default_params):
+    number_of_rounds, probability = default_params
+    result = draw_termination_times(number_of_rounds, probability)
+    assert all(isinstance(time, int) for time in result)
+
+def test_draw_termination_times_all_positive(default_params):
+    number_of_rounds, probability = default_params
+    result = draw_termination_times(number_of_rounds, probability)
+    assert all(time > 0 for time in result)
+
+def test_draw_termination_times_reproducibility(default_params):
+    number_of_rounds, probability = default_params
+    result1 = draw_termination_times(number_of_rounds, probability)
+    result2 = draw_termination_times(number_of_rounds, probability)
+    assert result1 == result2
+
+def test_draw_termination_times_probability_effect():
+    number_of_rounds = 1000
+    result_low_prob = draw_termination_times(number_of_rounds, 0.01)
+    result_high_prob = draw_termination_times(number_of_rounds, 0.5)
+    assert np.mean(result_low_prob) > np.mean(result_high_prob)
+
+def test_draw_termination_times_zero_rounds():
+    with pytest.raises(ValueError):
+        draw_termination_times(0, 0.1)
+
+def test_draw_termination_times_zero_probability():
+    with pytest.raises(ValueError):
+        draw_termination_times(5, 0)
+
+def test_draw_termination_times_probability_greater_than_one():
+    with pytest.raises(ValueError):
+        draw_termination_times(5, 1.1)
+
+def test_draw_termination_times_large_rounds():
+    large_rounds = 1000
+    large_result = draw_termination_times(large_rounds, 0.1)
+    assert len(large_result) == large_rounds
 
 
 

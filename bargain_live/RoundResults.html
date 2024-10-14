@@ -97,9 +97,55 @@
 
         {% endif %}
 
+    {% elif group.termination_mode == 'Random_Termination' %}
+
+        <p>
+            The bargaining was terminated by the computer after {{ group.termination_time }} seconds.
+        </p>
+
+        <p> If this match is drawn to be payoff-relevant, your total payoff is going to be {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
+
+        {% if player.role == "Buyer" %}
+        <p>
+            <div class="statement">
+                <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
+                <div>Price: <span class="amount"> No Deal</span></div>
+                <div class="line"></div>
+                <div>Gains from Trade: <span class="amount"> 0 </span></div>
+                <div class="line"></div>
+                <div>Cost of Delay: <span class="amount">0</span></div>
+                <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+                <div class="line"></div>
+                <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+                <div class="line"></div>
+                <div>Participation Fee: <span class="amount">+ {{ participation_fee }}</span></div>
+                <div class="double-line"></div>
+                    <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+                </div>
+            </p>
+    
+        {% else %}
+        <p>
+            <div class="statement">
+                <div>Price: <span class="amount">0</span></div>
+                <div>Value of the Object: <span class="amount"> 0</span></div>
+                <div class="line"></div>
+                <div>Gains from Trade: <span class="amount">0</span></div>
+                <div class="line"></div>
+                <div>Cost of Delay: <span class="amount">0</span></div>
+                <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+                <div class="line"></div>
+                <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+                <div class="line"></div>
+                <div>Participation Fee: <span class="amount">+ {{ participation_fee }}</span></div>
+                <div class="double-line"></div>
+                    <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+                </div>
+            </p>
+        {% endif %}
 
 
-    {% elif group.terminated == True %}
+    {% elif group.termination_mode == 'Player' %}
 
         {% if group.terminated_by == player.id_in_group %}
 

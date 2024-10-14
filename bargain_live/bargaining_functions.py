@@ -203,6 +203,24 @@ def update_group_database_upon_termination(group, data):
     group.terminated_by = data.get('terminated_by')
     group.deal_price = None
     group.terminated = True
+    group.termination_mode = 'Player'
+
+def update_group_database_upon_random_termination(group: Any) -> None:
+    """
+    Updates the group's database fields upon random termination of the bargaining process.
+
+    Args:
+        group: The group object containing the termination details.
+
+    Returns:
+        None
+    """
+    bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+    group.is_finished = True
+    group.termination_time = bargaining_time_elapsed
+    group.termination_mode = 'Random_Termination'
+    group.deal_price = None
+    group.terminated = True
 
 
 def setup_player_valuation(player: Any) -> None:
@@ -790,5 +808,27 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
         deal_accepted_by=deal_accepted_by,
         chosen_round=chosen_round
     )
+
+def draw_termination_times(number_of_rounds: int, probability_of_termination: float) -> List[int]:
+    """
+    Draws the termination times for the given number of rounds and probability of termination from a geometric distribution.
+
+    Args:
+        number_of_rounds (int): The number of rounds.
+        probability_of_termination (float): The probability of termination for each round.
+
+    Returns:
+        List[int]: A list of termination times in seconds.
+
+    """
+
+    termination_times = []
+    for i in range(number_of_rounds):
+        np.random.seed(42 + i)
+        termination_time = np.random.geometric(probability_of_termination)
+        termination_times.append(termination_time)
+
+    return termination_times
+    
 
 

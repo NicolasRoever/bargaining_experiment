@@ -109,16 +109,14 @@ This section is only for me as a developer. You can ignore it.
 
 - Right now, I discount everything gains from trade excluding transaction costs. Is this correct?
 - Should I add practice rounds and an attention check?
-- You can press the submit button without selecting anything on the slider, this should be fixed
 - I need to adjust the instructions
+
+## Errors to monitor (Longlist)
+
 - Double-check this error:   File "/Users/nicolasroever/Documents/Promotion/Bargaining/bargaining_experiment/bargain_live/bargaining_functions.py", line 90, in update_broadcast_dict_with_basic_values
     current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
 IndexError: list index out of range -> I added a print statement, please monitor this!
-- Also, the randomization does not seem to be fixed with the random number generator, please adjust. 
-
-
-
-
+- Also, the randomization does not seem to be fixed with the random number generator, please adjust. ( added a set seed in the notebook, should be fixed now.)
 
 
 ## Server Commands
@@ -127,9 +125,12 @@ These are the commands for the university server we are using to run the experim
 
 - Remember that you need to be one folder above bargaining_experiment when you do the rsync command
 
-- rsync --delete -Pa bargaining_experiment  otree15@otree2.uni-koeln.de:Projects/
+- This command deletes the current project: 
 
--  ssh otree15@otree2.uni-koeln.de
+> rsync --delete -Pa bargaining_experiment  otree15@otree2.uni-koeln.de:Projects/
+
+-  This command starts the server
+> ssh otree15@otree2.uni-koeln.de
 
 
 

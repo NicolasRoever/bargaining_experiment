@@ -8,7 +8,7 @@ import re
 import numpy as np
 import pathlib
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination
 
 
 doc = """
@@ -51,6 +51,10 @@ class Group(BaseGroup):
    
     current_seller_offer = models.FloatField()
     current_buyer_offer = models.FloatField()
+
+    termination_times_list = models.LongStringField()
+    random_termination_time_current_round = models.IntegerField()
+    termination_mode = models.StringField()
 
 
 class Player(BasePlayer):
@@ -113,6 +117,8 @@ def creating_session(subsession):
 
     is_valid_list(groups_data, "groups_data")
 
+    termination_times_list = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'termination_times_{subsession.session.config["termination_treatment"]}.pkl')
+
     subsession.set_group_matrix(groups_data[subsession_number-1])
 
     for player in subsession.get_players():
@@ -140,12 +146,19 @@ def creating_session(subsession):
         setup_player_shrinking_pie_discount_factors(player=player,
                                                     delay_treatment_high=subsession.session.config['delay_treatment_high'],
                                                     total_bargaining_time=C.TOTAL_BARGAINING_TIME)
+        
+    for group in subsession.get_groups():
+        group.random_termination_time_current_round = termination_times_list[subsession_number-1]
     
     #Randomly determine the round in which the final payoffs are calculated
     if subsession_number == 1:
 
         for player in subsession.get_players():
             player.participant.vars['random_round'] = random.randint(1, C.NUM_ROUNDS)
+
+        
+
+     
 
 
     
@@ -287,6 +300,19 @@ class Bargain(Page):
             )
 
             group.is_finished = True #This ensures no error is thrown
+
+            broadcast["finished"] = True
+
+        #Update database and finish bargaining if random termination time is reached
+        bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+
+        if bargaining_time_elapsed >= group.random_termination_time_current_round:
+
+            update_group_database_upon_random_termination(
+                group=group
+            )
+
+            group.is_finished = True
 
             broadcast["finished"] = True
 

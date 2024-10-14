@@ -15,6 +15,7 @@ SESSION_CONFIGS = [
     delay_treatment_high = False,
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
+    termination_treatment = 'high_prob', # 'low_prob' or 'high_prob'
     doc="""
     Adjust the number of groups dependent on the number of participants. There are 8 participants per group."""
     )
@@ -35,6 +36,7 @@ SESSION_CONFIG_DEFAULTS = dict(
 PARTICIPANT_FIELDS = [
     'random_round',
 ]
+
 SESSION_FIELDS = []
 
 # ISO-639 code
