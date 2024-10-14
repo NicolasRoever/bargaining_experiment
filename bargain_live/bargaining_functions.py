@@ -339,11 +339,11 @@ def record_player_payoff_from_round(player: Any) -> None:
         discount_factor = player.current_discount_factor #Recall that this is a percentage of the money to keee.
 
         if player.role == "Seller":
-            player.payoff = (player.group.deal_price - player.valuation) * discount_factor - transaction_costs
+            player.payoff = (player.group.deal_price - player.valuation)  - transaction_costs
 
 
         elif player.role == "Buyer":
-            player.payoff = (player.valuation - player.group.deal_price) * discount_factor - transaction_costs
+            player.payoff = (player.valuation - player.group.deal_price)  - transaction_costs
 
 
     #Case 2: A deal was terminated

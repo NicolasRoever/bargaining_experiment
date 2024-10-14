@@ -55,7 +55,11 @@
         {% endif %}
 
         <p>
+        {% if practice_round == True %}
+        We would calculate your total payoff in the real experiment as {{ payoff_plus_participation_fee }}€. It is calculated as follows: 
+        {% else %}
         If this match is drawn to be payoff-relevant, your total payoff is going to be {{ payoff_plus_participation_fee }}€. It is calculated as follows: 
+        {% endif %}
         </p>
 
 
@@ -105,7 +109,11 @@
             The bargaining was terminated by the computer after {{ group.termination_time }} seconds.
         </p>
 
+        {% if practice_round == True %}
+        <p> We would calculate your total payoff in the real experiment as {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
+        {% else %}
         <p> If this match is drawn to be payoff-relevant, your total payoff is going to be {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
+        {% endif %}
 
         {% if player.role == "Buyer" %}
         <p>
@@ -156,7 +164,11 @@
                 </p>
         {% endif %}
 
+        {% if practice_round == True %}
+        <p> We would calculate your total payoff in the real experiment as {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
+        {% else %}
         <p> If this match is drawn to be payoff-relevant, your total payoff is going to be {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
+        {% endif %}
         
         {% if player.role == "Buyer" %}
         <p>

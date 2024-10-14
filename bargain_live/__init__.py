@@ -342,6 +342,13 @@ class BargainPracticeOne(Page):
     def is_displayed(player):
         return player.subsession.round_number == 1
     
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+
+        record_player_payoff_from_round(player=player)
+        record_bargaining_time_on_group_level(player=player, C=C)
+
+    
 
     
 
@@ -407,6 +414,13 @@ class BargainPracticeTwo(Page):
     def is_displayed(player):
         return player.subsession.round_number == 2
     
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+
+        record_player_payoff_from_round(player=player)
+        record_bargaining_time_on_group_level(player=player, C=C)
+
+    
 
 class BargainPracticeThree(Page):
 
@@ -467,6 +481,12 @@ class BargainPracticeThree(Page):
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 3
+    
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+
+        record_player_payoff_from_round(player=player)
+        record_bargaining_time_on_group_level(player=player, C=C)
     
 
 

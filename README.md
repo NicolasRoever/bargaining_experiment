@@ -107,7 +107,7 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
-- Right now, I discount everything gains from trade excluding transaction costs. Is this correct?
+- I need to adjust calculation of payoff for the practice round if I terminate. Right now, this is not  correct (Transaction costs are ignored.)
 - Should I add practice rounds and an attention check?
 - I need to adjust the instructions
 
