@@ -122,7 +122,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
 
     return broadcast
 
-def update_broadcast_dict_with_other_player_values(player: Any, other: Any, broadcast: Dict[int, Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
+def update_broadcast_dict_with_other_player_values(player: Any, broadcast: Dict[int, Dict[str, Any]], practice_round: bool) -> Dict[int, Dict[str, Any]]:
     """
     Updates the broadcast dictionary with the other player's transaction costs, payoffs, delays, and other values based on
 
@@ -136,11 +136,14 @@ def update_broadcast_dict_with_other_player_values(player: Any, other: Any, broa
     
     """
 
-    other_player_transaction_cost = other.cumulated_TA_costs
+    if practice_round:
+        other_player_transaction_cost = 0
+    else:
+        [other] = player.get_others_in_group()
+        other_player_transaction_cost = other.cumulated_TA_costs
 
     # Update the broadcast dictionary with the new values individually
     broadcast['other_player_transaction_cost'] = other_player_transaction_cost
-
 
     return broadcast
                                                                                     
@@ -897,4 +900,87 @@ def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, pr
         dictionary['other_role'] = player.get_others_in_group()[0].role
 
     return dictionary
+
+
+def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any], player: Any, group: Any):
+    """
+    Updates the broadcast dictionary based on the actions of the players.
+
+    Args:
+        broadcast (Dict): The broadcast dictionary.
+        data (Dict[str, Any]): The data dictionary.
+        player (Any): The player object.
+        group (Any): The group object.
+
+    Returns:
+        Dict: The updated broadcast dictionary.
+    """
+
+
+    # Update database and broadcast if a proposal was made
+    if data.get('type') == 'propose':
+
+        if player.id_in_group == data.get('proposal_by_id'):
+
+            update_player_database_with_proposal(
+                player=player,
+                data=data
+            )
+
+        if data.get("proposal_by_role") == "Seller":
+
+            group.current_seller_offer = data.get('amount')
+            broadcast["seller_proposal"] = data.get('amount')
+            broadcast["notification_seller_proposal"] = True 
+
+        elif data.get("proposal_by_role") == "Buyer":
+
+            group.current_buyer_offer = data.get('amount')    
+            broadcast["buyer_proposal"] = data.get('amount')
+            broadcast["notification_buyer_proposal"] = True 
+
+    # Update database and finish bargaining if a deal was accepted
+    elif data.get('type') == 'accept':
+
+        update_group_database_upon_acceptance(
+            group=group, 
+            data=data
+        )
+
+        group.is_finished = True
+        broadcast["finished"] = True
+
+    # Update database and finish bargaining if a deal was terminated
+    elif data.get('terminated_by'):
+
+        update_group_database_upon_termination(
+            group=group,
+            data=data
+        )
+
+        group.is_finished = True  # This ensures no error is thrown
+        broadcast["finished"] = True
+
+    # Update database and finish bargaining if random termination time is reached
+    bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+
+    if bargaining_time_elapsed >= group.random_termination_time_current_round:
+
+        update_group_database_upon_random_termination(
+            group=group
+        )
+
+        group.is_finished = True
+        broadcast["finished"] = True
+
+    #Update broadcast if offers were already sent so that the client updates the payoffs (which change every second because of the transaction costs)
+    if group.field_maybe_none('current_seller_offer'):
+
+        broadcast.setdefault("seller_proposal", group.current_seller_offer)
+
+    if group.field_maybe_none('current_buyer_offer'):
+
+        broadcast.setdefault("buyer_proposal", group.current_buyer_offer)
+
+    return broadcast
 

@@ -8,7 +8,7 @@ import re
 import numpy as np
 import pathlib
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions
 
 
 doc = """
@@ -280,6 +280,7 @@ class FinalResults(Page):
 #--Dynamic Bargain Pages--#
 
 class BargainPracticeOne(Page):
+
     template_name = "global/Bargain.html"
 
     @staticmethod
@@ -313,8 +314,8 @@ class BargainPracticeOne(Page):
 
         broadcast = update_broadcast_dict_with_other_player_values(
             player=player,
-            other=other,
-            broadcast=broadcast
+            broadcast=broadcast, 
+            practice_round=False
         )
 
          # Update database and broadcast if a proposal was made
@@ -412,7 +413,6 @@ class BargainReal(Page):
 
         #Initialize variables
         group = player.group
-        [other] = player.get_others_in_group()
         broadcast = {}
 
         broadcast = update_broadcast_dict_with_basic_values(
@@ -423,81 +423,15 @@ class BargainReal(Page):
 
         broadcast = update_broadcast_dict_with_other_player_values(
             player=player,
-            other=other,
-            broadcast=broadcast
+            broadcast=broadcast,
+            practice_round=False
         )
 
-        
-        # Update database and broadcast if a proposal was made
-        if data.get('type') == 'propose':
-
-            if player.id_in_group == data.get('proposal_by_id'):
-
-               update_player_database_with_proposal(
-                   player=player,
-                   data=data
-               )
-
-            if data.get("proposal_by_role") == "Seller":
-
-                group.current_seller_offer = data.get('amount')
-                broadcast["seller_proposal"] = data.get('amount')
-                broadcast["notification_seller_proposal"] = True 
-
-
-            elif data.get("proposal_by_role") == "Buyer":
-
-                group.current_buyer_offer = data.get('amount')    
-                broadcast["buyer_proposal"] = data.get('amount')
-                broadcast["notification_buyer_proposal"] = True 
-
-
-        #Update database and finish bargaining if a deal was accepted
-        if data.get('type') == 'accept':
-
-            update_group_database_upon_acceptance(
-                group=group, 
-                data=data)
-
-            group.is_finished = True
-
-            broadcast["finished"] = True
-
-        #Update database and finish bargaining if a deal was terminated
-        if data.get('terminated_by'):
-        
-            update_group_database_upon_termination(
-                group=group,
-                data=data
-            )
-
-            group.is_finished = True #This ensures no error is thrown
-
-            broadcast["finished"] = True
-
-        #Update database and finish bargaining if random termination time is reached
-        bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
-
-        if bargaining_time_elapsed >= group.random_termination_time_current_round:
-
-            update_group_database_upon_random_termination(
-                group=group
-            )
-
-            group.is_finished = True
-
-            broadcast["finished"] = True
-
-
-        #Update broadcast if offers were already sent so that the client updates the payoffs (which change every second because of the transaction costs)
-        if group.field_maybe_none('current_seller_offer'):
-
-            broadcast.setdefault("seller_proposal", group.current_seller_offer)
-
-        if group.field_maybe_none('current_buyer_offer'):
-
-            broadcast.setdefault("buyer_proposal", group.current_buyer_offer)
-
+        broadcast = update_broadcast_dict_based_on_actions(broadcast = broadcast, 
+                                                            data = data, 
+                                                            player = player, 
+                                                            group = group)
+                        
         return {0: broadcast}
     
 
