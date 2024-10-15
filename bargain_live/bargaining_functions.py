@@ -141,7 +141,7 @@ def update_broadcast_dict_with_other_player_values(player: Any, broadcast: Dict[
     """
 
     if practice_round:
-        other_player_transaction_cost = 0
+        other_player_transaction_cost = player.cumulated_TA_costs #I simulate here that the other player has the same transaction costs as the player himself.
     else:
         [other] = player.get_others_in_group()
         other_player_transaction_cost = other.cumulated_TA_costs
@@ -1034,9 +1034,6 @@ def write_bot_giving_offer_and_accepting_the_second_offer(broadcast: Dict, data:
                       offer_from_bot=initial_offer_from_bot)
         
     #bot accepts the second offer
-    print(len(amount_proposed_list))
-    print(amount_proposed_list)
-    
     if len(amount_proposed_list) == 2:
     
         print("bot accepts the second offer")
@@ -1073,8 +1070,7 @@ def accept_deal_as_bot(broadcast: Dict, player: Any, group: Any, data: Dict[str,
 
     update_group_database_upon_acceptance(
         group=group, 
-        data=data, 
-        practice_round=True
+        data=data
     )
 
     broadcast["finished"] = True
