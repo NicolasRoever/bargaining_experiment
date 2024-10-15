@@ -110,6 +110,9 @@ This section is only for me as a developer. You can ignore it.
 - I need to adjust calculation of payoff for the practice round if I terminate. Right now, this is not  correct (Transaction costs are ignored.)
 - Should I add practice rounds and an attention check?
 - I need to adjust the instructions
+- Fix buyer payoff in practice rounds
+- Fix time in practice round 2 ...
+- I am not sure if I need line 511 (it worked fine before, but I removed bargain starttime at subsession beginnning)
 
 ## Errors to monitor (Longlist)
 

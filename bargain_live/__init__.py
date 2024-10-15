@@ -133,8 +133,6 @@ def creating_session(subsession):
 
         for player in subsession.get_players():
 
-            #Record the time when the bargaining starts for each subsession
-            player.group.bargain_start_time = time.time() 
 
             #Initialize valuation, transaction costs and delay list for each player
             player.valuation = participant_data.loc[
@@ -170,8 +168,6 @@ def creating_session(subsession):
 
         for player in subsession.get_players():
 
-            #Record the time when the bargaining starts for each subsession
-            player.group.bargain_start_time = time.time() 
 
             #Initialize valuation, transaction costs and delay list for each player
             player.valuation = participant_data.loc[
@@ -227,15 +223,11 @@ class BargainInstructions(Page):
 
 
 class BargainWaitPage(WaitPage):
-    body_text = "Please wait while other players are getting ready. This can take up to a couple of minutes in some cases!"
+    body_text = "Please wait while other players and the computer are getting ready. This can take up to a couple of minutes in some cases!"
 
     @staticmethod
     def after_all_players_arrive(group):
         group.bargain_start_time = time.time()
-
-    @staticmethod
-    def is_displayed(player):
-        return not player.subsession.is_practice_round
 
 
 class BargainPracticeOneIntro(Page):
@@ -363,6 +355,7 @@ class BargainPracticeTwo(Page):
 
         return dictionary
     
+    
     @staticmethod
     def js_vars(player: Player):
 
@@ -425,6 +418,7 @@ class BargainPracticeTwo(Page):
 class BargainPracticeThree(Page):
 
     template_name = "global/Bargain.html"
+
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -571,12 +565,12 @@ class BargainReal(Page):
 page_sequence = [#WelcomeAndConsent, 
                  BargainInstructions,
                  BargainPracticeOneIntro,
-                 BargainPracticeOne,
                  BargainPracticeTwoIntro,
-                 BargainPracticeTwo,
                  BargainPracticeThreeIntro,
+                 BargainWaitPage,
+                 BargainPracticeOne,
+                 BargainPracticeTwo,
                  BargainPracticeThree,
-                 BargainWaitPage, 
                  BargainReal, 
                  RoundResults, 
                  FinalResults]

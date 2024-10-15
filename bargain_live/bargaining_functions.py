@@ -6,6 +6,7 @@ import re
 import numpy as np
 import random
 import math
+from datetime import datetime
 
 def calculate_total_delay_list(bargaining_time: int, delay_multiplier: float) -> List[float]:
     """
@@ -80,9 +81,11 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     Returns:
         Dict[int, Dict[str, Any]]: The updated broadcast dictionary.
     """
+
     
     # Calculate the elapsed bargaining time
     bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+
 
     # Parse the lists and calculate relevant values based on the elapsed time
     total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed]
@@ -695,10 +698,6 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
     negative_deal_price = -deal_price if deal_price is not None else None
     transaction_costs = player.cumulated_TA_costs
     negative_transaction_costs = -transaction_costs
-    discount_factor = player.current_discount_factor
-    negative_discount_factor = -discount_factor
-    one_minus_discount_factor = 1 - discount_factor
-    negative_one_minus_discount_factor = -one_minus_discount_factor
     valuation = player.valuation
     negative_valuation = -valuation
     payoff = player.payoff
@@ -710,15 +709,9 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
 
     if deal_price is not None:
         if player.role == "Buyer":
-            loss_from_discounting = (valuation - deal_price) * one_minus_discount_factor
-            negative_loss_from_discounting = -loss_from_discounting
             gains_from_trade = valuation - deal_price
-            discounted_gains_from_trade = gains_from_trade * discount_factor
         else:
-            loss_from_discounting = (deal_price - valuation) * one_minus_discount_factor
-            negative_loss_from_discounting = -loss_from_discounting
             gains_from_trade = deal_price - valuation
-            discounted_gains_from_trade = gains_from_trade * discount_factor
     else:
         loss_from_discounting = None
         negative_loss_from_discounting = None
@@ -731,11 +724,6 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
         valuation=round_or_fallback(valuation),
         negative_valuation=round_or_fallback(negative_valuation),
         gains_from_trade=round_or_fallback(gains_from_trade),
-        negative_loss_from_discounting=round_or_fallback(negative_loss_from_discounting),
-        discounted_gains_from_trade=round_or_fallback(discounted_gains_from_trade),
-        discount_factor=round_or_fallback(discount_factor),
-        one_minus_discount_factor=round_or_fallback(one_minus_discount_factor),
-        negative_one_minus_discount_factor=round_or_fallback(negative_one_minus_discount_factor),
         transaction_costs=round_or_fallback(transaction_costs),
         negative_transaction_costs=round_or_fallback(negative_transaction_costs),
         other_role=other_role,
@@ -997,7 +985,7 @@ def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], 
     """
 
     # Bot gives initial offer after 10 seconds
-    if np.isclose(bargaining_time_elapsed, 10, atol=1):
+    if np.isclose(bargaining_time_elapsed, 10, atol=2):
         set_bot_offer(broadcast=broadcast, 
                       player=player, 
                       group=group, 
@@ -1012,13 +1000,13 @@ def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], 
             set_bot_offer(broadcast=broadcast, 
                           player=player, 
                           group=group, 
-                          new_offer=new_offer)
+                          offer_from_bot=new_offer)
         else:  # player is Seller
             new_offer = initial_offer_from_bot * improvement_factor
             set_bot_offer(broadcast=broadcast, 
                           player=player, 
                           group=group, 
-                          new_offer=new_offer)
+                          offer_from_bot=new_offer)
 
     return broadcast
 
