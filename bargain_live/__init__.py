@@ -70,7 +70,7 @@ class Player(BasePlayer):
     amount_proposed_list = models.LongStringField(default="[]")
     offer_time_list = models.LongStringField(default="[]")
 
-    valuation = models.IntegerField()#
+    valuation = models.FloatField()#
     current_deal_accept = models.IntegerField()#
     current_payoff_accept = models.FloatField()#
 
@@ -107,7 +107,7 @@ class Player(BasePlayer):
 
 def creating_session(subsession):
     """ 
-    This function is called before each subsession starts. In its current implementation, it initializes the players' valuations and transaction costs, thus, valuations are new in each subsession. 
+    This function is called before each subsession starts. 
     """
 
     #Load the pre-drawn groupings and participant data
@@ -251,7 +251,6 @@ class BargainInfoRealGame(Page):
         return player.subsession.field_maybe_none('real_round_number') == 1
     
 
-
 class RoundResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
@@ -261,7 +260,6 @@ class RoundResults(Page):
         dictionary_with_results = calculate_round_results(player=player, practice_round=practice_round)
 
         return dictionary_with_results
-    
 
 class FinalResults(Page):
     @staticmethod
@@ -398,7 +396,7 @@ class BargainPracticeTwo(Page):
                                                         initial_offer_from_bot=30, 
                                                         bargaining_time_elapsed=bargaining_time_elapsed)
         
-        #Override the termination time to 30 for this practice round
+        #Override the termination time to 60 for this practice round
         player.group.random_termination_time_current_round = 60
 
         return {0: broadcast}

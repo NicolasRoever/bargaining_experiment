@@ -8,7 +8,7 @@ SOURCE_DIR = pathlib.Path(__file__)
 SESSION_CONFIGS = [
     dict(
     name = "bargain_live",
-    app_sequence = ["bargain_live"],
+    app_sequence = ["clerpay_start", "bargain_live", "clerpay_end"],
     num_demo_participants=8,
     number_of_groups = 1, 
     TA_treatment_high = True,

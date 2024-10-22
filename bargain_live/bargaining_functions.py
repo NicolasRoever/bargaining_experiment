@@ -404,6 +404,7 @@ def set_final_player_payoff(player: Any, C: Any) -> None:
 
     player.participant.random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
     player.participant.payoff = player.in_round(player.participant.random_round).payoff
+    player.participant.vars["clerpay_amount"] = player.payoff
 
 
 
@@ -968,7 +969,7 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
 
 
 
-def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], player: Any, group: Any, initial_offer_from_bot: float, bargaining_time_elapsed: int):
+def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], player: Any, group: Any, initial_offer_from_bot: float, bargaining_time_elapsed: int, improvement_factor: float = 1.2):
     """
     Writes the simple bot logic. The bot gives the offer after 5 seconds and improves the offer by 105 every 10 seconds. THis means, if the player is a buyer, the offer will decrease, if the player is a seller, the offer will increase.
 
@@ -993,8 +994,6 @@ def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], 
 
     # Bot improves offer every 10 seconds after the initial offer
     elif bargaining_time_elapsed > 5 and (bargaining_time_elapsed - 5) % 10 == 0:
-        improvement_factor = 1.05 ** ((bargaining_time_elapsed - 5) // 10)
-
         if player.role == "Buyer":
             new_offer = initial_offer_from_bot / improvement_factor
             set_bot_offer(broadcast=broadcast, 
