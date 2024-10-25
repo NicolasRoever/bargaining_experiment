@@ -115,7 +115,7 @@
     <p>Negotiation costs (you can think of costs for lawyers needed for a negotiation) are incurred for each second of the negotiation. The longer the negotiation, the higher the cost. The total accumulated negotiation costs first rise rather quickly at first and more slowly in the end. You can see the shape of the function in the screenshot above in the left graph titled “Negotiation Cost”. 
 
     <h4>2. Termination Uncertainty</h4>
-    <p>At each second in the negotiation, there is a 1% chance that the computer terminate the negotiation. This means, the negotiation is expected to last an average of about 100 seconds before it is terminated. The graph on the right visualizes this risk. You can think of the number as displaying your “survival probability” up to that point. This probability is like the probability that a computer you bought breaks down: The longer you are using it, the higher the probability that something breaks. </p>
+    <p>At each second in the negotiation, there is a {% if session.config.termination_treatment == "low_prob" %}1{% else %}4{% endif %}% chance that the computer terminate the negotiation. This means, the negotiation is expected to last an average of about 100 seconds before it is terminated. The graph on the right visualizes this risk. You can think of the number as displaying your “survival probability” up to that point. This probability is like the probability that a computer you bought breaks down: The longer you are using it, the higher the probability that something breaks. </p>
 </div>
 
 <br>

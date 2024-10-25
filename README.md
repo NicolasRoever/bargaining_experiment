@@ -107,9 +107,6 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
-- Fix the player.role stuff. It is set automatically in oTree, but you do not want that (everybody in practice round is seller.)
-
-- Adjust the instructions and make the termination probability dynamic dependent on the treatment
 - I am not sure if I need line 511 (it worked fine before, but I removed bargain starttime at subsession beginnning)
 
 

@@ -8,14 +8,14 @@ SOURCE_DIR = pathlib.Path(__file__)
 SESSION_CONFIGS = [
     dict(
     name = "bargain_live",
-    app_sequence = ["clerpay_start", "bargain_live", "clerpay_end"],
+    app_sequence = ["clerpay_start", "bargain_live"],
     num_demo_participants=8,
     number_of_groups = 1, 
     TA_treatment_high = True,
     delay_treatment_high = False,
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
-    termination_treatment = 'low_prob', # 'low_prob' or 'high_prob'
+    termination_treatment = 'high_prob', # 'low_prob' or 'high_prob'
     doc="""
     Adjust the number of groups dependent on the number of participants. There are 8 participants per group."""
     )
