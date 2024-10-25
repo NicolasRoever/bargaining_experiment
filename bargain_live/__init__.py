@@ -23,7 +23,7 @@ class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
     NUM_PRACTICE_ROUNDS = 3
-    NUM_REAL_ROUNDS = 2
+    NUM_REAL_ROUNDS = 30
     NUM_ROUNDS = NUM_PRACTICE_ROUNDS + NUM_REAL_ROUNDS
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'

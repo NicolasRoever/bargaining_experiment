@@ -860,7 +860,7 @@ def create_dictionary_with_html_variables_for_bargain_page(player: Any,
 
 
     if player.group.subsession.session.config['termination_treatment'] == 'high_prob':
-        dictionary['termination_probability'] = 2
+        dictionary['termination_probability'] = 4
     else:
         dictionary['termination_probability'] = 1
 
