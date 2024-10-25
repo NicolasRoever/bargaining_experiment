@@ -1,0 +1,11 @@
+{{ block title }}
+    Ende des Experiments
+{{ endblock }}
+
+{{ block content }}
+    <p>Das Experiment ist beendet. Sie können diese Seite schließen.</p>
+    
+    {% if msg != "" %}
+        <p class="alert alert-danger">{{ msg }}</p>
+    {% endif %}
+{{ endblock }}

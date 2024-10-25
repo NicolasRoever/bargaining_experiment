@@ -113,14 +113,14 @@ Price Negotiation
 <div class="central_container">
 
     <p>
-        You are the {{ player.role }}.
+        You are the {{ player.participant.role_in_game }}.
         Please negotiate with the {{ other_role }} below.
     </p>
 
     <div class="three_columns_container">
         <p style="background-color: #f2f2f2; padding: 15px; width: 150%;">  
             In this match, your value of the object is <b>{{ valuation }}€.</b><br/><br/>
-            {% if my_role == "Buyer" %}
+            {% if player.participant.role_in_game == "Buyer" %}
             The {{ other_role }}'s value of the object is {{ other_valuation }}€.
             {% else %}
             The Buyer's value of the object will be randomly drawn between 0 and 60€.
@@ -151,7 +151,7 @@ Price Negotiation
                 <h5>If the {{ other_role }} accepts your current offer: </h5>
                 <p style="margin-top:0.25cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts_live"> No offer yet. </div></p>
                 <p style="margin-top:0.25cm;display: inline;">{{ other_role }}'s Surplus: 
-                {% if my_role == "Buyer" %}
+                {% if role_in_game == "Buyer" %}
                     <div style="display: inline" id="other_payoff_other_accepts_live_buyer"> 
                         No offer yet. 
                     </div>
@@ -176,7 +176,7 @@ Price Negotiation
                 <h5>If you accept the {{ other_role }}'s offer: </h5>
                 <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">No offer yet.</div></p>
                 <p style="display: inline;">{{ other_role }}'s Surplus: 
-                {% if my_role == "Buyer" %}
+                {% if role_in_game == "Buyer" %}
                     <div style="display: inline" id="other_payoff_accept_buyer"> 
                         No offer yet. 
                     </div>
@@ -192,9 +192,13 @@ Price Negotiation
         <div class="three_columns_right" style="flex: 0.5;">
             <h5>Risk of Time Delay</h5>
             <p style="display:block">The probability that the computer will terminate the negotiation in the next second is <b>{{termination_probability}}%</b>.</p>
+            <p style="display:block">This means, the probability that you reach the current second without being terminated by the computer is:</p>
+            <canvas id="risk_of_termination_chart" style="width: 100%; min-height: 200px; height: 200px;"></canvas>
          
         </div>
     </div>
+
+
 
     <div class="three_columns_container" style="padding: 15px; ">
         <div class="three_columns_left" style="background-color: #ffffff; flex: 0.5"></div>
@@ -262,8 +266,6 @@ document.getElementById('btn-offer-slider').addEventListener('click', function()
 
 // Send offer information to server if submit button is clicked
 document.getElementById('btn-accept').addEventListener('click', function() {
-    console.log('Accept Button clicked');
-    console.log("Amount sent:", msgOtherProposal.textContent)
 
     sendAccept({
         payoffElement: msgOtherProposal,
@@ -353,9 +355,10 @@ function liveRecv(data) {
                 amount=(js_vars.my_valuation - data.buyer_proposal - data.cumulated_TA_costs)
             );
 
+    
             updateCurrencyElement(
                 elementId="other_payoff_other_accepts_live_buyer",
-                amount=(data.buyer_proposal - js_vars.other_valuation)
+                amount=(data.buyer_proposal - js_vars.other_valuation - data.cumulated_TA_costs)
             );
         }
 

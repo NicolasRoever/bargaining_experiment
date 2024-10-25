@@ -8,7 +8,7 @@ import re
 import numpy as np
 import pathlib
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions, write_bot_giving_offer_and_improving, write_bot_giving_offer_and_accepting_the_second_offer
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions, write_bot_giving_offer_and_improving, write_bot_giving_offer_and_accepting_the_second_offer, create_list_with_termination_probabilities_from_geometric_distribution
 
 
 doc = """
@@ -27,7 +27,7 @@ class C(BaseConstants):
     NUM_ROUNDS = NUM_PRACTICE_ROUNDS + NUM_REAL_ROUNDS
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
-    TOTAL_BARGAINING_TIME = 120
+    TOTAL_BARGAINING_TIME = 500
 
 
 class Subsession(BaseSubsession):
@@ -78,8 +78,6 @@ class Player(BasePlayer):
     current_deal_other_accepts = models.IntegerField()#
     current_payoff_other_accepts = models.FloatField()#
 
- 
-
     initial_TA_costs = models.IntegerField()#
     decrease_TA_costs_per_second = models.IntegerField()#
     current_TA_costs = models.FloatField()#
@@ -99,6 +97,8 @@ class Player(BasePlayer):
     x_axis_values_delay_graph = models.LongStringField()
     y_axis_maximum_TA_graph = models.FloatField()
     y_axis_maximum_delay_graph = models.FloatField()
+
+    termination_probabilities_list = models.LongStringField()
     
 
 #-----------------------------------------------------------------------------------------------   
@@ -126,6 +126,13 @@ def creating_session(subsession):
         subsession.round_number <= C.NUM_PRACTICE_ROUNDS
     )
 
+    # In the first round, I set the role of the player which stays the same over the entire game
+    if subsession.round_number == 1:
+        for player in subsession.get_players():
+            player.participant.vars['role_in_game'] = participant_data.loc[
+        participant_data['Participant_ID'] == player.participant.id_in_session, 'Role'
+        ].values[0]
+
     # For the practice rounds, I set the parameters from the first round
     if subsession.is_practice_round:
 
@@ -137,7 +144,10 @@ def creating_session(subsession):
             #Initialize valuation, transaction costs and delay list for each player
             player.valuation = participant_data.loc[
             participant_data['Participant_ID'] == player.participant.id_in_session, 'Valuation'
-            ].values[0][0]
+            ].values[0][2] # I set the second valuation for the practice rounds to avoid the 0 valuation for one buyer
+
+
+
 
 
             setup_player_transaction_costs(player=player, 
@@ -153,6 +163,10 @@ def creating_session(subsession):
             setup_player_shrinking_pie_discount_factors(player=player,
                                                         delay_treatment_high=subsession.session.config['delay_treatment_high'],
                                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
+            
+            player.termination_probabilities_list = json.dumps(create_list_with_termination_probabilities_from_geometric_distribution(number_of_seconds=C.TOTAL_BARGAINING_TIME,
+                                                                                                                            probability_of_termination=0.01 if subsession.session.config['termination_treatment'] == 'low_prob' else 0.04))
+            
 
         # I want to override the random termination time for the practice rounds so that the computer does not terminate the bargaining too early
         for group in subsession.get_groups():
@@ -174,6 +188,10 @@ def creating_session(subsession):
             participant_data['Participant_ID'] == player.participant.id_in_session, 'Valuation'
             ].values[0][subsession.real_round_number-1]
 
+            player.participant.vars['role_in_game'] = participant_data.loc[
+            participant_data['Participant_ID'] == player.participant.id_in_session, 'Role'
+            ].values[0]
+
 
             setup_player_transaction_costs(player=player, 
                                         ta_treatment=subsession.session.config['TA_treatment_high'],
@@ -189,6 +207,9 @@ def creating_session(subsession):
                                                         delay_treatment_high=subsession.session.config['delay_treatment_high'],
                                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
             
+            player.termination_probabilities_list = json.dumps(create_list_with_termination_probabilities_from_geometric_distribution(number_of_seconds=C.TOTAL_BARGAINING_TIME,
+                                                                                                                            probability_of_termination=0.01 if subsession.session.config['termination_treatment'] == 'low_prob' else 0.04))
+            
         for group in subsession.get_groups():
             group.random_termination_time_current_round = termination_times_list[subsession.real_round_number-1]
         
@@ -197,6 +218,8 @@ def creating_session(subsession):
 
             for player in subsession.get_players():
                 player.participant.vars['random_round'] = random.randint(1, C.NUM_REAL_ROUNDS)
+
+          
 
         
 
@@ -217,6 +240,9 @@ class WelcomeAndConsent(Page):
 
 
 class BargainInstructions(Page):
+    @staticmethod
+    def vars_for_template(player: Player):
+        return {'role_in_game': player.participant.role_in_game}
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
@@ -560,7 +586,7 @@ class BargainReal(Page):
 
 
 
-page_sequence = [#WelcomeAndConsent, 
+page_sequence = [WelcomeAndConsent, 
                  BargainInstructions,
                  BargainPracticeOneIntro,
                  BargainPracticeTwoIntro,

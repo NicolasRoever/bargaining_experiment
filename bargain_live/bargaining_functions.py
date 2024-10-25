@@ -90,13 +90,18 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     # Parse the lists and calculate relevant values based on the elapsed time
     total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed]
     total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed]
+    termination_probabilities_list = json.loads(player.termination_probabilities_list)
     try:
         current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
         current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
+        current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
+        current_survival_probability = 1 - current_termination_probability
+
     except IndexError as e:
         print(f"IndexError: {e}. Index: {bargaining_time_elapsed - 1}, List length: {len(json.loads(player.current_costs_list))}")
         current_discount_factor = None
         current_transaction_costs = None  # or handle it in another way
+        current_survival_probability = 1
 
 
     # Update player attributes
@@ -108,6 +113,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
         player.current_payoff_terminate = -player.cumulated_TA_costs
         player.payment_delay = total_delay_y_values[-1]
         player.current_discount_factor = current_discount_factor
+
 
     
 
@@ -123,6 +129,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     broadcast['x_axis_values_delay_graph'] = json.loads(player.x_axis_values_delay_graph)
     broadcast['current_transaction_costs'] = current_transaction_costs
     broadcast['current_discount_factor'] = current_discount_factor
+    broadcast['current_survival_probability'] = current_survival_probability
 
     return broadcast
 
@@ -341,11 +348,11 @@ def record_player_payoff_from_round(player: Any) -> None:
         transaction_costs = player.cumulated_TA_costs
         discount_factor = player.current_discount_factor #Recall that this is a percentage of the money to keee.
 
-        if player.role == "Seller":
+        if player.participant.vars['role_in_game'] == "Seller":
             player.payoff = (player.group.deal_price - player.valuation)  - transaction_costs
 
 
-        elif player.role == "Buyer":
+        elif player.participant.vars['role_in_game'] == "Buyer":
             player.payoff = (player.valuation - player.group.deal_price)  - transaction_costs
 
 
@@ -504,7 +511,7 @@ def create_matches_for_rounds(df: pd.DataFrame, num_rounds: int = 20) -> pd.Data
     return df
 
 
-def create_participant_data(number_of_groups: int, buyer_valuations: List[List]) -> pd.DataFrame:
+def create_participant_data(number_of_groups: int, buyer_valuations: List[List], number_of_rounds: int = 20) -> pd.DataFrame:
     """
     Creates a dataframe with group assignments, roles treatments and valuations for each participant.
 
@@ -533,7 +540,7 @@ def create_participant_data(number_of_groups: int, buyer_valuations: List[List])
     lambda x: np.random.permutation(['Seller'] * 4 + ['Buyer'] * 4))
 
     # Initialize Valuations
-    df['Valuation'] = [np.zeros(20).tolist()] * len(df)
+    df['Valuation'] = [np.zeros(number_of_rounds).tolist()] * len(df)
     for group_id, group_data in df.groupby('Group_ID'):
         buyers_indices = group_data[group_data['Role'] == 'Buyer'].index
         for i, buyer_index in enumerate(buyers_indices):
@@ -583,7 +590,7 @@ def create_group_matrix_for_individual_round(group_dataframe: pd.DataFrame, rand
 
 
 
-def create_group_matrices_for_all_rounds(group_dataframe: pd.DataFrame) -> List[List[List]]:
+def create_group_matrices_for_all_rounds(group_dataframe: pd.DataFrame, number_of_rounds: int = 20) -> List[List[List]]:
     """
     Creates a matrix of group assignments for each participant in all 20 rounds. It is of the following shape:  
     [[[1, 2],
@@ -608,7 +615,7 @@ def create_group_matrices_for_all_rounds(group_dataframe: pd.DataFrame) -> List[
     all_rounds_matrix = []
 
     # Create group assignments for 20 rounds
-    for round_number in range(20):
+    for round_number in range(number_of_rounds):
         # Count the random seed upwards starting from 40
         random_seed = 40 + round_number
 
@@ -704,12 +711,15 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
     payoff = player.payoff
     participation_fee = player.group.subsession.session.config['participation_fee']
     payoff_plus_participation_fee = payoff + participation_fee
+    role_in_game = player.participant.vars['role_in_game']
 
     if practice_round == True:
-        other_role = "Buyer" if player.role == "Seller" else "Seller"
+        other_role = "Buyer" if player.participant.vars['role_in_game'] == "Seller" else "Seller"
+    else:
+        other_role = player.get_others_in_group()[0].participant.vars['role_in_game']
 
     if deal_price is not None:
-        if player.role == "Buyer":
+        if player.participant.vars['role_in_game'] == "Buyer":
             gains_from_trade = valuation - deal_price
         else:
             gains_from_trade = deal_price - valuation
@@ -732,7 +742,8 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
         participation_fee=round_or_fallback(participation_fee),
         payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee),
         round_number = player.round_number,
-        practice_round = practice_round
+        practice_round = practice_round, 
+        role_in_game = role_in_game
     )
 
 
@@ -753,8 +764,8 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
     # Extract necessary values from the chosen round
     deal_price = round_data.group.field_maybe_none('deal_price')
     negative_deal_price = -deal_price if deal_price is not None else None
-    transaction_costs = round_data.current_TA_costs
-    negative_transaction_costs = -transaction_costs
+    transaction_costs = round_data.field_maybe_none('current_TA_costs')
+    negative_transaction_costs = -transaction_costs if transaction_costs is not None else None
     valuation = round_data.valuation
     negative_valuation = -valuation
     payoff = round_data.payoff
@@ -765,7 +776,7 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
     deal_accepted_by = round_data.group.field_maybe_none('accepted_by')
 
     if deal_price is not None:
-        if player.role == "Buyer":
+        if player.participant.vars['role_in_game'] == "Buyer":
             gains_from_trade = valuation - deal_price
         else:
             gains_from_trade = deal_price - valuation
@@ -829,7 +840,8 @@ def create_dictionary_with_html_variables_for_bargain_page(player: Any,
     
     dictionary = {}
     
-    dictionary['my_role'] = player.role
+    dictionary['my_role'] = player.participant.vars['role_in_game']
+    dictionary['role_in_game'] = player.participant.vars['role_in_game']
     dictionary['valuation'] = player.valuation
     dictionary['delay_multiplier'] = player.delay_multiplier
     dictionary['double_delay_multiplier'] = player.delay_multiplier * 2
@@ -838,12 +850,14 @@ def create_dictionary_with_html_variables_for_bargain_page(player: Any,
 
     if practice_round == False:
         dictionary['other_valuation'] = player.get_others_in_group()[0].valuation
-        dictionary['other_role'] = player.get_others_in_group()[0].role
+        dictionary['other_role'] = player.get_others_in_group()[0].participant.vars['role_in_game']
     else:
-        if player.role == "Buyer":
+        if player.participant.vars['role_in_game'] == "Buyer":
             dictionary['other_role'] = "Seller"
+            dictionary['other_valuation'] = 0
         else:
             dictionary['other_role'] = "Buyer"
+
 
     if player.group.subsession.session.config['termination_treatment'] == 'high_prob':
         dictionary['termination_probability'] = 2
@@ -867,7 +881,7 @@ def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, pr
     
     dictionary['my_id'] = player.id_in_group
     dictionary['start_time'] = player.group.bargain_start_time
-    dictionary['my_role'] = player.role
+    dictionary['my_role'] = player.participant.vars['role_in_game']
     dictionary['my_valuation'] = player.valuation
     dictionary['delay_multiplier'] = player.delay_multiplier
     dictionary['information_asymmetry'] = player.group.subsession.session.config['information_asymmetry']
@@ -880,7 +894,13 @@ def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, pr
     if practice_round == False:
         dictionary['other_id'] = player.get_others_in_group()[0].id_in_group
         dictionary['other_valuation'] = player.get_others_in_group()[0].valuation
-        dictionary['other_role'] = player.get_others_in_group()[0].role
+        dictionary['other_role'] = player.get_others_in_group()[0].participant.vars['role_in_game']
+
+    if practice_round == True:
+        if player.participant.vars['role_in_game'] == "Buyer":
+            dictionary['other_valuation'] = 0
+        else:
+            dictionary['other_valuation'] = np.nan
 
     return dictionary
 
@@ -994,7 +1014,7 @@ def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], 
 
     # Bot improves offer every 10 seconds after the initial offer
     elif bargaining_time_elapsed > 5 and (bargaining_time_elapsed - 5) % 10 == 0:
-        if player.role == "Buyer":
+        if player.participant.vars['role_in_game'] == "Buyer":
             new_offer = initial_offer_from_bot / improvement_factor
             set_bot_offer(broadcast=broadcast, 
                           player=player, 
@@ -1036,7 +1056,7 @@ def write_bot_giving_offer_and_accepting_the_second_offer(broadcast: Dict, data:
     if len(amount_proposed_list) == 2:
     
         print("bot accepts the second offer")
-        if player.role == "Buyer":
+        if player.participant.vars['role_in_game'] == "Buyer":
             accept_deal_as_bot(broadcast=broadcast, 
                             player=player, 
                             group=group,
@@ -1061,7 +1081,7 @@ def accept_deal_as_bot(broadcast: Dict, player: Any, group: Any, data: Dict[str,
     """
 
     data['type'] = 'accept'
-    data['proposal_by_role'] = player.role
+    data['proposal_by_role'] = player.participant.vars['role_in_game']
     data['proposal_by_id'] = player.id_in_group
     data['amount'] = player.current_amount_proposed 
     data['acceptance_time'] = int(time.time() - group.bargain_start_time)
@@ -1098,7 +1118,7 @@ def set_bot_offer(broadcast: Dict, player: Any, group: Any, offer_from_bot: floa
     Returns:
         Dict: The updated broadcast dictionary.
     """
-    if player.role == "Buyer":
+    if player.participant.vars['role_in_game'] == "Buyer":
         broadcast["seller_proposal"] = offer_from_bot
         broadcast["notification_seller_proposal"] = True
         group.current_seller_offer = offer_from_bot
@@ -1108,3 +1128,24 @@ def set_bot_offer(broadcast: Dict, player: Any, group: Any, offer_from_bot: floa
         group.current_buyer_offer = offer_from_bot
     
     return broadcast
+
+
+def create_list_with_termination_probabilities_from_geometric_distribution(number_of_seconds: int, probability_of_termination: float) -> List[float]:
+    """
+    Args:
+        number_of_seconds (int): The number of seconds.
+        probability_of_termination (float): The probability of termination.
+
+    Returns:
+        List[float]: A list with the termination probabilities.
+    """
+
+        # Create an array of time points
+    time_points = np.arange(1, number_of_seconds + 1)
+    
+    # Calculate the cumulative probabilities
+    cumulative_probabilities = 1 - (1 - probability_of_termination) ** time_points
+    
+    return cumulative_probabilities.tolist()
+
+

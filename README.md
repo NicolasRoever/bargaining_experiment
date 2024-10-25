@@ -107,14 +107,11 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
-- I need to adjust calculation of payoff for the practice round if I terminate. Right now, this is not  correct (Transaction costs are ignored.)
+- Fix the player.role stuff. It is set automatically in oTree, but you do not want that (everybody in practice round is seller.)
+
 - Adjust the instructions and make the termination probability dynamic dependent on the treatment
-- Should I add practice rounds and an attention check?
-- I need to adjust the instructions
-- Fix buyer payoff in practice rounds
-- Fix rounding in buyer surplus in practice round 1.
-- Fix time in practice round 2 ...
 - I am not sure if I need line 511 (it worked fine before, but I removed bargain starttime at subsession beginnning)
+
 
 ## Errors to monitor (Longlist)
 

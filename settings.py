@@ -19,7 +19,6 @@ SESSION_CONFIGS = [
     doc="""
     Adjust the number of groups dependent on the number of participants. There are 8 participants per group."""
     )
-    
 ]
     
 
@@ -34,7 +33,7 @@ SESSION_CONFIG_DEFAULTS = dict(
 )
 
 PARTICIPANT_FIELDS = [
-    'random_round',
+    'random_round', 'role_in_game'
 ]
 
 SESSION_FIELDS = []

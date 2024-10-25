@@ -63,9 +63,9 @@
     <div style="background-color: rgb(249, 249, 249); padding: 10px;">
 <p>Please read these instructions carefully. The payment you will receive from this experiment depends partly on your decisions, partly on the decisions of others, and partly on chance. The amount you earn will be paid electronically via PayPal.</p>
 
-{% if player.role == "Buyer" %}
+{% if role_in_game == "Buyer" %}
 <p>The experiment consists of 20 matches. You are the <b>buyer of an object for all 20 matches.</b> At the beginning of each match, you will be randomly paired with another participant who is the seller</p>
-{% elif player.role == "Seller" %}
+{% elif role_in_game == "Seller" %}
 <p>The experiment consists of 20 matches. You are the <b>seller of an object for all 20 matches.</b> At the beginning of each match, you will be randomly paired with another participant who is the buyer.</p>
 {% endif %}
 <p></p>Your partner changes in every match. </p>
@@ -74,26 +74,26 @@
 <br>
 <h2>Main Negotiation Task</h2>
 <hr>
-{% if player.role == "Buyer" %}
+{% if role_in_game == "Buyer" %}
 <div style="background-color: rgb(249, 249, 249); padding: 10px;">
 <p>In each match, the buyer and seller trade an object. <b>The value of the object for the seller is always 0.</b> The product's value for you - the buyer - will be randomly drawn between 0 and 60 euros before every match. Your oppnent - the seller - does not know your value. Negotiation will happen on the following screen, and the text below further explains your options:</p>
 
 
 {% load static %}
 <div style="border: 2px solid #000; padding: 10px;">
-    <img src="{% static 'pictures/buyer_screenshot_v004.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
+    <img src="{% static 'pictures/buyer_screenshot_v005.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
 </div>
 
 </div>
 
 
-{% elif player.role == "Seller" %}
+{% elif role_in_game == "Seller" %}
 <div style="background-color: rgb(249, 249, 249); padding: 10px;">
 <p>In each match, the buyer and seller will be asked to trade an object. <b>The value of the object for you - the seller - is always 0.</b> The product's value for the buyer will be randomly drawn between 0 and 60 euros before every match. However, you do not know this specific value. Negotiation will happen on the following screen, and the text below further explains your options:</p>
 
 {% load static %}
 <div style="border: 2px solid #000; padding: 10px;">
-    <img src="{% static 'pictures/seller_screenshot_v004.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
+    <img src="{% static 'pictures/seller_screenshot_v005.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
 </div>
 </div>
 {% endif %}
@@ -115,7 +115,7 @@
     <p>Negotiation costs (you can think of costs for lawyers needed for a negotiation) are incurred for each second of the negotiation. The longer the negotiation, the higher the cost. The total accumulated negotiation costs first rise rather quickly at first and more slowly in the end. You can see the shape of the function in the screenshot above in the left graph titled “Negotiation Cost”. 
 
     <h4>2. Termination Uncertainty</h4>
-    <p>For each second of the negotiation, there is uncertainty of the trade being terminated. At each second of the negotiation, there is a 1% chance that the trade will be terminated. If the trade does not happen, both participants continue to the next second with a 99% chance. This process is akin to drawing one ball from a jar containing 99 red balls and 1 blue ball at the end of each second. If a red ball is drawn, the negotiation continues; if a blue ball is drawn, the negotiation ends. Each draw is independent, meaning the outcome of the previous second has no effect on the next one. With a 99% chance of continuing, the negotiation is expected to last an average of about 100 seconds. If the negotiation is randomly terminated, both participants receive no earnings from the trade but still incur the negotiation costs accumulated up to that point. The chance of termination is displayed on the right under the heading 'Termination Uncertainty”. </p>
+    <p>At each second in the negotiation, there is a 1% chance that the computer terminate the negotiation. This means, the negotiation is expected to last an average of about 100 seconds before it is terminated. The graph on the right visualizes this risk. You can think of the number as displaying your “survival probability” up to that point. This probability is like the probability that a computer you bought breaks down: The longer you are using it, the higher the probability that something breaks. </p>
 </div>
 
 <br>
@@ -128,7 +128,7 @@
 <p> At any point in time, you have three options: (i) submit a new price, (ii) terminate the negotiation, and (iii) accept the opposite trader’s price (only available after the opposite trader submits their first price). In the end, we randomly select one match to determine your payment for the experiment. 
 <br>
 
-{% if player.role == "Buyer" %}
+{% if role_in_game == "Buyer" %}
     
 Here is an example for how your final payoff is calculated: If the price you negotiated is 31€ and your valuation is 68€, and you reach the agreement after some time, which results in transaction costs (in this example 1€), the payoff is:</p>
 
@@ -151,7 +151,7 @@ Here is an example for how your final payoff is calculated: If the price you neg
 
 </div>
 
-{% elif player.role == "Seller" %}
+{% elif role_in_game == "Seller" %}
 
     
 Here is an example for how your final payoff is calculated: If the price you negotiated is 31€ and your valuation is 0€, and you reach the agreement after some time, which results in transaction costs (in this example 1€), the payoff is:</p>
@@ -179,7 +179,7 @@ Here is an example for how your final payoff is calculated: If the price you neg
 
 <div style="background-color: rgb(249, 249, 249); padding: 20px; margin-top: 20px;">
     <div style="border: 2px solid #000; padding: 15px; background-color: #fff;">
-        <p style="margin: 0;">Now, you will play 3 practice rounds. After that, the experiment will start and you will play 20 matches with different partners.</p>
+        <p style="margin: 0;">Now, you will play 3 practice rounds. After that, the experiment will start and you will play 30 matches with different partners.</p>
     </div>
 </div>
 

@@ -4,7 +4,7 @@ import numpy as np
 from typing import List, Tuple
 from unittest.mock import Mock
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function, calculate_discount_factors_for_shrinking_pie, record_player_payoff_from_round, draw_termination_times
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function, calculate_discount_factors_for_shrinking_pie, record_player_payoff_from_round, draw_termination_times, create_list_with_termination_probabilities_from_geometric_distribution
 
 
 #-------------------------
@@ -463,4 +463,16 @@ def test_draw_termination_times_large_rounds():
 
 
 
+
+
+#-------------------------
+# Test cases for create_list_with_termination_probabilities_from_geometric_distribution
+
+
+def test_create_list_with_termination_probabilities():
+
+    number_of_seconds = 100
+    probability_of_termination = 0.01
+    probabilities = create_list_with_termination_probabilities_from_geometric_distribution(number_of_seconds, probability_of_termination)
+    assert np.isclose(probabilities[2], 0.02970, atol=1e-3), "The probability at the 3rd position should be 0.02970."
 

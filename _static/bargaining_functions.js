@@ -185,6 +185,11 @@ function updateCharts(data, js_vars) {
         yMin= 0, 
         yMax= js_vars.y_axis_maximum_TA_graph
     );
+
+    createSinglePercentageBarChart(
+        chartName= 'risk_of_termination_chart',
+        percentage= data.current_survival_probability
+    );
 }
 
 
@@ -220,6 +225,8 @@ function updateTimeChangingElements(js_vars, data) {
     // Update charts with the provided data and js_vars
     updateCharts(data, js_vars);
 }
+
+
 
 function createStackedBarChart(chartName, firstPercentage, secondPercentage) {
     const ctx = document.getElementById(chartName).getContext('2d');
@@ -318,6 +325,66 @@ function changeTextColor(element_id, color, duration) {
             element.style.color = originalColor;
         }, duration);
     }
+}
+
+function createSinglePercentageBarChart(chartName, percentage) {
+    const ctx = document.getElementById(chartName).getContext('2d');
+
+    // If a chart instance already exists, destroy it before creating a new one
+    if (window.singlePercentageBarChartInstance) {
+        window.singlePercentageBarChartInstance.destroy();
+    }
+
+    // Create a new chart and store the instance
+    window.singlePercentageBarChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Percentage'],
+            datasets: [{
+                label: 'Percentage',
+                data: [Math.round(percentage * 100)], // Round to one decimal place
+                backgroundColor: 'red',
+                borderColor: 'red',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            animation: {
+                duration: 0 // Disable animation
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100, // Set y-axis to 0-100%
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%'; // Add percentage sign on y-axis labels
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false // Hide legend
+                },
+                tooltip: {
+                    enabled: false // Disable tooltip
+                },
+                datalabels: {
+                    display: true,
+                    color: 'black',
+                    anchor: 'end',
+                    align: 'bottom',
+                    formatter: (value) => {
+                        return value + '%'; // Display percentage on top of the bar
+                    }
+                }
+            },
+            maintainAspectRatio: true,
+            aspectRatio: 2
+        },
+        plugins: [ChartDataLabels] // Enable data labels plugin
+    });
 }
 
 module.exports = {  sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay } ; // Export the function for testing

@@ -64,7 +64,7 @@
 
 
 
-        {% if player.role == "Buyer" %}
+        {% if role_in_game == "Buyer" %}
          <p>
            <div class="statement">
             <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
@@ -115,7 +115,7 @@
         <p> If this match is drawn to be payoff-relevant, your total payoff is going to be {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
         {% endif %}
 
-        {% if player.role == "Buyer" %}
+        {% if role_in_game == "Buyer" %}
         <p>
             <div class="statement">
                 <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
@@ -170,7 +170,7 @@
         <p> If this match is drawn to be payoff-relevant, your total payoff is going to be {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
         {% endif %}
         
-        {% if player.role == "Buyer" %}
+        {% if role_in_game == "Buyer" %}
         <p>
             <div class="statement">
                 <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
