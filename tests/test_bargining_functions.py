@@ -38,40 +38,56 @@ def test_calculate_total_delay_list(bargaining_time: int, delay_multiplier: floa
 # Test cases for cumulative_transaction_cost_function
 
 def test_cumulative_transaction_cost():
-    time = 120
-    cost_factor = 0.375
-    decay_factor = 0.035
+    time = 10
+    cost_factor = 0.1
+    expected_cost = 1
 
-    expected_cost = 10.565
+    actual_result = cumulative_transaction_cost_function(time, cost_factor)
 
-    actual_result = cumulative_transaction_cost_function(time, cost_factor, decay_factor)
-
-    # Assert the result is close to the expected value
     assert np.isclose(expected_cost, actual_result, atol=1e-2)
-
 
 
 #-------------------------
 # Test cases for calculate_transaction_costs
 
-@pytest.mark.parametrize("TA_treatment_high, total_bargaining_time, expected_cumulative, expected_differences", [
-    # Test case 1: High treatment, short time
-    (True, 5, 
-     [0, 0.2475, 0.2475, 0.492525, 0.492525], 
-     [0.12375, 0.1225125, 0.1225125, 0, 0]),
+# High treatment (TA_treatment_high=True) test cases
+def test_calculate_transaction_costs_high_treatment_initial():
+    result, _ = calculate_transaction_costs(TA_treatment_high=True, total_bargaining_time=10)
+    assert np.isclose(result[0], 0.0, atol=1e-2)
 
-])
+def test_calculate_transaction_costs_high_treatment_first_second():
+    result, _ = calculate_transaction_costs(TA_treatment_high=True, total_bargaining_time=10)
+    assert np.isclose(result[1], 0.3, atol=1e-2)  
 
-def test_calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: int, 
-                                     expected_cumulative: List[float], 
-                                     expected_differences: List[float]):
-    
-    # Act: Call the function with the test data
-    actual_cumulative, actual_differences = calculate_transaction_costs(TA_treatment_high, total_bargaining_time)
+def test_calculate_transaction_costs_high_treatment_final_value():
+    result, _ = calculate_transaction_costs(TA_treatment_high=True, total_bargaining_time=10)
+    assert np.isclose(result[-1], cumulative_transaction_cost_function(time=10, cost_factor=0.3), atol=1e-2)
 
-    # Assert: Check if the actual result matches the expected result
-    assert actual_cumulative == pytest.approx(expected_cumulative, rel=1e-1), "Cumulative costs do not match"
-    assert actual_differences == pytest.approx(expected_differences, rel=1e-1), "Cost differences do not match"
+# Low treatment (TA_treatment_high=False) test cases
+def test_calculate_transaction_costs_low_treatment_initial():
+    result, _ = calculate_transaction_costs(TA_treatment_high=False, total_bargaining_time=10)
+    assert np.isclose(result[0], 0.0, atol=1e-2)
+
+def test_calculate_transaction_costs_low_treatment_first_second():
+    result, _ = calculate_transaction_costs(TA_treatment_high=False, total_bargaining_time=10)
+    assert np.isclose(result[1], 0.1, atol=1e-2)
+
+def test_calculate_transaction_costs_low_treatment_final_value():
+    result, _ = calculate_transaction_costs(TA_treatment_high=False, total_bargaining_time=10)
+    assert np.isclose(result[-1], cumulative_transaction_cost_function(time=10, cost_factor=0.1), atol=1e-2)
+
+# Testing cost differences between each time step
+def test_calculate_transaction_costs_cost_difference_initial():
+    _, cost_diff = calculate_transaction_costs(TA_treatment_high=True, total_bargaining_time=10)
+    assert np.isclose(cost_diff[0], 0.3, atol=1e-2)
+
+def test_calculate_transaction_costs_cost_difference_second_step():
+    _, cost_diff = calculate_transaction_costs(TA_treatment_high=True, total_bargaining_time=10)
+    assert np.isclose(cost_diff[1], 0.3, atol=1e-2)
+
+def test_calculate_transaction_costs_cost_difference_final_step():
+    _, cost_diff = calculate_transaction_costs(TA_treatment_high=True, total_bargaining_time=10)
+    assert np.isclose(cost_diff[-1], 0, atol=1e-2)
 
 
 #-------------------------

@@ -29,15 +29,15 @@ def calculate_total_delay_list(bargaining_time: int, delay_multiplier: float) ->
     return total_delay_list
 
 
-def cumulative_transaction_cost_function(time: float, cost_factor: float, decay_factor: float) -> float:
+def cumulative_transaction_cost_function(time: float, cost_factor: float) -> float:
     """This function spells out the cumulative transaction cost function dependent on time"""
 
-    cumulative_transaction_cost = cost_factor * ((1-np.exp(-decay_factor*time)) / decay_factor) 
+    cumulative_transaction_cost = time * cost_factor
 
     return cumulative_transaction_cost
 
 
-def calculate_transaction_costs(TA_treatment_high: bool, delay_treatment_high: bool, total_bargaining_time: int) -> Tuple[List[float], List[float]]:
+def calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: int) -> Tuple[List[float], List[float]]:
     """
     Calculate the cumulative costs over time with a decay factor depending on the treatment andotre
     compute the differences between each consecutive cost.
@@ -52,13 +52,11 @@ def calculate_transaction_costs(TA_treatment_high: bool, delay_treatment_high: b
         - A list of differences between each second's cost and the next.
     """
     
-    cost_factor = 0.375 if TA_treatment_high else 0.125
-    
-    decay_factor = 0.035 if delay_treatment_high else 0.01
+    cost_factor = 0.3 if TA_treatment_high else 0.1
 
     time_values = np.arange(0, total_bargaining_time + 1)
 
-    cumulative_costs = cumulative_transaction_cost_function(time_values, cost_factor, decay_factor)
+    cumulative_costs = cumulative_transaction_cost_function(time = time_values, cost_factor = cost_factor)
 
     # Calculate the differences between each second's cost and the next
     cost_differences = np.append(np.diff(cumulative_costs), 0)
@@ -275,7 +273,6 @@ def setup_player_transaction_costs(player: Any, ta_treatment: bool, delay_treatm
     #Calculate Transacion Costs
     transaction_cost_list, current_costs_list = calculate_transaction_costs(
     TA_treatment_high=ta_treatment, 
-    delay_treatment_high=delay_treatment,
     total_bargaining_time=total_bargaining_time)
 
 
