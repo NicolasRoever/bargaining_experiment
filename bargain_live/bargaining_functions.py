@@ -87,7 +87,6 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
 
     # Parse the lists and calculate relevant values based on the elapsed time
     total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed]
-    total_delay_y_values = json.loads(player.total_delay_list)[0:bargaining_time_elapsed]
     termination_probabilities_list = json.loads(player.termination_probabilities_list)
     try:
         current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
@@ -109,7 +108,6 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
         player.current_TA_costs = current_transaction_costs
         player.cumulated_TA_costs = total_cost_y_values[-1]
         player.current_payoff_terminate = -player.cumulated_TA_costs
-        player.payment_delay = total_delay_y_values[-1]
         player.current_discount_factor = current_discount_factor
 
 
@@ -122,9 +120,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     broadcast['payment_delay'] = player.field_maybe_none('payment_delay')   
     broadcast['bargaining_time_elapsed'] = bargaining_time_elapsed
     broadcast['total_cost_y_values'] = total_cost_y_values
-    broadcast['total_delay_y_values'] = total_delay_y_values
     broadcast['x_axis_values_TA_graph'] = json.loads(player.x_axis_values_TA_graph)
-    broadcast['x_axis_values_delay_graph'] = json.loads(player.x_axis_values_delay_graph)
     broadcast['current_transaction_costs'] = current_transaction_costs
     broadcast['current_discount_factor'] = current_discount_factor
     broadcast['current_survival_probability'] = current_survival_probability
@@ -258,7 +254,7 @@ def setup_player_valuation(player: Any) -> None:
         player.valuation = random.choice(valuation_list)
 
 
-def setup_player_transaction_costs(player: Any, ta_treatment: bool, delay_treatment: bool, total_bargaining_time) -> None:
+def setup_player_transaction_costs(player: Any, ta_treatment: bool, total_bargaining_time) -> None:
     """This function sets up the player's transaction costs based on the treatment. and saves the data in the player database.
 
     Args:
@@ -281,7 +277,7 @@ def setup_player_transaction_costs(player: Any, ta_treatment: bool, delay_treatm
     player.total_costs_list = json.dumps(transaction_cost_list)
     player.current_costs_list = json.dumps(current_costs_list)
     player.x_axis_values_TA_graph = json.dumps(list(range(0, total_bargaining_time + 1)))
-    player.y_axis_maximum_TA_graph = transaction_cost_list[-1]
+    player.y_axis_maximum_TA_graph = 20
 
 
 def setup_player_delay_list(player: Any, delay_treatment_high: bool, total_bargaining_time: int) -> None:
@@ -840,8 +836,6 @@ def create_dictionary_with_html_variables_for_bargain_page(player: Any,
     dictionary['my_role'] = player.participant.vars['role_in_game']
     dictionary['role_in_game'] = player.participant.vars['role_in_game']
     dictionary['valuation'] = player.valuation
-    dictionary['delay_multiplier'] = player.delay_multiplier
-    dictionary['double_delay_multiplier'] = player.delay_multiplier * 2
     dictionary['information_asymmetry'] = player.group.subsession.session.config['information_asymmetry']
     dictionary['treatment_communication'] = player.group.subsession.session.config['treatment_communication']
 
@@ -880,13 +874,10 @@ def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, pr
     dictionary['start_time'] = player.group.bargain_start_time
     dictionary['my_role'] = player.participant.vars['role_in_game']
     dictionary['my_valuation'] = player.valuation
-    dictionary['delay_multiplier'] = player.delay_multiplier
     dictionary['information_asymmetry'] = player.group.subsession.session.config['information_asymmetry']
     dictionary['maximum_bargain_time'] = C.TOTAL_BARGAINING_TIME
     dictionary['x_values_TA_graph'] = json.loads(player.x_axis_values_TA_graph)
-    dictionary['x_values_delay_graph'] = json.loads(player.x_axis_values_delay_graph)
     dictionary['y_axis_maximum_TA_graph'] = player.y_axis_maximum_TA_graph
-    dictionary['y_axis_maximum_delay_graph'] = player.y_axis_maximum_delay_graph
 
     if practice_round == False:
         dictionary['other_id'] = player.get_others_in_group()[0].id_in_group

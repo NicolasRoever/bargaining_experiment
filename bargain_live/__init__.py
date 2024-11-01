@@ -147,17 +147,9 @@ def creating_session(subsession):
             ].values[0][2] # I set the second valuation for the practice rounds to avoid the 0 valuation for one buyer
 
 
-
-
-
             setup_player_transaction_costs(player=player, 
                                         ta_treatment=subsession.session.config['TA_treatment_high'],
                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
-            
-            setup_player_delay_list(player=player,
-                                    delay_treatment_high=subsession.session.config['delay_treatment_high'],
-                                    total_bargaining_time=C.TOTAL_BARGAINING_TIME
-                                    )
             
             setup_player_shrinking_pie_discount_factors(player=player,
                                                         delay_treatment_high=subsession.session.config['delay_treatment_high'],
@@ -196,10 +188,6 @@ def creating_session(subsession):
                                         ta_treatment=subsession.session.config['TA_treatment_high'],
                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
             
-            setup_player_delay_list(player=player,
-                                    delay_treatment_high=subsession.session.config['delay_treatment_high'],
-                                    total_bargaining_time=C.TOTAL_BARGAINING_TIME
-                                    )
             
             setup_player_shrinking_pie_discount_factors(player=player,
                                                         delay_treatment_high=subsession.session.config['delay_treatment_high'],

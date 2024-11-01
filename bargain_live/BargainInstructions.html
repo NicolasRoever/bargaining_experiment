@@ -64,7 +64,7 @@
 <p>Please read these instructions carefully. The payment you will receive from this experiment depends partly on your decisions, partly on the decisions of others, and partly on chance. The amount you earn will be paid electronically via PayPal.</p>
 
 {% if role_in_game == "Buyer" %}
-<p>The experiment consists of 20 matches. You are the <b>buyer of an object for all 20 matches.</b> At the beginning of each match, you will be randomly paired with another participant who is the seller</p>
+<p>The experiment consists of 30 matches. You are the <b>buyer of an object for all 20 matches.</b> At the beginning of each match, you will be randomly paired with another participant who is the seller</p>
 {% elif role_in_game == "Seller" %}
 <p>The experiment consists of 20 matches. You are the <b>seller of an object for all 20 matches.</b> At the beginning of each match, you will be randomly paired with another participant who is the buyer.</p>
 {% endif %}
@@ -112,7 +112,7 @@
 <div style="background-color: rgb(249, 249, 249); padding: 10px;">
     <h3><i><u>Costs You Incur for Negotiation Time</u></i></h3>
     <h4>1. Direct Negotiation Cost</h4>
-    <p>Negotiation costs (you can think of costs for lawyers needed for a negotiation) are incurred for each second of the negotiation. The longer the negotiation, the higher the cost. The total accumulated negotiation costs first rise rather quickly at first and more slowly in the end. You can see the shape of the function in the screenshot above in the left graph titled “Negotiation Cost”. 
+    <p>Negotiation costs (you can think of costs for lawyers needed for a negotiation) are incurred for each second of the negotiation. The negotiation costs per second are {% if session.config.ta_treatment == "high" %}30{% else %}10{% endif %} cents per second and displayed in the graph on the left.
 
     <h4>2. Termination Uncertainty</h4>
     <p>At each second in the negotiation, there is a {% if session.config.termination_treatment == "low_prob" %}1{% else %}4{% endif %}% chance that the computer terminate the negotiation. This means, the negotiation is expected to last an average of about 100 seconds before it is terminated. The graph on the right visualizes this risk. You can think of the number as displaying your “survival probability” up to that point. This probability is like the probability that a computer you bought breaks down: The longer you are using it, the higher the probability that something breaks. </p>
@@ -176,6 +176,12 @@ Here is an example for how your final payoff is calculated: If the price you neg
 </div>
 
 {% endif %}
+
+<br>
+
+<p>Transaction Costs are deducted from the show-up fee. But your final payoff cannot be negative.</p>
+
+<br>
 
 <div style="background-color: rgb(249, 249, 249); padding: 20px; margin-top: 20px;">
     <div style="border: 2px solid #000; padding: 15px; background-color: #fff;">
