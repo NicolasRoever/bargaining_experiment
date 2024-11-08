@@ -185,11 +185,6 @@ function updateCharts(data, js_vars) {
         yMin= 0, 
         yMax= js_vars.y_axis_maximum_TA_graph
     );
-
-    createSinglePercentageBarChart(
-        chartName= 'risk_of_termination_chart',
-        percentage= data.current_survival_probability
-    );
 }
 
 
