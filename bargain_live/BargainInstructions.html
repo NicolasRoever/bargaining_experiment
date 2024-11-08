@@ -1,5 +1,5 @@
 {{ block title }}
-    <h1>Instructions</h1>
+    <h1 style="color: #1340c7; font-weight: bold;">Instructions</h1>
     <hr>
 {{ endblock }}
 
@@ -61,129 +61,179 @@
 </head>
 <body>
     <div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>Please read these instructions carefully. The payment you will receive from this experiment depends partly on your decisions, partly on the decisions of others, and partly on chance. The amount you earn will be paid electronically via PayPal.</p>
+<p>Welcome to the experiment. Please read these instructions carefully. The payment you will receive from this experiment depends partly on your decisions, partly on the decisions of others, and partly on chance. The amount you earn will be paid electronically via <span style="color: #800020;">PayPal</span>.</p>
 
-{% if role_in_game == "Buyer" %}
-<p>The experiment consists of 30 matches. You are the <b>buyer of an object for all 20 matches.</b> At the beginning of each match, you will be randomly paired with another participant who is the seller</p>
-{% elif role_in_game == "Seller" %}
-<p>The experiment consists of 20 matches. You are the <b>seller of an object for all 20 matches.</b> At the beginning of each match, you will be randomly paired with another participant who is the buyer.</p>
-{% endif %}
-<p></p>Your partner changes in every match. </p>
 </div>
 
 <br>
-<h2>Main Negotiation Task</h2>
-<hr>
-{% if role_in_game == "Buyer" %}
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>In each match, the buyer and seller trade an object. <b>The value of the object for the seller is always 0.</b> The product's value for you - the buyer - will be randomly drawn between 0 and 60 euros before every match. Your oppnent - the seller - does not know your value. Negotiation will happen on the following screen, and the text below further explains your options:</p>
 
+<h2><u>Overview</u></h2>
+<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+<p>The experiment consists of 30 matches. At the beginning of the experiment, participants will be randomly assigned the role of either buyer or seller. This role will remain fixed throughout all 30 matches. At the beginning of each match, you will be randomly paired with another participant in the opposite role. After each match, participants will be randomly re-paired, and new pairs will be formed.</p>
+</div>
+<br>
+<h2><u>Main Task</u></h2>
+<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+<p>In each match, buyers and sellers will negotiate to trade an object:</p>
+<ul>
+    <li>The seller’s value for the object is 0 euros.</li>
+    <li>The buyer’s value for the object is private and will be randomly set between 0 and 60 euros. Only the buyer knows their value, and this value will remain unknown to the seller.</li>
+</ul>
+</div>
+
+<br>
+<h3>1. Price Negotiation</h3>
+<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+<p>The buyer and seller negotiate the price:</p>
+<ul>
+    <li>Both participants can submit prices by selecting a value on a slider and clicking "Submit." The submitted price will appear on the other person's screen.</li>
+    <li>You can submit new prices at any time during the negotiation. When a new price is submitted, the previous one becomes invalid and disappears from the other person's screen.</li>
+</ul>
+</div>
+
+<br>
+<h3>2. Costs Associated with Delay</h3>
+<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+<p>During the price negotiation, any delay incurs two types of costs: transaction costs and termination uncertainty.</p>
+
+<h4>2.1 Negotiation Cost</h4>
+<p>Negotiation costs of 30 cents are incurred for each second of the negotiation. The longer the negotiation, the higher the cost imposed on both participants. The graph on the left visualizes the cumulative negotiation costs. The sum of the negotiation costs will be deducted from your participation fees (which will be explained later) in this experiment.</p>
+
+<h4>2.2 Termination Uncertainty</h4>
+<p>Each second during the negotiation, there is a 4% chance that the computer will end the negotiation. On average, this means, if no agreement is reached before, negotiations are expected to last about 25 seconds before they are terminated.</p>
+
+<p>This process is similar to drawing a ball from a jar with 96 red balls and 4 blue balls at the end of each second. If a red ball is drawn, the negotiation continues; if a blue ball is drawn, the negotiation ends. Each draw is independent, so the outcome of one second does not affect the next.</p>
+</div>
+
+<br>
+<h3>3. Ending the Negotiation</h3>
+<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+<p>The negotiation ends if:</p>
+<ul>
+    <li>A participant accepts the other's price.</li>
+    <li>Either participant clicks "Terminate," which ends the match with zero trade gains for both, but any incurred negotiation costs will still apply.</li>
+    <li>The negotiation is randomly terminated, which also ends the match with zero trade gains for both, but any incurred negotiation costs will still apply.</li>
+</ul>
+</div>
+
+<br>
+<h3>4. Options Summary</h3>
+<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+<p>Throughout the negotiation, you have three options:</p>
+<ol>
+    <li>Submit a new price.</li>
+    <li>Terminate the negotiation.</li>
+    <li>Accept the other participant's price (only available after the first price is submitted).</li>
+</ol>
+</div>
+
+<br>
+
+<hr>
 
 {% load static %}
-<div style="border: 2px solid #000; padding: 10px;">
-    <img src="{% static 'pictures/buyer_screenshot_v005.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
-</div>
 
-</div>
-
-
-{% elif role_in_game == "Seller" %}
+<h3>Example of Buyer’s screen</h3>
 <div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>In each match, the buyer and seller will be asked to trade an object. <b>The value of the object for you - the seller - is always 0.</b> The product's value for the buyer will be randomly drawn between 0 and 60 euros before every match. However, you do not know this specific value. Negotiation will happen on the following screen, and the text below further explains your options:</p>
-
-{% load static %}
 <div style="border: 2px solid #000; padding: 10px;">
-    <img src="{% static 'pictures/seller_screenshot_v005.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
+    <img src="{% static 'pictures/buyer_screen_v006.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
 </div>
-</div>
-{% endif %}
-
-<br><br>
-
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-    <h3><i><u>Price Negotiation</u></i></h3>
-    <p>The buyer and seller negotiate the price. During the negotiation, both participants can submit a price. Once a participant clicks the "Submit" button, the chosen price is displayed to the other participant. Either party can revise their price as often as they want during the negotiation. The revised price is displayed on the participant's screen and remains valid until it is changed.</p>
-
-    <p>Upon receiving the submitted price from the participant in the opposite role, you can choose to accept their most recent offer at any time. If either participant accepts the other’s price, the match ends, and the product is traded at the accepted price. The price negotiation can continue for up to two minutes and will automatically end after that time.</p>
 </div>
 
 <br>
-
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-    <h3><i><u>Costs You Incur for Negotiation Time</u></i></h3>
-    <h4>1. Direct Negotiation Cost</h4>
-    <p>Negotiation costs (you can think of costs for lawyers needed for a negotiation) are incurred for each second of the negotiation. The negotiation costs per second are {% if session.config.ta_treatment == "high" %}30{% else %}10{% endif %} cents per second and displayed in the graph on the left.
-
-    <h4>2. Termination Uncertainty</h4>
-    <p>At each second in the negotiation, there is a {% if session.config.termination_treatment == "low_prob" %}1{% else %}4{% endif %}% chance that the computer terminate the negotiation. This means, the negotiation is expected to last an average of about 100 seconds before it is terminated. The graph on the right visualizes this risk. You can think of the number as displaying your “survival probability” up to that point. This probability is like the probability that a computer you bought breaks down: The longer you are using it, the higher the probability that something breaks. </p>
-</div>
-
-<br>
-
-<h2>Summary</h2>
 
 <hr>
 
+<h3>Example of Seller’s screen</h3>
 <div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p> At any point in time, you have three options: (i) submit a new price, (ii) terminate the negotiation, and (iii) accept the opposite trader’s price (only available after the opposite trader submits their first price). In the end, we randomly select one match to determine your payment for the experiment. 
+<div style="border: 2px solid #000; padding: 10px;">
+    <img src="{% static 'pictures/seller_screen_v006.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
+</div>
+</div>
+
+
 <br>
 
-{% if role_in_game == "Buyer" %}
-    
-Here is an example for how your final payoff is calculated: If the price you negotiated is 31€ and your valuation is 68€, and you reach the agreement after some time, which results in transaction costs (in this example 1€), the payoff is:</p>
+
+<hr>
+
+<h2 style="text-decoration: underline;">Payment</h2>
+
+<hr>
+<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+
+<p>You will receive a participation fee of 20 euros for completing all 30 matches. At the end of the experiment, one match will be randomly selected for payment. If negotiation costs arise in the selected match, they will be deducted from your participation fee. However, the negotiation costs will always be less than the participation fee, ensuring that you receive a positive amount. The remaining participation fee, after deducting any negotiation costs, will be paid immediately after the experiment.</p>
+
+<p>If the selected match results in positive gains from an accepted price, each participant will receive their gains via PayPal. Your final payoff would be:</p>
+
+<p style="margin-left: 2em; background-color: #e6e6e6;"><b>Final Payoff = 20 Euros + Gains from Trade (if available) – Total negotiation costs</b></p>
+
+</div>
+
+<br>
+
+
+<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+
+<p>Here is an example for how buyer's final payoff is calculated: If the price you negotiated is 31€ and the valuation is 38€, and you reach the agreement after 20 seconds, which results in transaction costs (in this example 0.3€ per second), the payoff is:</p>
+
 
 <p>
   <div class="statement">
-   <div>Value of the Object: <span class="amount"> 68 </span></div>
+   <div>Value of the Object: <span class="amount"> 38 </span></div>
    <div>Price: <span class="amount"> -31</span></div>
    <div class="line"></div>
-   <div>Gains from Trade: <span class="amount">37</span></div>
+   <div>Gains from Trade: <span class="amount">7</span></div>
    <div class="line"></div>
-   <div>Transaction Costs: <span class="amount">-1</span></div>
+   <div>Transaction Costs: <span class="amount">-6 = 0.3€/s * 20s</span></div>
    <div class="line"></div>
-   <div>Payoff from Match: <span class="amount">36</span></div>
+   <div>Payoff from Match: <span class="amount">1</span></div>
    <div class="line"></div>
    <div>Participation Fee: <span class="amount">+20</span></div>
    <div class="double-line"></div>
-       <div>Total Payoff: <span class="amount">56</span></div>
+       <div>Total Payoff: <span class="amount">21</span></div>
    </div>
 </p>
 
 </div>
 
-{% elif role_in_game == "Seller" %}
+</div>
 
-    
-Here is an example for how your final payoff is calculated: If the price you negotiated is 31€ and your valuation is 0€, and you reach the agreement after some time, which results in transaction costs (in this example 1€), the payoff is:</p>
+<br>
+
+<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+
+<p>Here is an example for how seller’s final payoff is calculated: If the price you negotiated is 20€ and the valuation is 0€, and you reach the agreement after 20 seconds, which results in transaction costs (in this example 0.3€), the payoff is:</p>
 
     <p>
     <div class="statement">
-     <div>Price: <span class="amount">31</span></div>
+     <div>Price: <span class="amount">20</span></div>
      <div>Value of the Object: <span class="amount">0</span></div>
      <div class="line"></div>
-     <div>Gains from Trade: <span class="amount">31</span></div>
+     <div>Gains from Trade: <span class="amount">20</span></div>
      <div class="line"></div>
-     <div>Transaction Costs: <span class="amount">-1</span></div>
+     <div>Transaction Costs: <span class="amount">-6 = 0.3€/s * 20s</span></div>
      <div class="line"></div>
-     <div>Payoff from Match: <span class="amount">30</span></div>
+     <div>Payoff from Match: <span class="amount">14</span></div>
      <div class="line"></div>
      <div>Participation Fee: <span class="amount">+20</span></div>
      <div class="double-line"></div>
-         <div>Total Payoff: <span class="amount">50</span></div>
+         <div>Total Payoff: <span class="amount">34</span></div>
      </div>
   </p>
 
 </div>
+<hr>
 
-{% endif %}
-
-<br>
-
-<p>Transaction Costs are deducted from the show-up fee. But your final payoff cannot be negative.</p>
+</div>
 
 <br>
 
-<div style="background-color: rgb(249, 249, 249); padding: 20px; margin-top: 20px;">
+
+
+
+<div style="background-color: rgb(249, 249, 249); padding: 10px; max-width: 800px; margin: auto;">
+    
     <div style="border: 2px solid #000; padding: 15px; background-color: #fff;">
         <p style="margin: 0;">Now, you will play 3 practice rounds. After that, the experiment will start and you will play 30 matches with different partners.</p>
     </div>
@@ -191,8 +241,9 @@ Here is an example for how your final payoff is calculated: If the price you neg
 
 <br>
 
-{{ next_button }}
-
+<div style="max-width: 800px; margin: auto;">
+    {{ next_button }}
+</div>
 
 {{ endblock }}
 

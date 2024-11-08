@@ -1,0 +1,19 @@
+{{ block title }}
+    Fehler
+{{ endblock }}
+
+{{ block content }}
+    <p class="alert alert-danger">Offenbar ist die Variable <tt>player.participant.vars["clerpay_amount"]</tt> nicht korrekt gesetzt. Entweder fehlt es komplett oder es ist nicht numerisch. Für die automatische Übernahme von Auszahlungsbeträgen und -codes ist es erforderlich, dass diese Variable innerhalb des Experiments (also vor <tt>clerpay_end</tt>) auf den Auszahlungsbetrag gesetzt wird. Erlaubte Werte sind zum Beispiel: <tt>4</tt> oder <tt>29.18</tt>. Nicht erlaubt ist die Verwendung von , statt . (ungültig wäre etwa <tt>29,18</tt>) oder die Verwendung zusätzlicher Zeichen (ungültig wäre etwa <tt>4 €</tT>). Bitte übermitteln Sie einzig und allein den Auszahlungsbetrag in einer Art und Weise, wie man in Python eine Fließkommazahl (<tt>float</tt>) niederschreibt.</p>
+
+    {% if noset %}
+        <p class="alert alert-danger">Die Variable fehlt komplett.</p>
+    {% else %}
+        <p class="alert alert-danger">Der Wert der Variable (<tt>{{ player.participant.vars.clerpay_amount }}</tt>) ist ungültig.</p>
+    {% endif %}
+
+    <p>Aufgrund dieses Fehlers werden manuelle Codes verwendet. Das automatische Modul ist nicht funktionsfähig; stattdessen müssen dem Labormanager die manuellen Codes übermittelt werden.</p>
+
+    <p><b>PLEASE FIX!</b></p>
+
+    <p class="alert alert-success">Sind Sie Versuchsperson? Bitte warten Sie, bis Sie weitergeleitet werden. Es ist wahrscheinlich, dass dennoch alles geklappt hat. Bitte informieren Sie das Labor über diesen Vorfall.</p>
+{{ endblock }}

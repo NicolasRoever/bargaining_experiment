@@ -229,6 +229,7 @@ class BargainInstructions(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return {'role_in_game': player.participant.role_in_game}
+    
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
