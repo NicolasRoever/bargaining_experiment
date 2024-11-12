@@ -198,6 +198,7 @@ def creating_session(subsession):
             
         for group in subsession.get_groups():
             group.random_termination_time_current_round = termination_times_list[subsession.real_round_number-1]
+            print(f"Random termination time for group {group.id_in_subsession} in round {subsession.real_round_number} is {group.random_termination_time_current_round}")
         
         #Randomly determine the round in which the final payoffs are calculated
         if subsession.real_round_number == 1:
@@ -573,11 +574,11 @@ class BargainReal(Page):
 
 
 
-page_sequence = [WelcomeAndConsent, 
-                 BargainInstructions,
-                 BargainPracticeOneIntro,
-                 BargainPracticeTwoIntro,
-                 BargainPracticeThreeIntro,
+page_sequence = [#WelcomeAndConsent, 
+                 #BargainInstructions,
+                 #BargainPracticeOneIntro,
+                 #BargainPracticeTwoIntro,
+                 #BargainPracticeThreeIntro,
                  BargainInfoRealGame,
                  BargainWaitPage,
                  BargainPracticeOne,

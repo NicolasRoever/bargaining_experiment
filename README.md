@@ -107,7 +107,15 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
-- I am not sure if I need line 511 (it worked fine before, but I removed bargain starttime at subsession beginnning)
+- Fix random termination procedure: I tested it locally and it works, check in on the server please. 
+
+- I need to make transcaction costs and termination probability dynamic in the instructions. 
+
+- The transaction costs are by a factor of 10 too high in the list, they are displayed correctly in the graph but in the analysis dataframe they are not. This could be confusing later on. 
+
+- Change wording: Surplus to payoff (you include the transaction costs in your payoff)
+
+- I changed the offer notification from 1.4 to 0.8 seconds, please check if this is ok. 
 
 
 ## Errors to monitor (Longlist)

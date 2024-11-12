@@ -190,7 +190,7 @@ Price Negotiation
         </div>
 
         <div class="three_columns_right" style="flex: 0.5;">
-            <h5>Risk of Time Delay</h5>
+            <h5>Risk of Termination</h5>
             <p style="display:block">The probability that the computer will terminate the negotiation in the next second is <b>{{termination_probability}}%</b>.</p>
          
         </div>
@@ -400,16 +400,16 @@ function liveRecv(data) {
         }
     }
 
-    // This changes the text color of the proposal to red for 2 seconds when a proposal is made
+    // This changes the text color of the proposal to red for 0.8 seconds when a proposal is made
     if (data.notification_seller_proposal){
         if (js_vars.my_role == "Seller"){
-            changeTextColor("my-proposal", "green", 1400);
+            changeTextColor("my-proposal", "green", 800);
         }
     }
 
     if (data.notification_buyer_proposal){
         if (js_vars.my_role == "Buyer"){
-            changeTextColor("my-proposal", "green",1400);
+            changeTextColor("my-proposal", "green",800);
         }
     }
 

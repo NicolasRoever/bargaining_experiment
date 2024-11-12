@@ -706,11 +706,14 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
     payoff_plus_participation_fee = payoff + participation_fee
     role_in_game = player.participant.vars['role_in_game']
 
+    
+
     if practice_round == True:
         other_role = "Buyer" if player.participant.vars['role_in_game'] == "Seller" else "Seller"
+        round_number = player.round_number
     else:
         other_role = player.get_others_in_group()[0].participant.vars['role_in_game']
-
+        round_number = player.round_number - 3
     if deal_price is not None:
         if player.participant.vars['role_in_game'] == "Buyer":
             gains_from_trade = valuation - deal_price
@@ -734,7 +737,7 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
         payoff=round_or_fallback(payoff),
         participation_fee=round_or_fallback(participation_fee),
         payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee),
-        round_number = player.round_number,
+        round_number = round_number,
         practice_round = practice_round, 
         role_in_game = role_in_game
     )
