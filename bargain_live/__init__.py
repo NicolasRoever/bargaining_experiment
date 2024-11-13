@@ -50,7 +50,7 @@ class Group(BaseGroup):
     termination_time = models.IntegerField()
     terminated_by = models.IntegerField()
 
-    bargain_start_time = models.FloatField()
+    bargain_start_time = models.StringField()
     bargaining_duration = models.FloatField()
    
     current_seller_offer = models.FloatField()
@@ -199,7 +199,7 @@ def creating_session(subsession):
             
         for group in subsession.get_groups():
             group.random_termination_time_current_round = termination_times_list[subsession.real_round_number-1]
-            print(f"Random termination time for group {group.id_in_subsession} in round {subsession.real_round_number} is {group.random_termination_time_current_round}")
+   
         
         #Randomly determine the round in which the final payoffs are calculated
         if subsession.real_round_number == 1:
@@ -242,7 +242,7 @@ class BargainWaitPage(WaitPage):
 
     @staticmethod
     def after_all_players_arrive(group):
-        group.bargain_start_time = datetime.now(tz=timezone.utc)
+        group.bargain_start_time = datetime.now(tz=timezone.utc).isoformat()
 
 
 class BargainPracticeOneIntro(Page):
@@ -382,7 +382,7 @@ class BargainPracticeTwo(Page):
         #Initialize variables
         group = player.group
         broadcast = {}
-        bargaining_time_elapsed = (datetime.now(tz=timezone.utc) - group.bargain_start_time).total_seconds()
+        bargaining_time_elapsed = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
 
         broadcast = update_broadcast_dict_with_basic_values(
             player=player,
@@ -447,7 +447,7 @@ class BargainPracticeThree(Page):
         #Initialize variables
         group = player.group
         broadcast = {}
-        bargaining_time_elapsed = (datetime.now(tz=timezone.utc) - group.bargain_start_time).total_seconds()
+        bargaining_time_elapsed = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
         amount_proposed_list = json.loads(player.amount_proposed_list)
 
         broadcast = update_broadcast_dict_with_basic_values(
