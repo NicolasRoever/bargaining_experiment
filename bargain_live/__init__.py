@@ -7,6 +7,7 @@ import pandas as pd
 import re
 import numpy as np
 import pathlib
+from datetime import datetime, timezone
 
 from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions, write_bot_giving_offer_and_improving, write_bot_giving_offer_and_accepting_the_second_offer, create_list_with_termination_probabilities_from_geometric_distribution
 
@@ -241,7 +242,7 @@ class BargainWaitPage(WaitPage):
 
     @staticmethod
     def after_all_players_arrive(group):
-        group.bargain_start_time = time.time()
+        group.bargain_start_time = datetime.now(tz=timezone.utc)
 
 
 class BargainPracticeOneIntro(Page):
@@ -381,7 +382,7 @@ class BargainPracticeTwo(Page):
         #Initialize variables
         group = player.group
         broadcast = {}
-        bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+        bargaining_time_elapsed = (datetime.now(tz=timezone.utc) - group.bargain_start_time).total_seconds()
 
         broadcast = update_broadcast_dict_with_basic_values(
             player=player,
@@ -446,7 +447,7 @@ class BargainPracticeThree(Page):
         #Initialize variables
         group = player.group
         broadcast = {}
-        bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+        bargaining_time_elapsed = (datetime.now(tz=timezone.utc) - group.bargain_start_time).total_seconds()
         amount_proposed_list = json.loads(player.amount_proposed_list)
 
         broadcast = update_broadcast_dict_with_basic_values(
@@ -544,6 +545,7 @@ class BargainReal(Page):
                                                             group = group, 
                                                             practice_round = False)
                         
+    
         return {0: broadcast}
     
 

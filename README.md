@@ -111,11 +111,13 @@ This section is only for me as a developer. You can ignore it.
 
 - I need to make transcaction costs and termination probability dynamic in the instructions. 
 
-- The transaction costs are by a factor of 10 too high in the list, they are displayed correctly in the graph but in the analysis dataframe they are not. This could be confusing later on. 
+- The transaction costs are by a factor of to low in cumulative TA costs! If you put in the real numbers, it is insaneely high. Please talk about it.  
 
 - Change wording: Surplus to payoff (you include the transaction costs in your payoff)
 
 - I changed the offer notification from 1.4 to 0.8 seconds, please check if this is ok. 
+
+- Understand why 2 computers crashed in round 30 during pilot 2.
 
 
 ## Errors to monitor (Longlist)

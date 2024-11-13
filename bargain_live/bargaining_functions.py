@@ -6,7 +6,8 @@ import re
 import numpy as np
 import random
 import math
-from datetime import datetime
+from datetime import datetime, timezone
+
 
 def calculate_total_delay_list(bargaining_time: int, delay_multiplier: float) -> List[float]:
     """
@@ -82,7 +83,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
 
     
     # Calculate the elapsed bargaining time
-    bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+    bargaining_time_elapsed = (datetime.datetime.now(tz=timezone.utc) - group.bargain_start_time).total_seconds()
 
 
     # Parse the lists and calculate relevant values based on the elapsed time
@@ -226,7 +227,7 @@ def update_group_database_upon_random_termination(group: Any) -> None:
     Returns:
         None
     """
-    bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+    bargaining_time_elapsed = (datetime.now(tz=timezone.utc) - group.bargain_start_time).total_seconds()
     group.is_finished = True
     group.termination_time = bargaining_time_elapsed
     group.termination_mode = 'Random_Termination'
@@ -277,7 +278,7 @@ def setup_player_transaction_costs(player: Any, ta_treatment: bool, total_bargai
     player.total_costs_list = json.dumps(transaction_cost_list)
     player.current_costs_list = json.dumps(current_costs_list)
     player.x_axis_values_TA_graph = json.dumps(list(range(0, total_bargaining_time + 1)))
-    player.y_axis_maximum_TA_graph = 20
+    player.y_axis_maximum_TA_graph = 80
 
 
 def setup_player_delay_list(player: Any, delay_treatment_high: bool, total_bargaining_time: int) -> None:
@@ -956,7 +957,7 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
         broadcast["finished"] = True
 
     # Update database and finish bargaining if random termination time is reached
-    bargaining_time_elapsed = int(time.time() - group.bargain_start_time)
+    bargaining_time_elapsed = (datetime.now(tz=timezone.utc)- group.bargain_start_time).total_seconds()
 
     if bargaining_time_elapsed >= group.random_termination_time_current_round:
 
@@ -1075,7 +1076,7 @@ def accept_deal_as_bot(broadcast: Dict, player: Any, group: Any, data: Dict[str,
     data['proposal_by_role'] = player.participant.vars['role_in_game']
     data['proposal_by_id'] = player.id_in_group
     data['amount'] = player.current_amount_proposed 
-    data['acceptance_time'] = int(time.time() - group.bargain_start_time)
+    data['acceptance_time'] = (datetime.now(tz=timezone.utc) - group.bargain_start_time).total_seconds()
     data['accepted_by'] = player.id_in_group + 1
 
     update_group_database_upon_acceptance(

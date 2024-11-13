@@ -32,3 +32,4 @@ dependencies:
     - sqlalchemy==1.3.22
     - matplotlib
     - requests
+    - django
