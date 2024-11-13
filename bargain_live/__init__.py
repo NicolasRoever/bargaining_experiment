@@ -204,8 +204,12 @@ def creating_session(subsession):
         #Randomly determine the round in which the final payoffs are calculated
         if subsession.real_round_number == 1:
 
+            print("Number of real rounds: ", C.NUM_REAL_ROUNDS)
+
             for player in subsession.get_players():
                 player.participant.vars['random_round'] = random.randint(1, C.NUM_REAL_ROUNDS)
+
+                print("Random round chosen for player: ", player.participant.id_in_session, " is: ", player.participant.vars['random_round'])
 
           
 
@@ -580,11 +584,11 @@ class BargainReal(Page):
 
 
 
-page_sequence = [#WelcomeAndConsent, 
-                 #BargainInstructions,
-                 #BargainPracticeOneIntro,
-                 #BargainPracticeTwoIntro,
-                 #BargainPracticeThreeIntro,
+page_sequence = [WelcomeAndConsent, 
+                 BargainInstructions,
+                 BargainPracticeOneIntro,
+                 BargainPracticeTwoIntro,
+                 BargainPracticeThreeIntro,
                  BargainInfoRealGame,
                  BargainWaitPage,
                  BargainPracticeOne,

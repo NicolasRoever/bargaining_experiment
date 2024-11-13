@@ -107,11 +107,11 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
+- Fix the chosen round in the final results page. For some reason, sometimes the round is larger than the number of real rounds. Altough the player.participant variable is set correctly. 
+
 - Fix random termination procedure: I tested it locally and it works, check in on the server please. 
 
 - I need to make transcaction costs and termination probability dynamic in the instructions. 
-
-- The transaction costs are by a factor of to low in cumulative TA costs! If you put in the real numbers, it is insaneely high. Please talk about it.  
 
 - Change wording: Surplus to payoff (you include the transaction costs in your payoff)
 
@@ -131,6 +131,8 @@ IndexError: list index out of range -> I added a print statement, please monitor
 ## Server Commands
 
 These are the commands for the university server we are using to run the experiment.
+
+- First Stop the server
 
 - Remember that you need to be one folder above bargaining_experiment when you do the rsync command
 

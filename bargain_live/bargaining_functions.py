@@ -356,14 +356,13 @@ def record_player_payoff_from_round(player: Any) -> None:
         transaction_costs = player.cumulated_TA_costs
 
         player.payoff = -transaction_costs
-        print("Transaction Costs: ", transaction_costs)
-        print("Payoff: ", player.payoff)
+
 
     #Case 3: Time was up
 
     else: 
         player.payoff = -json.loads(player.total_costs_list)[-1]
-        print("Payoff time was up: ", player.payoff)
+    
 
 
 def record_bargaining_time_on_group_level(player: Any, C: Any) -> None:
@@ -759,8 +758,10 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
         Dict[str, Any]: A dictionary containing the results of the game.
     """
     # Get the randomly chosen round
+    
     chosen_round = player.participant.random_round
     round_data = player.in_round(chosen_round)
+
 
     # Extract necessary values from the chosen round
     deal_price = round_data.group.field_maybe_none('deal_price')
@@ -1080,7 +1081,7 @@ def accept_deal_as_bot(broadcast: Dict, player: Any, group: Any, data: Dict[str,
     data['proposal_by_role'] = player.participant.vars['role_in_game']
     data['proposal_by_id'] = player.id_in_group
     data['amount'] = player.current_amount_proposed 
-    data['acceptance_time'] = (datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds()
+    data['acceptance_time'] = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
     data['accepted_by'] = player.id_in_group + 1
 
     update_group_database_upon_acceptance(
