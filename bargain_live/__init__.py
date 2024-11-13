@@ -24,7 +24,7 @@ class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
     NUM_PRACTICE_ROUNDS = 3
-    NUM_REAL_ROUNDS = 30
+    NUM_REAL_ROUNDS = 2
     NUM_ROUNDS = NUM_PRACTICE_ROUNDS + NUM_REAL_ROUNDS
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
@@ -350,8 +350,9 @@ class BargainPracticeOne(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
 
-        record_player_payoff_from_round(player=player)
+        
         record_bargaining_time_on_group_level(player=player, C=C)
+        record_player_payoff_from_round(player=player)
 
     
 
@@ -423,8 +424,9 @@ class BargainPracticeTwo(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
 
-        record_player_payoff_from_round(player=player)
+        
         record_bargaining_time_on_group_level(player=player, C=C)
+        record_player_payoff_from_round(player=player)
 
     
 
@@ -492,8 +494,9 @@ class BargainPracticeThree(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
 
-        record_player_payoff_from_round(player=player)
+        
         record_bargaining_time_on_group_level(player=player, C=C)
+        record_player_payoff_from_round(player=player)
     
 
 
@@ -554,8 +557,9 @@ class BargainReal(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
 
-        record_player_payoff_from_round(player=player)
+        
         record_bargaining_time_on_group_level(player=player, C=C)
+        record_player_payoff_from_round(player=player)
 
         if player.round_number == C.NUM_ROUNDS:
             set_final_player_payoff(player=player, C=C)

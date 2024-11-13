@@ -107,7 +107,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     if total_cost_y_values:
 
         player.current_TA_costs = current_transaction_costs
-        player.cumulated_TA_costs = total_cost_y_values[-1]
+        player.cumulated_TA_costs = total_cost_y_values[bargaining_time_elapsed - 1]
         player.current_payoff_terminate = -player.cumulated_TA_costs
         player.current_discount_factor = current_discount_factor
 
@@ -351,15 +351,19 @@ def record_player_payoff_from_round(player: Any) -> None:
 
 
     #Case 2: A deal was terminated
-    elif player.group.field_maybe_none('termination_time'):
+    elif player.group.field_maybe_none('terminated'):
 
         transaction_costs = player.cumulated_TA_costs
+
         player.payoff = -transaction_costs
+        print("Transaction Costs: ", transaction_costs)
+        print("Payoff: ", player.payoff)
 
     #Case 3: Time was up
 
     else: 
         player.payoff = -json.loads(player.total_costs_list)[-1]
+        print("Payoff time was up: ", player.payoff)
 
 
 def record_bargaining_time_on_group_level(player: Any, C: Any) -> None:
@@ -761,7 +765,7 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
     # Extract necessary values from the chosen round
     deal_price = round_data.group.field_maybe_none('deal_price')
     negative_deal_price = -deal_price if deal_price is not None else None
-    transaction_costs = round_data.field_maybe_none('current_TA_costs')
+    transaction_costs = round_data.field_maybe_none('cumulated_TA_costs')
     negative_transaction_costs = -transaction_costs if transaction_costs is not None else None
     valuation = round_data.valuation
     negative_valuation = -valuation
