@@ -1,0 +1,37 @@
+{% extends "global/Page.html" %}
+{{ block content }}
+    <h1>Comprehension Questions</h1>
+
+    <style>
+        /* Make all form elements have consistent width */
+        .form-control {
+            width: 500px;  /* You can adjust this value as needed */
+            max-width: 100%;
+        }
+    </style>
+
+    <br>
+    
+    <p>Choose the incorrect statement: </p>
+  {{ form.comprehension_1 }}
+
+  <br>
+
+  <hr>
+
+  <p>Choose the incorrect statement: </p>
+  {{ form.comprehension_2 }}
+
+  <br>
+
+  <hr>
+
+  <p>Now, assume that the negotiation is randomly terminated before the agreement. Which of the following statements is incorrect? </p>
+  {{ form.comprehension_3 }}
+
+  <br>
+
+  <hr>
+
+  {{ next_button }}
+{{ endblock }}
