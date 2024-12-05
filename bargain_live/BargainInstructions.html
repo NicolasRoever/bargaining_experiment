@@ -57,6 +57,32 @@
     .amount {
         float: right;
     }
+    .section {
+        margin-bottom: 2rem;
+    }
+    .content-box {
+        background-color: rgb(249, 249, 249);
+        padding: 1.5rem;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .task-list {
+        margin-top: 1rem;
+        padding-left: 1.5rem;
+    }
+    .task-list li {
+        margin-bottom: 0.5rem;
+    }
+    .comprehension-questions {
+        margin: 2rem 0;
+    }
+    .question {
+        margin-bottom: 1.5rem;
+    }
+    .question p {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
 </style>
 </head>
 <body>
@@ -67,18 +93,38 @@
 
 <br>
 
-<h2><u>Overview</u></h2>
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>The experiment consists of 30 matches. At the beginning of the experiment, participants will be randomly assigned the role of either buyer or seller. This role will remain fixed throughout all 30 matches. At the beginning of each match, you will be randomly paired with another participant in the opposite role. After each match, participants will be randomly re-paired, and new pairs will be formed.</p>
+<div class="section">
+    <h2 class="section-title"><u>Overview</u></h2>
+    <div class="content-box">
+        <p>The experiment consists of 30 matches. At the beginning of the experiment, participants will be randomly assigned 
+           the role of either buyer or seller. This role will remain fixed throughout all 30 matches. At the beginning of 
+           each match, you will be randomly paired with another participant in the opposite role. After each match, 
+           participants will be randomly re-paired, and new pairs will be formed.</p>
+    </div>
 </div>
-<br>
-<h2><u>Main Task</u></h2>
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>In each match, buyers and sellers will negotiate to trade an object:</p>
-<ul>
-    <li>The seller’s value for the object is 0 euros.</li>
-    <li>The buyer’s value for the object is private and will be randomly set between 0 and 60 euros. Only the buyer knows their value, and this value will remain unknown to the seller.</li>
-</ul>
+
+<div class="section">
+    <h2 class="section-title"><u>Main Task</u></h2>
+    <div class="content-box">
+        <p>In each match, buyers and sellers will negotiate to trade an object:</p>
+        <ul class="task-list">
+            <li>The seller's value for the object is 0 euros.</li>
+            <li>The buyer's value for the object is private and will be randomly set between 0 and 60 euros. 
+                Only the buyer knows their value, and this value will remain unknown to the seller.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="comprehension-questions">
+    <div class="question">
+        <p>Comprehension Question 1: Please choose the incorrect statement</p>
+        {{ form.comprehension_1 }}
+    </div>
+
+    <div class="question">
+        <p>Comprehension Question 2: Please choose the incorrect statement</p>
+        {{ form.comprehension_2 }}
+    </div>
 </div>
 
 <br>
@@ -126,6 +172,7 @@
     <li>Accept the other participant's price (only available after the first price is submitted).</li>
 </ol>
 </div>
+
 
 <br>
 
@@ -229,20 +276,35 @@
 
 <br>
 
+<div class="question" style="max-width: 800px; margin: auto;">
+    <p>Comprehension Question 3: Assume that the negotiation is randomly terminated before the agreement. Which of the following statements is incorrect?</p>
+    {{ form.comprehension_3 }}
+    
+</div>
+
+<br>
+
+
+
 
 
 <div style="background-color: rgb(249, 249, 249); padding: 10px; max-width: 800px; margin: auto;">
-    
+
     <div style="border: 2px solid #000; padding: 15px; background-color: #fff;">
+        <hr>
         <p style="margin: 0;">Now, you will play 3 practice rounds. After that, the experiment will start and you will play 30 matches with different partners.</p>
     </div>
 </div>
+
+
 
 <br>
 
 <div style="max-width: 800px; margin: auto;">
     {{ next_button }}
 </div>
+
+
 
 <div style="position: fixed; bottom: 10px; right: 10px; color: #888; font-size: 12px;">
     Code Version 2.3

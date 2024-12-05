@@ -29,34 +29,7 @@ class C(BaseConstants):
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
     TOTAL_BARGAINING_TIME = 500
-    COMPREHENSION_QUESTIONS = [
-    {
-        'question': "Which of the following statements is incorrect?\n"
-                    "(1) The experiment consists of 30 matches.\n"
-                    "(2) At the beginning of the experiment, participants will be randomly assigned the role of either buyer or seller.\n"
-                    "(3) The role of buyer and seller will be alternated across matches.\n"
-                    "(4) At the beginning of each match, a buyer and a seller will be randomly paired.",
-        'correct_answer': '3'
-    },
-    {
-        'question': "Which of the following statements is incorrect?\n"
-                    "(1) All participants can submit prices at any time.\n"
-                    "(2) The seller’s value for the object is 0 euros.\n"
-                    "(3) The buyer’s value for the object will be randomly set between 0 and 60 euros.\n"
-                    "(4) At the beginning of each match, the buyer’s value for the object will be known to a seller in the same pair.",
-        'correct_answer': '4'
-    },
-
-    {
-        'question': "Which of the following statements is incorrect?\n"
-                    "(1) If the negotiation is randomly terminated before the agreement, the gains from the trade are zero.\n"
-                    "(2) If the negotiation is randomly terminated before the agreement, the accumulated negotiation costs will not be deducted from the participation fees.\n"
-                    "(3) If the negotiation is randomly terminated before the agreement, the gains from the trade are zero. However, the accumulated negotiation costs will be deducted from the participation fees.\n"
-                    "(4) If one participant terminates the negotiation, the gains from the trade are zero and the accumulated negotiation costs will be deducted from the participation fees.",
-        'correct_answer': '2'
-    },
-]
-
+ 
 
 class Subsession(BaseSubsession):
     is_practice_round = models.BooleanField()
@@ -289,13 +262,29 @@ class WelcomeAndConsent(Page):
 
 
 class BargainInstructions(Page):
+    form_model = 'player'
+    form_fields = ['comprehension_1', 'comprehension_2', 'comprehension_3']
     @staticmethod
     def vars_for_template(player: Player):
         return {'role_in_game': player.participant.role_in_game}
     
+
+    def error_message(self, values):
+
+        # Check answers
+        if values['comprehension_1'] != 3:
+            return "You have not answered the first question correctly. Please try again."
+        
+        if values['comprehension_2'] != 4:
+            return "You have not answered the second question correctly. Please try again."
+        
+        if values['comprehension_3'] != 2:
+            return "You have not answered the third question correctly. Please try again."
+
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
+
 
 
 class BargainWaitPage(WaitPage):
@@ -432,9 +421,6 @@ class BargainPracticeOne(Page):
         record_bargaining_time_on_group_level(player=player, C=C)
         record_player_payoff_from_round(player=player)
 
-    
-
-    
 
 class BargainPracticeTwo(Page):
 
@@ -658,8 +644,7 @@ class BargainReal(Page):
 
 
 
-page_sequence = [ComprehensionCheck,
-                 WelcomeAndConsent, 
+page_sequence = [WelcomeAndConsent, 
                  BargainInstructions,
                  BargainPracticeOneIntro,
                  BargainPracticeTwoIntro,
