@@ -109,7 +109,8 @@ class Player(BasePlayer):
             [2, "Participants will be randomly assigned the role of buyer or seller."],
             [3, "The role of buyer and seller will be alternated across matches."],
             [4, "At the beginning of each match, a buyer and a seller will be randomly paired."]
-        ]
+        ], 
+        blank=True
     )
 
     comprehension_2 = models.IntegerField(
@@ -119,7 +120,8 @@ class Player(BasePlayer):
             [2, "The seller’s value for the object is 0 euros."],
             [3, "The buyer’s value for the object will be randomly set between 0 and 60 euros."],
             [4, "At the beginning of each match, the buyer’s value for the object will be known to a seller in the same pair."]
-        ]
+        ], 
+        blank=True
     )
 
     comprehension_3 = models.IntegerField(
@@ -128,7 +130,8 @@ class Player(BasePlayer):
             [1, "The gains from trade are zero."],
             [2, "The accumulated negotiation costs will not be deducted from the participation fees."],
             [3, "The accumulated negotiation costs will be deducted from the participation fees."],
-        ]
+        ], 
+        blank=True
     )
     
 
@@ -352,7 +355,7 @@ class ComprehensionCheck(Page):
         if values['comprehension_2'] != 4:
             return "You have not answered the second question correctly. Please try again."
         
-        if values['comprehension_3'] != 2:
+        if values['comprehension_3'] != 3:
             return "You have not answered the third question correctly. Please try again."
 
     
@@ -644,12 +647,12 @@ class BargainReal(Page):
 
 
 
-page_sequence = [WelcomeAndConsent, 
-                 BargainInstructions,
-                 BargainPracticeOneIntro,
-                 BargainPracticeTwoIntro,
-                 BargainPracticeThreeIntro,
-                 BargainInfoRealGame,
+page_sequence = [#WelcomeAndConsent, 
+                 #BargainInstructions,
+                 #BargainPracticeOneIntro,
+                 #BargainPracticeTwoIntro,
+                 #BargainPracticeThreeIntro,
+                 #BargainInfoRealGame,
                  BargainWaitPage,
                  BargainPracticeOne,
                  BargainPracticeTwo,

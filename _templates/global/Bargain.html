@@ -1,5 +1,9 @@
 {{ block title }}
-Price Negotiation
+    {{ if practice_round == True }}
+        Practice Match {{ round_number }} of {{ C.NUM_PRACTICE_ROUNDS }}
+    {{ else }}
+       Match {{ round_number }} of {{ C.NUM_REAL_ROUNDS }}
+    {{ endif }}
 {{ endblock }}
 
 {{ block content }} 

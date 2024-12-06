@@ -31,7 +31,18 @@
     }
 </style>
 
-<p>Match Number {{ chosen_round }} was chosen to be payoff-relevant. This means the money you get for this participating in the experiment is: {{ payoff_plus_participation_fee }}€. We calculate this as follows:</p>
+<p>Match Number {{ chosen_round }} was chosen to be payoff-relevant. 
+
+
+{% if payoff_plus_participation_fee < 15 %}
+
+The payoff from this match would be: {{ payoff_plus_participation_fee }}€.
+However, this is below the minimum payoff of 15€. Thus, your final payoff is 15€.
+
+
+{% else %}
+    
+This means the money you get for this participating in the experiment is: {{ payoff_plus_participation_fee }}€. We calculate this as follows:</p>
 
 {% if is_finished == True %}
 
@@ -44,8 +55,6 @@
             <div>Price: <span class="amount"> {{ negative_deal_price }}</span></div>
             <div class="line"></div>
             <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
-            <div class="line"></div>
-            <div>Cost of Delay: <span class="amount">({{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) = {{ negative_loss_from_discounting }}</span></div>
             <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
             <div class="line"></div>
             <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
@@ -65,7 +74,6 @@
              <div class="line"></div>
              <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
              <div class="line"></div>
-             <div>Cost of Delay: <span class="amount">( {{ negative_one_minus_discount_factor }}*{{ gains_from_trade }}) =  {{ negative_loss_from_discounting }}</span></div>
              <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
              <div class="line"></div>
              <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
@@ -91,6 +99,11 @@
    <p> No deal was made in the given time frame. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}. </p>
 
 {% endif %}
+
+{% endif %}
+
+
+{{ next_button }}
 
 
 

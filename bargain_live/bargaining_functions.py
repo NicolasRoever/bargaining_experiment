@@ -343,11 +343,11 @@ def record_player_payoff_from_round(player: Any) -> None:
         discount_factor = player.current_discount_factor #Recall that this is a percentage of the money to keee.
 
         if player.participant.vars['role_in_game'] == "Seller":
-            player.payoff = (player.group.deal_price - player.valuation)  - transaction_costs
+            player.payoff = (player.group.deal_price - player.valuation)  - transaction_costs 
 
 
         elif player.participant.vars['role_in_game'] == "Buyer":
-            player.payoff = (player.valuation - player.group.deal_price)  - transaction_costs
+            player.payoff = (player.valuation - player.group.deal_price)  - transaction_costs 
 
 
     #Case 2: A deal was terminated
@@ -355,13 +355,13 @@ def record_player_payoff_from_round(player: Any) -> None:
 
         transaction_costs = player.cumulated_TA_costs
 
-        player.payoff = -transaction_costs
+        player.payoff = -transaction_costs 
 
 
     #Case 3: Time was up
 
     else: 
-        player.payoff = -json.loads(player.total_costs_list)[-1]
+        player.payoff = -json.loads(player.total_costs_list)[-1] 
     
 
 
@@ -407,8 +407,8 @@ def set_final_player_payoff(player: Any, C: Any) -> None:
     """
 
     player.participant.random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
-    player.participant.payoff = player.in_round(player.participant.random_round).payoff
-    player.participant.vars["clerpay_amount"] = player.payoff
+    player.participant.payoff = player.in_round(player.participant.random_round).payoff + player.group.subsession.session.config['participation_fee']
+    player.participant.vars["clerpay_amount"] = float(player.participant.payoff) if float(player.participant.payoff) >= 0 else 0
 
 
 
@@ -851,7 +851,11 @@ def create_dictionary_with_html_variables_for_bargain_page(player: Any,
     if practice_round == False:
         dictionary['other_valuation'] = player.get_others_in_group()[0].valuation
         dictionary['other_role'] = player.get_others_in_group()[0].participant.vars['role_in_game']
+        dictionary['practice_round'] = False
+        dictionary['round_number'] = player.round_number - 3
     else:
+        dictionary['practice_round'] = True
+        dictionary['round_number'] = player.round_number 
         if player.participant.vars['role_in_game'] == "Buyer":
             dictionary['other_role'] = "Seller"
             dictionary['other_valuation'] = 0
