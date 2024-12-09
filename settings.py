@@ -15,7 +15,9 @@ SESSION_CONFIGS = [
     delay_treatment_high = False,
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
-    termination_treatment = 'high_prob', # 'low_prob' or 'high_prob'
+    termination_treatment = 'high_prob',
+    termination_probability = 0.01,
+    transaction_costs = 0.05,
     doc="""
     Adjust the number of groups dependent on the number of participants. There are 8 participants per group."""
     )

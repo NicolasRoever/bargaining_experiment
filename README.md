@@ -107,6 +107,10 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
+- Make sure termination probability is 1% not 4%!
+
+- Negotiation cost: 15 and 5: in the practice round, it is 30 cents. 
+
 - Fix the chosen round in the final results page. For some reason, sometimes the round is larger than the number of real rounds. Altough the player.participant variable is set correctly. 
 
 - Fix random termination procedure: I tested it locally and it works, check in on the server please. 
@@ -115,9 +119,7 @@ This section is only for me as a developer. You can ignore it.
 
 - Change wording: Surplus to payoff (you include the transaction costs in your payoff)
 
-- I changed the offer notification from 1.4 to 0.8 seconds, please check if this is ok. 
 
-- Understand why 2 computers crashed in round 30 during pilot 2.
 
 
 ## Errors to monitor (Longlist)

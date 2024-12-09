@@ -38,13 +38,13 @@ def cumulative_transaction_cost_function(time: float, cost_factor: float) -> flo
     return cumulative_transaction_cost
 
 
-def calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: int) -> Tuple[List[float], List[float]]:
+def calculate_transaction_costs(cost_factor: float, total_bargaining_time: int) -> Tuple[List[float], List[float]]:
     """
     Calculate the cumulative costs over time with a decay factor depending on the treatment andotre
     compute the differences between each consecutive cost.
 
     Args:
-        TA_treatment_high (bool): Whether the treatment for Transactional Adjustment is high.
+        cost_factor (float): The cost factor for the transaction costs in costs in Euros per second.
         total_bargaining_time (int): Total time in seconds for which the costs are to be calculated.
 
     Returns:
@@ -52,8 +52,6 @@ def calculate_transaction_costs(TA_treatment_high: bool, total_bargaining_time: 
         - A list of cumulative costs at each second.
         - A list of differences between each second's cost and the next.
     """
-    
-    cost_factor = 0.3 if TA_treatment_high else 0.1
 
     time_values = np.arange(0, total_bargaining_time + 1)
 
@@ -255,12 +253,12 @@ def setup_player_valuation(player: Any) -> None:
         player.valuation = random.choice(valuation_list)
 
 
-def setup_player_transaction_costs(player: Any, ta_treatment: bool, total_bargaining_time) -> None:
+def setup_player_transaction_costs(player: Any, cost_factor: float, total_bargaining_time) -> None:
     """This function sets up the player's transaction costs based on the treatment. and saves the data in the player database.
 
     Args:
         player: The player object containing the specific player's database.
-        ta_treatment: The treatment for Transaction Costs
+        cost_factor: The cost factor for the transaction costs in costs in Euros per second.
         total_bargaining_time: The total time for bargaining in seconds.
 
     Returns:
@@ -269,7 +267,7 @@ def setup_player_transaction_costs(player: Any, ta_treatment: bool, total_bargai
 
     #Calculate Transacion Costs
     transaction_cost_list, current_costs_list = calculate_transaction_costs(
-    TA_treatment_high=ta_treatment, 
+    cost_factor=cost_factor, 
     total_bargaining_time=total_bargaining_time)
 
 
@@ -745,6 +743,26 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
         practice_round = practice_round, 
         role_in_game = role_in_game
     )
+
+
+def create_dictionary_with_html_variables_for_bargain_instructions(player: Any) -> Dict[str, Any]:
+    """
+    Creates a dictionary with the variables needed for the HTML page BargainInstructions.html.
+    """
+
+    termination_probability = player.group.subsession.session.config['termination_probability']
+    termination_probability_in_percent = termination_probability * 100
+    
+    expected_termination_time = round(1 / termination_probability)
+
+    transaction_costs = player.group.subsession.session.config['transaction_costs']
+
+    transaction_costs_in_cents = round(transaction_costs * 100)
+
+    return {'termination_probability_in_percent': termination_probability_in_percent, 
+            'transaction_costs_in_cents': transaction_costs_in_cents, 
+            'expected_termination_time': expected_termination_time
+            }
 
 
 

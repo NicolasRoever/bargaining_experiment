@@ -9,7 +9,7 @@ import numpy as np
 import pathlib
 from datetime import datetime, timezone
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions, write_bot_giving_offer_and_improving, write_bot_giving_offer_and_accepting_the_second_offer, create_list_with_termination_probabilities_from_geometric_distribution
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions, write_bot_giving_offer_and_improving, write_bot_giving_offer_and_accepting_the_second_offer, create_list_with_termination_probabilities_from_geometric_distribution, create_dictionary_with_html_variables_for_bargain_instructions
 
 
 doc = """
@@ -182,7 +182,7 @@ def creating_session(subsession):
 
 
             setup_player_transaction_costs(player=player, 
-                                        ta_treatment=subsession.session.config['TA_treatment_high'],
+                                        cost_factor=subsession.session.config['transaction_costs'],
                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
             
             setup_player_shrinking_pie_discount_factors(player=player,
@@ -190,7 +190,7 @@ def creating_session(subsession):
                                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
             
             player.termination_probabilities_list = json.dumps(create_list_with_termination_probabilities_from_geometric_distribution(number_of_seconds=C.TOTAL_BARGAINING_TIME,
-                                                                                                                            probability_of_termination=0.01 if subsession.session.config['termination_treatment'] == 'low_prob' else 0.04))
+            probability_of_termination=subsession.session.config['termination_probability']))
             
 
         # I want to override the random termination time for the practice rounds so that the computer does not terminate the bargaining too early
@@ -219,7 +219,7 @@ def creating_session(subsession):
 
 
             setup_player_transaction_costs(player=player, 
-                                        ta_treatment=subsession.session.config['TA_treatment_high'],
+                                        cost_factor=subsession.session.config['transaction_costs'],
                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
             
             
@@ -269,7 +269,10 @@ class BargainInstructions(Page):
     form_fields = ['comprehension_1', 'comprehension_2', 'comprehension_3']
     @staticmethod
     def vars_for_template(player: Player):
-        return {'role_in_game': player.participant.role_in_game}
+
+        dictionary_with_variables = create_dictionary_with_html_variables_for_bargain_instructions(player=player)
+
+        return dictionary_with_variables
     
 
     def error_message(self, values):
@@ -341,24 +344,6 @@ class FinalResults(Page):
     @staticmethod
     def is_displayed(player):
         return player.round_number == C.NUM_ROUNDS
-    
-class ComprehensionCheck(Page):
-    form_model = 'player'
-    form_fields = ['comprehension_1', 'comprehension_2', 'comprehension_3']
-
-    def error_message(self, values):
-
-        # Check answers
-        if values['comprehension_1'] != 3:
-            return "You have not answered the first question correctly. Please try again."
-        
-        if values['comprehension_2'] != 4:
-            return "You have not answered the second question correctly. Please try again."
-        
-        if values['comprehension_3'] != 3:
-            return "You have not answered the third question correctly. Please try again."
-
-    
 
 #--Dynamic Bargain Pages--#
 
@@ -648,11 +633,11 @@ class BargainReal(Page):
 
 
 page_sequence = [#WelcomeAndConsent, 
-                 #BargainInstructions,
-                 #BargainPracticeOneIntro,
-                 #BargainPracticeTwoIntro,
-                 #BargainPracticeThreeIntro,
-                 #BargainInfoRealGame,
+                 BargainInstructions,
+                 BargainPracticeOneIntro,
+                 BargainPracticeTwoIntro,
+                 BargainPracticeThreeIntro,
+                 BargainInfoRealGame,
                  BargainWaitPage,
                  BargainPracticeOne,
                  BargainPracticeTwo,

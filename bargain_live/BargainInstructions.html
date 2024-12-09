@@ -115,17 +115,6 @@
     </div>
 </div>
 
-<div class="comprehension-questions">
-    <div class="question">
-        <p>Comprehension Question 1: Please choose the incorrect statement</p>
-        {{ form.comprehension_1 }}
-    </div>
-
-    <div class="question">
-        <p>Comprehension Question 2: Please choose the incorrect statement</p>
-        {{ form.comprehension_2 }}
-    </div>
-</div>
 
 <br>
 <h3>1. Price Negotiation</h3>
@@ -143,10 +132,10 @@
 <p>During the price negotiation, any delay incurs two types of costs: transaction costs and termination uncertainty.</p>
 
 <h4>2.1 Negotiation Cost</h4>
-<p>Negotiation costs of 30 cents are incurred for each second of the negotiation. The longer the negotiation, the higher the cost imposed on both participants. The graph on the left visualizes the cumulative negotiation costs. The sum of the negotiation costs will be deducted from your participation fees (which will be explained later) in this experiment.</p>
+<p>Negotiation costs of {{ transaction_costs_in_cents }} Cents are incurred for each second of the negotiation. The longer the negotiation, the higher the cost imposed on both participants. The graph on the left visualizes the cumulative negotiation costs. The sum of the negotiation costs will be deducted from your participation fees (which will be explained later) in this experiment.</p>
 
 <h4>2.2 Termination Uncertainty</h4>
-<p>Each second during the negotiation, there is a 4% chance that the computer will end the negotiation. On average, this means, if no agreement is reached before, negotiations are expected to last about 25 seconds before they are terminated.</p>
+<p>Each second during the negotiation, there is a {{ termination_probability_in_percent }} % chance that the computer will end the negotiation. On average, this means, if no agreement is reached before, negotiations are expected to last about {{ expected_termination_time }} seconds before they are terminated.</p>
 
 <p>This process is similar to drawing a ball from a jar with 96 red balls and 4 blue balls at the end of each second. If a red ball is drawn, the negotiation continues; if a blue ball is drawn, the negotiation ends. Each draw is independent, so the outcome of one second does not affect the next.</p>
 </div>
@@ -274,7 +263,19 @@
 
 </div>
 
-<br>
+<div class="comprehension-questions"></div>
+    <div class="question">
+        <p>Comprehension Question 1: Please choose the incorrect statement</p>
+        {{ form.comprehension_1 }}
+    </div>
+
+
+
+    <div class="question">
+        <p>Comprehension Question 2: Please choose the incorrect statement</p>
+        {{ form.comprehension_2 }}
+    </div>
+</div>
 
 <div class="question" style="max-width: 800px; margin: auto;">
     <p>Comprehension Question 3: Assume that the negotiation is randomly terminated before the agreement. Which of the following statements is incorrect?</p>
@@ -308,7 +309,7 @@
 
 
 <div style="position: fixed; bottom: 10px; right: 10px; color: #888; font-size: 12px;">
-    Code Version 2.5
+    Code Version 2.6
 </div>
 
 {{ endblock }}
