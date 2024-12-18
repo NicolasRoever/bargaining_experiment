@@ -290,6 +290,17 @@ class BargainInstructions(Page):
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
+    
+
+class PracticeRoundsIntro(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.subsession.round_number == 1
+    
+    @staticmethod
+    def vars_for_template(player: Player):
+        role_in_game = player.participant.vars['role_in_game']
+        return {'role_in_game': role_in_game}
 
 
 
@@ -634,6 +645,7 @@ class BargainReal(Page):
 
 page_sequence = [#WelcomeAndConsent, 
                  BargainInstructions,
+                 PracticeRoundsIntro,
                  BargainPracticeOneIntro,
                  BargainPracticeTwoIntro,
                  BargainPracticeThreeIntro,
