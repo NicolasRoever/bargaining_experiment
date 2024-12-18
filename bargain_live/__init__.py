@@ -190,7 +190,7 @@ def creating_session(subsession):
                                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
             
             player.termination_probabilities_list = json.dumps(create_list_with_termination_probabilities_from_geometric_distribution(number_of_seconds=C.TOTAL_BARGAINING_TIME,
-            probability_of_termination=subsession.session.config['termination_probability']))
+            probability_of_termination=subsession.session.config['termination_treatment']))
             
 
         # I want to override the random termination time for the practice rounds so that the computer does not terminate the bargaining too early

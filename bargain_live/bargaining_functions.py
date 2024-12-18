@@ -276,7 +276,7 @@ def setup_player_transaction_costs(player: Any, cost_factor: float, total_bargai
     player.total_costs_list = json.dumps(transaction_cost_list)
     player.current_costs_list = json.dumps(current_costs_list)
     player.x_axis_values_TA_graph = json.dumps(list(range(0, total_bargaining_time + 1)))
-    player.y_axis_maximum_TA_graph = 80
+    player.y_axis_maximum_TA_graph = 20
 
 
 def setup_player_delay_list(player: Any, delay_treatment_high: bool, total_bargaining_time: int) -> None:
@@ -750,7 +750,7 @@ def create_dictionary_with_html_variables_for_bargain_instructions(player: Any) 
     Creates a dictionary with the variables needed for the HTML page BargainInstructions.html.
     """
 
-    termination_probability = player.group.subsession.session.config['termination_probability']
+    termination_probability = 0.01 if player.group.subsession.session.config['termination_treatment'] == "low_prob" else 0.04
     termination_probability_in_percent = termination_probability * 100
     
     expected_termination_time = round(1 / termination_probability)
@@ -1153,17 +1153,22 @@ def create_list_with_termination_probabilities_from_geometric_distribution(numbe
     """
     Args:
         number_of_seconds (int): The number of seconds.
-        probability_of_termination (float): The probability of termination.
+        probability_of_termination (Boolean): The probability of termination (high_prob or low_prob)
 
     Returns:
         List[float]: A list with the termination probabilities.
-    """
 
-        # Create an array of time points
+    """
+    if probability_of_termination == "high_prob":
+        probability = 0.04
+    else:
+        probability = 0.01
+
+    # Create an array of time points
     time_points = np.arange(1, number_of_seconds + 1)
     
     # Calculate the cumulative probabilities
-    cumulative_probabilities = 1 - (1 - probability_of_termination) ** time_points
+    cumulative_probabilities = 1 - (1 - probability) ** time_points
     
     return cumulative_probabilities.tolist()
 
