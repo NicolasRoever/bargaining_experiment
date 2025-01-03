@@ -87,30 +87,39 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
     # Parse the lists and calculate relevant values based on the elapsed time
     total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed]
     termination_probabilities_list = json.loads(player.termination_probabilities_list)
-    try:
-        current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
-        current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
-        current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
-        current_survival_probability = 1 - current_termination_probability
 
-    except IndexError as e:
-        print(f"IndexError: {e}. Index: {bargaining_time_elapsed - 1}, List length: {len(json.loads(player.current_costs_list))}")
+    if bargaining_time_elapsed < 0:
         current_discount_factor = None
-        current_transaction_costs = None  # or handle it in another way
+        current_transaction_costs = None
         current_survival_probability = 1
+    else:
+        try:
+            current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
+            current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
+            current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
+            current_survival_probability = 1 - current_termination_probability
+
+        except IndexError as e:
+            print(f"IndexError: {e}. Index: {bargaining_time_elapsed - 1}, List length: {len(json.loads(player.current_costs_list))}")
+            current_discount_factor = None
+            current_transaction_costs = None
+            current_survival_probability = 1
 
 
     # Update player attributes
     #The if clause ensures that we do not get an error for period 0.
-    if total_cost_y_values:
+    if total_cost_y_values and bargaining_time_elapsed > 0:
 
         player.current_TA_costs = current_transaction_costs
         player.cumulated_TA_costs = total_cost_y_values[bargaining_time_elapsed - 1]
         player.current_payoff_terminate = -player.cumulated_TA_costs
         player.current_discount_factor = current_discount_factor
 
-
-    
+    else:
+        player.current_TA_costs = None
+        player.cumulated_TA_costs = None
+        player.current_payoff_terminate = None
+        player.current_discount_factor = None
 
     # Update the broadcast dictionary with the new values individually
     broadcast['current_TA_costs'] = player.field_maybe_none('current_TA_costs')
@@ -141,10 +150,10 @@ def update_broadcast_dict_with_other_player_values(player: Any, broadcast: Dict[
     """
 
     if practice_round:
-        other_player_transaction_cost = player.cumulated_TA_costs #I simulate here that the other player has the same transaction costs as the player himself.
+        other_player_transaction_cost = player.field_maybe_none('cumulated_TA_costs') #I simulate here that the other player has the same transaction costs as the player himself.
     else:
         [other] = player.get_others_in_group()
-        other_player_transaction_cost = other.cumulated_TA_costs
+        other_player_transaction_cost = other.field_maybe_none('cumulated_TA_costs')
 
     # Update the broadcast dictionary with the new values individually
     broadcast['other_player_transaction_cost'] = other_player_transaction_cost

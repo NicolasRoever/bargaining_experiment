@@ -7,7 +7,7 @@ import pandas as pd
 import re
 import numpy as np
 import pathlib
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions, write_bot_giving_offer_and_improving, write_bot_giving_offer_and_accepting_the_second_offer, create_list_with_termination_probabilities_from_geometric_distribution, create_dictionary_with_html_variables_for_bargain_instructions
 
@@ -309,7 +309,9 @@ class BargainWaitPage(WaitPage):
 
     @staticmethod
     def after_all_players_arrive(group):
-        group.bargain_start_time = datetime.now(tz=timezone.utc).isoformat()
+        # Set start time 3 seconds in the future
+        bargain_start_time = datetime.now(tz=timezone.utc) + timedelta(seconds=3)
+        group.bargain_start_time = bargain_start_time.isoformat()
 
 
 class BargainPracticeOneIntro(Page):
@@ -644,12 +646,12 @@ class BargainReal(Page):
 
 
 page_sequence = [#WelcomeAndConsent, 
-                 BargainInstructions,
-                 PracticeRoundsIntro,
-                 BargainPracticeOneIntro,
-                 BargainPracticeTwoIntro,
-                 BargainPracticeThreeIntro,
-                 BargainInfoRealGame,
+                 #BargainInstructions,
+                 #PracticeRoundsIntro,
+                 #BargainPracticeOneIntro,
+                 #BargainPracticeTwoIntro,
+                 #BargainPracticeThreeIntro,
+                 #BargainInfoRealGame,
                  BargainWaitPage,
                  BargainPracticeOne,
                  BargainPracticeTwo,

@@ -110,13 +110,9 @@ This section is only for me as a developer. You can ignore it.
 
 
 
-
 ## Errors to monitor (Longlist)
 
-- Double-check this error:   File "/Users/nicolasroever/Documents/Promotion/Bargaining/bargaining_experiment/bargain_live/bargaining_functions.py", line 90, in update_broadcast_dict_with_basic_values
-    current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
-IndexError: list index out of range -> I added a print statement, please monitor this!
-- Also, the randomization does not seem to be fixed with the random number generator, please adjust. ( added a set seed in the notebook, should be fixed now.)
+
 
 
 ## Server Commands
