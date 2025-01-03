@@ -129,6 +129,7 @@
         text-align: center;
     }
 
+
 </style>
 
 <div class="central_container">
@@ -234,7 +235,8 @@
         </div>
         <div class="three_columns_right" style="background-color: #ffffff; flex: 0.5"></div>
     </div>
-    <div id="notification" style="display:none; position: fixed; top: 30%; left: 60%; transform: translate(-50%, -50%); background-color: #f0ad4e; padding: 3%; border-radius: 2%; color: white; font-size: 1.5em; z-index: 9999; text-align: center; width: 80%; max-width: 400px;">Notification text</div>
+
+    <div id="notification" style="display:none; position: fixed; top: 52.5%; left: 80%; transform: translate(-50%, -50%); background-color: #ffebee; padding: 1.5%; border-radius: 2%; color: #c62828; font-size: 1.5em; z-index: 9999; text-align: center; width: 80%; max-width: 400px; box-shadow: 0 2px 4px rgba(198,40,40,0.2);">Notification text</div>
 
     {% if treatment_communication %}
     <h5 style="margin-top: 1cm;">Please use this chat room to communicate with the {{ other_role }}:</h5>
@@ -277,7 +279,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     initializeElements();  
     initializeSliders();
-    liveSend({});
 });
 
 
@@ -441,13 +442,13 @@ function liveRecv(data) {
     // This changes the text color of the proposal to red for 0.8 seconds when a proposal is made
     if (data.notification_seller_proposal){
         if (js_vars.my_role == "Seller"){
-            changeTextColor("my-proposal", "green", 800);
+            changeTextColor("my-proposal", "green",1500);
         }
     }
 
     if (data.notification_buyer_proposal){
         if (js_vars.my_role == "Buyer"){
-            changeTextColor("my-proposal", "green",800);
+            changeTextColor("my-proposal", "green",1500);
         }
     }
 
@@ -467,7 +468,7 @@ setInterval(
     function () {
         liveSend({});
     },
-    2500
+    3000
 )
 
 </script>

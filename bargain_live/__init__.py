@@ -474,7 +474,7 @@ class BargainPracticeTwo(Page):
                                                         data=data, 
                                                         player=player, 
                                                         group=group, 
-                                                        initial_offer_from_bot=30, 
+                                                        initial_offer_from_bot=random.randint(20, 40),
                                                         bargaining_time_elapsed=bargaining_time_elapsed)
         
         #Override the termination time to 60 for this practice round
@@ -542,7 +542,7 @@ class BargainPracticeThree(Page):
             data=data,
             player=player,
             group=group,
-            initial_offer_from_bot=30,
+            initial_offer_from_bot=random.randint(20, 40),
             bargaining_time_elapsed=bargaining_time_elapsed,
             amount_proposed_list=amount_proposed_list
         )
@@ -649,8 +649,8 @@ page_sequence = [#WelcomeAndConsent,
                  #BargainInstructions,
                  #PracticeRoundsIntro,
                  #BargainPracticeOneIntro,
-                 #BargainPracticeTwoIntro,
-                 #BargainPracticeThreeIntro,
+                 BargainPracticeTwoIntro,
+                 BargainPracticeThreeIntro,
                  #BargainInfoRealGame,
                  BargainWaitPage,
                  BargainPracticeOne,
