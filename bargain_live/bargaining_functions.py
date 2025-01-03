@@ -1032,22 +1032,28 @@ def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], 
     """
 
     # Bot gives initial offer after 10 seconds
-    if np.isclose(bargaining_time_elapsed, 10, atol=2):
+    if np.isclose(bargaining_time_elapsed, 10, atol=1):
         set_bot_offer(broadcast=broadcast, 
                       player=player, 
                       group=group, 
                       offer_from_bot=initial_offer_from_bot)
+        
+    #Calculate the nearest 10 seconde
+    nearest_round_second = round(bargaining_time_elapsed / 10) * 10
 
     # Bot improves offer every 10 seconds after the initial offer
-    elif bargaining_time_elapsed > 5 and (bargaining_time_elapsed - 5) % 10 == 0:
+    if abs(bargaining_time_elapsed - nearest_round_second) <= 1 and nearest_round_second > 10:
+
+        improvement_index = nearest_round_second // 10 - 1 
+
         if player.participant.vars['role_in_game'] == "Buyer":
-            new_offer = initial_offer_from_bot / improvement_factor
+            new_offer = initial_offer_from_bot / (improvement_factor ** improvement_index)
             set_bot_offer(broadcast=broadcast, 
                           player=player, 
                           group=group, 
                           offer_from_bot=new_offer)
         else:  # player is Seller
-            new_offer = initial_offer_from_bot * improvement_factor
+            new_offer = initial_offer_from_bot * (improvement_factor ** improvement_index)
             set_bot_offer(broadcast=broadcast, 
                           player=player, 
                           group=group, 

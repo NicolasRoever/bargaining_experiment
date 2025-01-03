@@ -4,7 +4,7 @@ import numpy as np
 from typing import List, Tuple
 from unittest.mock import Mock
 
-from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function, calculate_discount_factors_for_shrinking_pie, record_player_payoff_from_round, draw_termination_times, create_list_with_termination_probabilities_from_geometric_distribution
+from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, create_matches_for_rounds, create_random_values_dataframe, create_participant_data, create_group_matrix_for_individual_round, create_group_matrices_for_all_rounds, cumulative_transaction_cost_function, calculate_discount_factors_for_shrinking_pie, record_player_payoff_from_round, draw_termination_times, create_list_with_termination_probabilities_from_geometric_distribution, write_bot_giving_offer_and_improving
 
 
 #-------------------------
@@ -491,4 +491,128 @@ def test_create_list_with_termination_probabilities():
     probability_of_termination = 0.01
     probabilities = create_list_with_termination_probabilities_from_geometric_distribution(number_of_seconds, probability_of_termination)
     assert np.isclose(probabilities[2], 0.02970, atol=1e-3), "The probability at the 3rd position should be 0.02970."
+
+
+#-------------------------
+# Test cases for write_bot_giving_offer_and_improving
+
+@pytest.fixture
+def mock_objects():
+    """Create mock objects for testing"""
+    broadcast = {}
+    data = {}
+    
+    # Create mock player
+    player = Mock()
+    player.participant = Mock()
+    player.participant.vars = {'role_in_game': 'Buyer'}
+    
+    # Create mock group
+    group = Mock()
+    
+    return broadcast, data, player, group
+
+
+def test_bot_initial_offer(mock_objects):
+    """Test that bot makes initial offer at 10 seconds"""
+    broadcast, data, player, group = mock_objects
+    initial_offer = 100.0
+    
+    # Test at exactly 10 seconds
+    result = write_bot_giving_offer_and_improving(
+        broadcast=broadcast,
+        data=data,
+        player=player,
+        group=group,
+        initial_offer_from_bot=initial_offer,
+        bargaining_time_elapsed=10
+    )
+    
+    assert "seller_proposal" in result
+    assert result["seller_proposal"] == initial_offer
+    assert result["notification_seller_proposal"] is True
+
+
+def test_bot_improves_offer_buyer(mock_objects):
+    """Test that bot improves offer correctly when player is buyer"""
+    broadcast, data, player, group = mock_objects
+    initial_offer = 100.0
+    improvement_factor = 1.2
+    
+    # Test at 20 seconds (first improvement)
+    result = write_bot_giving_offer_and_improving(
+        broadcast=broadcast,
+        data=data,
+        player=player,
+        group=group,
+        initial_offer_from_bot=initial_offer,
+        bargaining_time_elapsed=20,
+        improvement_factor=improvement_factor
+    )
+
+    expected_offer = initial_offer / improvement_factor
+    assert result["seller_proposal"] == pytest.approx(expected_offer)
+
+
+def test_bot_improves_offer_seller(mock_objects):
+    """Test that bot improves offer correctly when player is seller"""
+    broadcast, data, player, group = mock_objects
+    player.participant.vars['role_in_game'] = 'Seller'  # Change role to seller
+    initial_offer = 100.0
+    improvement_factor = 1.2
+    
+    # Test at 20 seconds (first improvement)
+    result = write_bot_giving_offer_and_improving(
+        broadcast=broadcast,
+        data=data,
+        player=player,
+        group=group,
+        initial_offer_from_bot=initial_offer,
+        bargaining_time_elapsed=20,
+        improvement_factor=improvement_factor
+    )
+    
+    expected_offer = initial_offer * improvement_factor
+    assert result["buyer_proposal"] == pytest.approx(expected_offer)
+
+
+def test_no_improvement_between_intervals(mock_objects):
+    """Test that bot doesn't improve offer between 10-second intervals"""
+    broadcast, data, player, group = mock_objects
+    initial_offer = 100.0
+    
+    # Test at 15 seconds (between improvements)
+    result = write_bot_giving_offer_and_improving(
+        broadcast=broadcast,
+        data=data,
+        player=player,
+        group=group,
+        initial_offer_from_bot=initial_offer,
+        bargaining_time_elapsed=15
+    )
+    
+    assert "seller_proposal" not in result
+    assert "buyer_proposal" not in result
+
+
+def test_multiple_improvements(mock_objects):
+    """Test multiple improvements over time"""
+    broadcast, data, player, group = mock_objects
+    initial_offer = 100.0
+    improvement_factor = 1.2
+    
+    # Test at 30 seconds (second improvement)
+    result = write_bot_giving_offer_and_improving(
+        broadcast=broadcast,
+        data=data,
+        player=player,
+        group=group,
+        initial_offer_from_bot=initial_offer,
+        bargaining_time_elapsed=30,
+        improvement_factor=improvement_factor
+    )
+    
+    expected_offer = initial_offer / (improvement_factor ** 2)
+    assert result["seller_proposal"] == pytest.approx(expected_offer)
+
 
