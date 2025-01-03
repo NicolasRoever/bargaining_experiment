@@ -1046,6 +1046,8 @@ def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], 
 
         improvement_index = nearest_round_second // 10 - 1 
 
+        print(f"improvement_index: {improvement_index}")
+
         if player.participant.vars['role_in_game'] == "Buyer":
             new_offer = initial_offer_from_bot / (improvement_factor ** improvement_index)
             set_bot_offer(broadcast=broadcast, 
