@@ -119,6 +119,9 @@ This section is only for me as a developer. You can ignore it.
 
 These are the commands for the university server we are using to run the experiment.
 
+-  This command starts the server
+> ssh otree15@otree2.uni-koeln.de
+
 - First Stop the server
 
 - Remember that you need to be one folder above bargaining_experiment when you do the rsync command
@@ -127,8 +130,9 @@ These are the commands for the university server we are using to run the experim
 
 > rsync --delete -Pa bargaining_experiment  otree15@otree2.uni-koeln.de:Projects/
 
--  This command starts the server
-> ssh otree15@otree2.uni-koeln.de
+- Then start the server
+
+
 
 
 

@@ -414,7 +414,7 @@ function liveRecv(data) {
 
             updateElementText(
                 elementId="other_payoff_accept_seller",
-                content=data.buyer_proposal + "€ - Buyer's valuation"
+                content=Math.round(data.buyer_proposal * 100) / 100 + "€ - Buyer's valuation"
             );
 
             enableButton(

@@ -14,7 +14,7 @@ class C(BaseConstants):
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
 
-    METHOD = "sepa"  # "sepa" or "paypal"
+    METHOD = "paypal"  # "sepa" or "paypal"
 
     with open(".clerpay_zahllauf") as f:
         ZAHLLAUF = f.read().strip()
