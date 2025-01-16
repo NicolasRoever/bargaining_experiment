@@ -95,13 +95,15 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
         cumulated_TA_costs = None
     else:
         try:
-            current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed - 1]
+            current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
             current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
             current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
             current_survival_probability = 1 - current_termination_probability
             cumulated_TA_costs = total_cost_y_values[bargaining_time_elapsed - 1]
-        except IndexError as e:
-            print(f"IndexError: {e}. Index: {bargaining_time_elapsed - 1}, List length: {len(json.loads(player.current_costs_list))}")
+        except IndexError as e: # This is a hack to avoid the index error in period 0.
+            print(f"IndexError: {e}.")
+            print(f"bargaining_time_elapsed: {bargaining_time_elapsed}")
+            print(f"total_cost_y_values length: {len(total_cost_y_values)}")
             current_discount_factor = None
             current_transaction_costs = None
             current_survival_probability = 1
@@ -110,7 +112,7 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
 
     # Update player attributes
     #The if clause ensures that we do not get an error for period 0.
-    if total_cost_y_values and bargaining_time_elapsed > 0:
+    if total_cost_y_values and bargaining_time_elapsed > 0 and cumulated_TA_costs is not None:
 
         player.current_TA_costs = current_transaction_costs
         player.cumulated_TA_costs = cumulated_TA_costs
