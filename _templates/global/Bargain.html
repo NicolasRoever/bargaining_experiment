@@ -229,9 +229,12 @@
             <button type="button" class="btn btn-danger btn-lg" id="btn-terminate" style="display: block; margin-bottom: 0.25cm;">Terminate</button>
             <h5>If you terminate the negotiation:</h5>
 
-            <p style="margin-top:3cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_terminate" ></div></p>
+            <p style="margin-top:3cm;display: inline;">Both players receive a payoff of: <div style="display: inline" id="my_payoff_terminate" ></div></p>
 
-            <p style="display: inline;">{{ other_role }}'s Payoff: <div style="display: inline" id="other_payoff_terminate" > </div></p>
+            <p style="display: none;">{{ other_role }}'s Payoff: <div style="display: none" id="other_payoff_terminate" > </div></p>
+            <!-- I am ashamed of this fix, but if I delete the line, the graph also disappears for whatever reason. -->
+            
+            
         </div>
         <div class="three_columns_right" style="background-color: #ffffff; flex: 0.5"></div>
     </div>
