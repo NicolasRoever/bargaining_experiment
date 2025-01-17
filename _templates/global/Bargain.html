@@ -350,7 +350,7 @@ function liveRecv(data) {
 
             updateElementText(
                 elementId="other_payoff_other_accepts_live_seller",
-                content="Buyer's valuation - " + data.seller_proposal + "€ - Negotiation Costs"
+                content="Buyer's valuation - " + "Your Offer ("+Math.round(data.seller_proposal * 100) / 100 + "€) - Negotiation Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)"
             );
         }
          // This changes what the buyer sees on the page.  
@@ -417,7 +417,7 @@ function liveRecv(data) {
 
             updateElementText(
                 elementId="other_payoff_accept_seller",
-                content= "Buyer's valuation - " + Math.round(data.buyer_proposal * 100) / 100 + "€ - Negotiation Costs"
+                content= "Buyer's valuation - Buyer Offer (" + Math.round(data.buyer_proposal * 100) / 100 + "€) - Negotiation Costs (" + Math.round(data.cumulated_TA_costs * 100) / 100 + "€) "
             );
 
             enableButton(
