@@ -174,7 +174,7 @@
         
                 <h5>If the {{ other_role }} accepts your current offer: </h5>
                 <p style="margin-top:0.25cm;display: inline;">Your payoff: <div style="display: inline" id="my_payoff_other_accepts_live"> No offer yet. </div></p>
-                <p style="margin-top:0.25cm;display: inline;">{{ other_role }}'s Surplus: 
+                <p style="margin-top:0.25cm;display: inline;">{{ other_role }}'s Payoff: 
                 {% if role_in_game == "Buyer" %}
                     <div style="display: inline" id="other_payoff_other_accepts_live_buyer"> 
                         No offer yet. 
@@ -199,7 +199,7 @@
 
                 <h5>If you accept the {{ other_role }}'s offer: </h5>
                 <p id="my_payoff_accept_text" style="display: inline; ">Your payoff: <div style="display: inline" id ="my_payoff_accept">No offer yet.</div></p>
-                <p style="display: inline;">{{ other_role }}'s Surplus: 
+                <p style="display: inline;">{{ other_role }}'s Payoff: 
                 {% if role_in_game == "Buyer" %}
                     <div style="display: inline" id="other_payoff_accept_buyer"> 
                         No offer yet. 
@@ -350,7 +350,7 @@ function liveRecv(data) {
 
             updateElementText(
                 elementId="other_payoff_other_accepts_live_seller",
-                content="Buyer's valuation - " + data.seller_proposal + "€"
+                content="Buyer's valuation - " + data.seller_proposal + "€ - Negotiation Costs"
             );
         }
          // This changes what the buyer sees on the page.  
@@ -367,7 +367,7 @@ function liveRecv(data) {
 
             updateCurrencyElement(
                 elementId="other_payoff_accept_buyer",
-                amount=Math.round((data.seller_proposal - js_vars.other_valuation) * 100) / 100
+                amount=Math.round((data.seller_proposal - js_vars.other_valuation - data.cumulated_TA_costs) * 100) / 100
             ); 
 
             enableButton(
@@ -417,7 +417,7 @@ function liveRecv(data) {
 
             updateElementText(
                 elementId="other_payoff_accept_seller",
-                content=Math.round(data.buyer_proposal * 100) / 100 + "€ - Buyer's valuation"
+                content= "Buyer's valuation - " + Math.round(data.buyer_proposal * 100) / 100 + "€ - Negotiation Costs"
             );
 
             enableButton(

@@ -101,9 +101,6 @@ def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: 
             current_survival_probability = 1 - current_termination_probability
             cumulated_TA_costs = total_cost_y_values[bargaining_time_elapsed - 1]
         except IndexError as e: # This is a hack to avoid the index error in period 0.
-            print(f"IndexError: {e}.")
-            print(f"bargaining_time_elapsed: {bargaining_time_elapsed}")
-            print(f"total_cost_y_values length: {len(total_cost_y_values)}")
             current_discount_factor = None
             current_transaction_costs = None
             current_survival_probability = 1
