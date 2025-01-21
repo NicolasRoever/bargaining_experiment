@@ -39,7 +39,7 @@ function initializeElements() {
 // Function to initialize the sliders
 function initializeSliders() {
     // Initialize the first slider (my_slider)
-    window.my_slider = new mgslider("offer", 0, 60, 1);
+    window.my_slider = new mgslider("offer", 1, 60, 1);
     my_slider.f2s = function (val) {
         return val.toFixed(2) + '€';
     };
