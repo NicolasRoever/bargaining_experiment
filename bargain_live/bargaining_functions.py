@@ -63,73 +63,63 @@ def calculate_transaction_costs(cost_factor: float, total_bargaining_time: int) 
     return cumulative_costs.tolist(), cost_differences.tolist() 
 
 
-def update_broadcast_dict_with_basic_values(player: Any, group: Any, broadcast: Dict[int, Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
+def update_broadcast_dict_with_basic_values(
+    player: Any, group: Any, broadcast: Dict[int, Dict[str, Any]]
+) -> Dict[int, Dict[str, Any]]:
     """
-    Updates the broadcast dictionary with transaction costs, payoffs, delays, and other values based on 
-    the current state of the player and group.
+    Updates the broadcast dictionary and player database with transaction costs, payoffs, delays, 
+    and other values based on the current state of the player and group.
 
     Args:
         player (Any): The player object containing the necessary fields and lists.
         group (Any): The group object containing the bargaining start time.
         broadcast (Dict[int, Dict[str, Any]]): The dictionary to be updated.
-        my_current_proposed_amount (Any): The current proposed amount by the player.
-        other_current_proposed_amount (Any): The current proposed amount by the other player.
 
     Returns:
         Dict[int, Dict[str, Any]]: The updated broadcast dictionary.
     """
-
+    # Calculate elapsed bargaining time
+    bargaining_time_elapsed = round(
+        (datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds()
+    )
     
-    # Calculate the elapsed bargaining time
-    bargaining_time_elapsed = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
-
-
-    # Parse the lists and calculate relevant values based on the elapsed time
-    total_cost_y_values = json.loads(player.total_costs_list)[0:bargaining_time_elapsed]
-    termination_probabilities_list = json.loads(player.termination_probabilities_list)
-
+    # Set variables based on elapsed time
     if bargaining_time_elapsed < 0:
         current_discount_factor = None
         current_transaction_costs = None
         current_survival_probability = 1
         cumulated_TA_costs = None
+        total_cost_y_values = []
     else:
-        try:
-            current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
-            current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
-            current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
-            current_survival_probability = 1 - current_termination_probability
-            cumulated_TA_costs = total_cost_y_values[bargaining_time_elapsed - 1]
-        except IndexError as e: # This is a hack to avoid the index error in period 0.
-            current_discount_factor = None
-            current_transaction_costs = None
-            current_survival_probability = 1
-            cumulated_TA_costs = None
+        total_cost_y_values = json.loads(player.total_costs_list)[:bargaining_time_elapsed]
+        termination_probabilities_list = json.loads(player.termination_probabilities_list)
+        current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
+        current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
+        current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
+        current_survival_probability = 1 - current_termination_probability
+        cumulated_TA_costs = total_cost_y_values[bargaining_time_elapsed - 1] if total_cost_y_values else None
 
-
-    # Update player attributes
-    #The if clause ensures that we do not get an error for period 0.
+    # Update player attributes if values exist and are valid
     if total_cost_y_values and bargaining_time_elapsed > 0 and cumulated_TA_costs is not None:
-
         player.current_TA_costs = current_transaction_costs
         player.cumulated_TA_costs = cumulated_TA_costs
-        player.current_payoff_terminate = -player.cumulated_TA_costs
+        player.current_payoff_terminate = -cumulated_TA_costs
         player.current_discount_factor = current_discount_factor
-
-
-
-    # Update the broadcast dictionary with the new values individually
-    broadcast['current_TA_costs'] = player.field_maybe_none('current_TA_costs')
-    broadcast['cumulated_TA_costs'] = player.field_maybe_none('cumulated_TA_costs')
-    broadcast['current_payoff_terminate'] = player.field_maybe_none('current_payoff_terminate')
-    broadcast['payment_delay'] = player.field_maybe_none('payment_delay')   
-    broadcast['bargaining_time_elapsed'] = bargaining_time_elapsed
-    broadcast['total_cost_y_values'] = total_cost_y_values
-    broadcast['x_axis_values_TA_graph'] = json.loads(player.x_axis_values_TA_graph)
-    broadcast['current_transaction_costs'] = current_transaction_costs
-    broadcast['current_discount_factor'] = current_discount_factor
-    broadcast['current_survival_probability'] = current_survival_probability
-
+    
+    # Update the broadcast dictionary with the new values
+    broadcast.update({
+        'current_TA_costs': player.field_maybe_none('current_TA_costs'),
+        'cumulated_TA_costs': player.field_maybe_none('cumulated_TA_costs'),
+        'current_payoff_terminate': player.field_maybe_none('current_payoff_terminate'),
+        'payment_delay': player.field_maybe_none('payment_delay'),
+        'bargaining_time_elapsed': bargaining_time_elapsed,
+        'total_cost_y_values': total_cost_y_values,
+        'x_axis_values_TA_graph': json.loads(player.x_axis_values_TA_graph),
+        'current_transaction_costs': current_transaction_costs,
+        'current_discount_factor': current_discount_factor,
+        'current_survival_probability': current_survival_probability,
+    })
+    
     return broadcast
 
 def update_broadcast_dict_with_other_player_values(player: Any, broadcast: Dict[int, Dict[str, Any]], practice_round: bool) -> Dict[int, Dict[str, Any]]:

@@ -310,7 +310,7 @@ class BargainWaitPage(WaitPage):
     @staticmethod
     def after_all_players_arrive(group):
         # Set start time 3 seconds in the future
-        bargain_start_time = datetime.now(tz=timezone.utc) + timedelta(seconds=3)
+        bargain_start_time = datetime.now(tz=timezone.utc) + timedelta(seconds=5)
         group.bargain_start_time = bargain_start_time.isoformat()
 
 
