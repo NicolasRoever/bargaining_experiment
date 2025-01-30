@@ -947,15 +947,42 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
 
         if data.get("proposal_by_role") == "Seller":
 
+
             group.current_seller_offer = data.get('amount')
             broadcast["seller_proposal"] = data.get('amount')
             broadcast["notification_seller_proposal"] = True 
 
+            if player.current_amount_proposed <  group.current_buyer_offer:
+
+                print("treat_seller_offer_lower_than_buyer_as_acceptance")
+
+                treat_seller_offer_lower_than_buyer_as_acceptance(
+                    broadcast=broadcast, 
+                    player=player, 
+                    group=group, 
+                    data=data
+                )
+
+            return broadcast
+        
         elif data.get("proposal_by_role") == "Buyer":
 
+            
             group.current_buyer_offer = data.get('amount')    
             broadcast["buyer_proposal"] = data.get('amount')
             broadcast["notification_buyer_proposal"] = True 
+
+
+            if group.current_seller_offer < player.current_amount_proposed:
+
+                treat_buyer_offer_larger_than_seller_as_acceptance(
+                    broadcast=broadcast, 
+                    player=player, 
+                    group=group, 
+                    data=data
+                )
+
+                return broadcast
 
     # Update database and finish bargaining if a deal was accepted
     elif data.get('type') == 'accept':
@@ -1175,5 +1202,55 @@ def create_list_with_termination_probabilities_from_geometric_distribution(numbe
     cumulative_probabilities = 1 - (1 - probability) ** time_points
     
     return cumulative_probabilities.tolist()
+
+
+
+
+def treat_buyer_offer_larger_than_seller_as_acceptance(broadcast: Dict, player: Any, group: Any, data: Dict[str, Any]) -> None:
+    """
+    Treats the buyer's offer as acceptance if it is larger than the seller's offer.
+
+    Args:
+        broadcast (Dict): The broadcast dictionary.
+        player (Any): The player object.
+        group (Any): The group object.
+        data (Dict[str, Any]): The data dictionary.
+    """
+
+    data['type'] = 'accept'
+    data['proposal_by_role'] = player.participant.vars['role_in_game']
+    data['proposal_by_id'] = player.id_in_group
+    data['amount'] = group.current_seller_offer
+    data['acceptance_time'] = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
+    data['accepted_by'] = player.id_in_group
+
+    group.deal_price = float(re.sub(r'[^\d.]', '', str(group.current_seller_offer))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
+    group.acceptance_time = data.get('acceptance_time')
+    group.accepted_by = data.get('accepted_by')
+
+    broadcast["finished"] = True
+    group.is_finished = True
+
+ 
+
+
+def treat_seller_offer_lower_than_buyer_as_acceptance(broadcast: Dict, player: Any, group: Any, data: Dict[str, Any]) -> None:
+    """
+    Treats the seller's offer as acceptance if it is lower than the buyer's offer.
+    """
+
+    data['type'] = 'accept'
+    data['proposal_by_role'] = player.participant.vars['role_in_game']
+    data['proposal_by_id'] = player.id_in_group
+    data['amount'] = group.current_buyer_offer
+    data['acceptance_time'] = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
+    data['accepted_by'] = player.id_in_group
+
+    group.deal_price = float(re.sub(r'[^\d.]', '', str(group.current_buyer_offer))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
+    group.acceptance_time = data.get('acceptance_time')
+    group.accepted_by = data.get('accepted_by')
+
+    broadcast["finished"] = True
+    group.is_finished = True
 
 

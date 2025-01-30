@@ -646,14 +646,14 @@ class BargainReal(Page):
 
 
 page_sequence = [#WelcomeAndConsent, 
-                 BargainInstructions,
-                 PracticeRoundsIntro,
-                 BargainPracticeOneIntro,
+                 #BargainInstructions,
+                 #PracticeRoundsIntro,
+                 #BargainPracticeOneIntro,
                  BargainPracticeTwoIntro,
                  BargainPracticeThreeIntro,
                  BargainInfoRealGame,
                  BargainWaitPage,
-                 BargainPracticeOne,
+                 #BargainPracticeOne,
                  BargainPracticeTwo,
                  BargainPracticeThree,
                  BargainReal, 
