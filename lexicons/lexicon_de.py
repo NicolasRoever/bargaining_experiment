@@ -1,0 +1,13 @@
+class Lexicon:
+    match_value = "In diesem Match beträgt dein Wert des Objekts "
+    buyer_value_random = "Der Wert des Objekts für den Käufer wird zufällig zwischen 0 und 60€ gezogen."
+    bargaining_starts_in = "Das Verhandeln beginnt in 5"
+    negotiation_costs = "Verhandlungskosten"
+    current_negotiation_costs = "Aktuelle Verhandlungskosten pro Sekunde: "
+    total_negotiation_costs = "Gesamte Verhandlungskosten: "
+    time = "Zeit: "
+    current_price_offer = "Dein aktuell abgegebenes Preisangebot: "
+    no_offer_yet = "Noch kein Angebot."
+    your_payoff = "Dein Gewinn: "
+    seconds = "Sekunden"
+    submit = "Absenden"
