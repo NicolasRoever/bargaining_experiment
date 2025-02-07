@@ -1,5 +1,5 @@
 {{ block title }}
-    <h1 style="color: #1340c7; font-weight: bold;">Instructions</h1>
+    <h1 style="color: #1340c7; font-weight: bold;">{{Lexicon.instructions}}</h1>
     <hr>
 {{ endblock }}
 
@@ -87,7 +87,7 @@
 </head>
 <body>
     <div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>Welcome to the experiment. Please read these instructions carefully. The payment you will receive from this experiment depends partly on your decisions, partly on the decisions of others, and partly on chance. The amount you earn will be paid electronically via <span style="color: #800020;">PayPal</span>.</p>
+<p>{{ Lexicon.welcome_message }}<span style="color: #800020;">PayPal</span>.</p>
 
 </div>
 
@@ -96,21 +96,17 @@
 <div class="section">
     <h2 class="section-title"><u>Overview</u></h2>
     <div class="content-box">
-        <p>The experiment consists of 30 matches. At the beginning of the experiment, participants will be randomly assigned 
-           the role of either buyer or seller. This role will remain fixed throughout all 30 matches. At the beginning of 
-           each match, you will be randomly paired with another participant in the opposite role. After each match, 
-           participants will be randomly re-paired, and new pairs will be formed.</p>
+        <p>{{ Lexicon.experiment_structure }}</p>
     </div>
 </div>
 
 <div class="section">
     <h2 class="section-title"><u>Main Task</u></h2>
     <div class="content-box">
-        <p>In each match, buyers and sellers will negotiate to trade an object:</p>
+        <p>{{ Lexicon.negotiation_intro }}</p>
         <ul class="task-list">
-            <li>The seller's value for the object is 0 euros.</li>
-            <li>The buyer's value for the object is private and will be randomly set between 0 and 60 euros. 
-                Only the buyer knows their value, and this value will remain unknown to the seller.</li>
+            <li>{{ Lexicon.seller_value }}</li>
+            <li>{{ Lexicon.buyer_value }}</li>
         </ul>
     </div>
 </div>
