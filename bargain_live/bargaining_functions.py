@@ -954,8 +954,6 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
 
             if player.current_amount_proposed <  group.current_buyer_offer:
 
-                print("treat_seller_offer_lower_than_buyer_as_acceptance")
-
                 treat_seller_offer_lower_than_buyer_as_acceptance(
                     broadcast=broadcast, 
                     player=player, 

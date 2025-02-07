@@ -11,6 +11,8 @@ from datetime import datetime, timezone, timedelta
 
 from bargain_live.bargaining_functions import calculate_total_delay_list, calculate_transaction_costs, update_broadcast_dict_with_basic_values, update_player_database_with_proposal, update_group_database_upon_acceptance, update_group_database_upon_termination, update_broadcast_dict_with_other_player_values, setup_player_valuation, setup_player_transaction_costs, setup_player_delay_list, record_player_payoff_from_round, record_bargaining_time_on_group_level, set_final_player_payoff, is_valid_dataframe, is_valid_list, setup_player_shrinking_pie_discount_factors, calculate_round_results, create_payoff_dictionary, update_group_database_upon_random_termination, create_dictionary_with_html_variables_for_bargain_page, create_dictionary_with_js_variables_for_bargain_page, update_broadcast_dict_based_on_actions, write_bot_giving_offer_and_improving, write_bot_giving_offer_and_accepting_the_second_offer, create_list_with_termination_probabilities_from_geometric_distribution, create_dictionary_with_html_variables_for_bargain_instructions
 
+from settings import LANGUAGE_CODE
+
 
 doc = """
 """
@@ -19,6 +21,16 @@ CURRENT_PATH = pathlib.Path(__file__).parent
 
 
 #-----------------------------------------------------------------------------------------------
+
+#Language
+if LANGUAGE_CODE == 'de':
+    from bargain_live.lexicons.lexicon_de import Lexicon
+else:
+    from bargain_live.lexicons.lexicon_en import Lexicon
+
+which_language = {'en': False, 'de': False, 'zh': False}  # noqa
+which_language[LANGUAGE_CODE[:2]] = True
+
 # Global Classes
 class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
@@ -272,6 +284,9 @@ class BargainInstructions(Page):
 
         dictionary_with_variables = create_dictionary_with_html_variables_for_bargain_instructions(player=player)
 
+        #Add language variables
+        dictionary_with_variables.update(dict(Lexicon=Lexicon, **which_language))
+
         return dictionary_with_variables
     
 
@@ -369,6 +384,9 @@ class BargainPracticeOne(Page):
 
         dictionary = create_dictionary_with_html_variables_for_bargain_page(player=player, practice_round=True)
 
+        #Language variables
+        dictionary.update(dict(Lexicon=Lexicon, **which_language))
+
         return dictionary
 
 
@@ -376,7 +394,10 @@ class BargainPracticeOne(Page):
     def js_vars(player: Player):
 
         dictionary = create_dictionary_with_js_variables_for_bargain_page(player=player, C=C, practice_round=True)
-        
+
+        #Language variables
+        dictionary.update(dict(Lexicon=Lexicon, **which_language))
+
         return dictionary
 
     @staticmethod
@@ -432,6 +453,9 @@ class BargainPracticeTwo(Page):
 
         dictionary = create_dictionary_with_html_variables_for_bargain_page(player=player, practice_round=True)
 
+        #Language variables
+        dictionary.update(dict(Lexicon=Lexicon, **which_language))
+
         return dictionary
     
     
@@ -439,7 +463,7 @@ class BargainPracticeTwo(Page):
     def js_vars(player: Player):
 
         dictionary = create_dictionary_with_js_variables_for_bargain_page(player=player, C=C, practice_round=True)
-        
+
         return dictionary
     
     @staticmethod
@@ -502,7 +526,14 @@ class BargainPracticeThree(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-        return create_dictionary_with_html_variables_for_bargain_page(player=player, practice_round=True)
+
+        dictionary = create_dictionary_with_html_variables_for_bargain_page(player=player, practice_round=True)
+
+        #Language variables
+        dictionary.update(dict(Lexicon=Lexicon, **which_language))
+
+        return dictionary
+    
     
     @staticmethod
     def js_vars(player: Player):
@@ -579,6 +610,9 @@ class BargainReal(Page):
 
         dictionary = create_dictionary_with_html_variables_for_bargain_page(player=player, practice_round=False)
 
+        #Language variables
+        dictionary.update(dict(Lexicon=Lexicon, **which_language))
+
         return dictionary
 
     @staticmethod
@@ -646,7 +680,7 @@ class BargainReal(Page):
 
 
 page_sequence = [#WelcomeAndConsent, 
-                 #BargainInstructions,
+                 BargainInstructions,
                  #PracticeRoundsIntro,
                  #BargainPracticeOneIntro,
                  BargainPracticeTwoIntro,

@@ -1,10 +1,6 @@
 {{ block title }}
     {{ if practice_round == True }}
-        {{ if de }}
-            Übungsrunde {{ round_number }} von {{ C.NUM_PRACTICE_ROUNDS }}
-        {{ else }}
-            Practice Match {{ round_number }} of {{ C.NUM_PRACTICE_ROUNDS }}
-        {{ endif }}
+        Practice Match {{ round_number }} of {{ C.NUM_PRACTICE_ROUNDS }}
     {{ else }}
        Match {{ round_number }} of {{ C.NUM_REAL_ROUNDS }}
     {{ endif }}
@@ -138,35 +134,25 @@
 
 <div class="central_container">
 
-<div id="countdown-overlay" class="countdown-overlay">{{ Lexicon.bargaining_starts_in }}</div>
+<div id="countdown-overlay" class="countdown-overlay">Bargaining starts in 5</div>
 
     <p>
-        {{ if de }}
-            Du bist der {{ player.participant.role_in_game }}.
-            Bitte verhandle unten mit dem {{ other_role }}.
-        {{ else }}
-            You are the {{ player.participant.role_in_game }}.
-            Please negotiate with the {{ other_role }} below.
-        {{ endif }}
+        You are the {{ player.participant.role_in_game }}.
+        Please negotiate with the {{ other_role }} below.
     </p>
 
     <div class="three_columns_container">
-        <p style="background-color: #f2f2f2; padding: 15px; width: 150%;">
-            {{ Lexikon.match_value }} <b>{{ valuation }}€.</b><br/><br/>
-            
+        <p style="background-color: #f2f2f2; padding: 15px; width: 150%;">  
+            In this match, your value of the object is <b>{{ valuation }}€.</b><br/><br/>
             {% if player.participant.role_in_game == "Buyer" %}
-                {{ if de }}
-                    Der Wert des Objekts für den {{ other_role }} ist {{ other_valuation }}€.
-                {{ else }}
-                    The {{ other_role }}'s value of the object is {{ other_valuation }}€.
-                {{ endif }}
-            {% else %}                    
-                {{ Lexicon.buyer_value_random }}
+            The {{ other_role }}'s value of the object is {{ other_valuation }}€.
+            {% else %}
+            The Buyer's value of the object will be randomly drawn between 0 and 60€.
             {% endif %}
         </p>
     </div>
 
-<!--     <div class="three_columns_container">
+    <div class="three_columns_container">
         <div class="three_columns_left" style="flex: 0.5;">
             <h5>Negotiation Costs</h5>
             <p style="display:inline">Current negotiation costs per 1 second: <div style="display: inline" id ="TA_costs"></div></p>
@@ -200,68 +186,7 @@
                 {% endif %}
 
                 </p>
-            </div> -->
-    <div class="three_columns_container">
-        <div class="three_columns_left" style="flex: 0.5;">
-            <h5>{{ Lexicon.negotiation_costs }}</h5>
-            <p style="display:inline">{{ Lexicon.current_negotiation_costs }}
-                <div style="display: inline" id="TA_costs"></div>
-            </p>
-            <p style="display:inline">{{ Lexicon.total_negotiation_costs }}
-                <div style="display: inline" id="cumulated_TA_costs"></div>
-            </p>
-            <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px; height: 200px;"></canvas>
-        </div>
-
-        <div class="three_columns_middle" style="flex: 1;">
-            <div style="background-color: #f2f2f2; padding: 15px">
-                <b><p style="display: inline;">{{ Lexicon.time }}
-                    <div style="display: inline;" id="time_spent"></div> {{ Lexicon.seconds }}
-                </p></b>
-
-                <h4 style="display:inline">{{ Lexicon.current_price_offer }}</h4>
-                <span id="my-proposal" style="display: inline; margin-left: 0.5cm; font-size: 1.5em;"> 
-                    {{ Lexicon.no_offer_yet }}
-                </span>
-
-                <div class="slider-container">
-                    <div class="mgslider-wrapper" id="my_slider" style="margin-top: 1cm; margin-bottom: 27px;"></div>
-                    <button type="button" class="btn btn-success btn-lg active" id="btn-offer-slider" data-bs-toggle="button">
-                        {{ Lexicon.submit }}
-                    </button>
-                </div>
-
-                {{ if de }}
-                    <h5>Falls der {{ other_role }} dein aktuelles Angebot annimmt:</h5>
-                {{ else }}
-                    <h5>If the {{ other_role }} accepts your current offer:</h5>
-                {{ endif }}
-
-                <p style="margin-top:0.25cm;display: inline;">{{ Lexicon.your_payoff }}
-                    <div style="display: inline" id="my_payoff_other_accepts_live"> 
-                        {{ Lexicon.no_offer_yet }}
-                    </div>
-                </p>
-
-                {{ if de }}
-                    <p style="margin-top:0.25cm;display: inline;">Gewinn von {{ other_role }}: 
-                {{ else }}
-                    <p style="margin-top:0.25cm;display: inline;">{{ other_role }}'s Payoff: 
-                {{ endif }}
-
-                    {% if role_in_game == "Buyer" %}
-                        <div style="display: inline" id="other_payoff_other_accepts_live_buyer"> 
-                            {{ Lexicon.no_offer_yet }}
-                        </div>
-                    {% else %}
-                        <div style="display: inline" id="other_payoff_other_accepts_live_seller"> 
-                            {{ Lexicon.no_offer_yet }}
-                        </div>
-                    {% endif %}
-                </p>
             </div>
-        </div>
-    </div>
 
             <div style="background-color: #f2f2f2; padding: 15px; margin-top: 15px;">
                 <h4 style="display:inline" style="margin-top: 0.25cm;">{{ other_role }}'s current submitted price offer:</h4>
