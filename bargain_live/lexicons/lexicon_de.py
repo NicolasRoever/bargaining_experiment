@@ -45,7 +45,7 @@ class Lexicon:
     option_terminate = "Die Verhandlung beenden."
     option_accept = "Das Preisangebot des anderen Teilnehmers akzeptieren (erst verfügbar, nachdem das erste Angebot gemacht wurde)."
     example_buyer_screen = "Beispiel für die Käuferansicht"
-
+    example_seller_screen = "test"
     payment_heading = "Bezahlung"
     payment_info = "Sie erhalten eine Teilnahmegebühr von 20 Euro für die vollständige Teilnahme an allen 30 Runden. Am Ende des Experiments wird eine Runde zufällig für die Auszahlung ausgewählt. Falls in dieser Runde Verhandlungskosten anfallen, werden diese von Ihrer Teilnahmegebühr abgezogen. Die Verhandlungskosten werden jedoch immer geringer als die Teilnahmegebühr sein, sodass sichergestellt ist, dass Sie einen Betrag erhalten. Die verbleibende Teilnahmegebühr nach Abzug eventueller Verhandlungskosten wird direkt nach dem Experiment ausgezahlt."
     payment_gains_info = "Falls in der ausgewählten Runde durch einen akzeptierten Preis Gewinne erzielt werden, erhält jeder Teilnehmer seine Gewinne über PayPal. Ihr endgültiges Auszahlungsergebnis lautet:"
