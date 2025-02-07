@@ -1,6 +1,6 @@
 {{ block title }}
-    <h1 style="color: #1340c7; font-weight: bold;">{{Lexicon.instructions}}</h1>
-    <hr>
+<h1 style="color: #1340c7; font-weight: bold;">{{Lexicon.instructions}}</h1>
+<hr>
 {{ endblock }}
 
 {{ block content }}
@@ -11,306 +11,309 @@
         margin: 20px;
         line-height: 1.6;
     }
+
     h1 {
         font-size: 32px;
         margin-bottom: 10px;
     }
+
     h2 {
         font-size: 28px;
         margin-bottom: 10px;
     }
+
     h3 {
         font-size: 24px;
         margin-bottom: 10px;
     }
+
     h4 {
         font-size: 20px;
         margin-bottom: 10px;
     }
+
     p {
         margin-bottom: 10px;
     }
+
     .note {
         font-style: italic;
         margin-top: 10px;
     }
+
     .equation {
         font-family: 'Courier New', monospace;
     }
+
     .statement {
         max-width: 400px;
         margin: auto;
         padding: 20px;
         border: 1px solid #000;
     }
+
     .statement div {
         margin: 10px 0;
     }
+
     .line {
         border-bottom: 1px solid #000;
         margin: 10px 0;
     }
+
     .double-line {
         border-bottom: 2px solid #000;
         margin: 10px 0;
     }
+
     .amount {
         float: right;
     }
+
     .section {
         margin-bottom: 2rem;
     }
+
     .content-box {
         background-color: rgb(249, 249, 249);
         padding: 1.5rem;
         border-radius: 5px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
+
     .task-list {
         margin-top: 1rem;
         padding-left: 1.5rem;
     }
+
     .task-list li {
         margin-bottom: 0.5rem;
     }
+
     .comprehension-questions {
         margin: 2rem 0;
     }
+
     .question {
         margin-bottom: 1.5rem;
     }
+
     .question p {
         font-weight: 500;
         margin-bottom: 0.5rem;
     }
 </style>
 </head>
+
 <body>
     <div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>{{ Lexicon.welcome_message }}<span style="color: #800020;">PayPal</span>.</p>
+        <p>{{ Lexicon.welcome_message }}<span style="color: #800020;">PayPal</span>.</p>
 
-</div>
-
-<br>
-
-<div class="section">
-    <h2 class="section-title"><u>Overview</u></h2>
-    <div class="content-box">
-        <p>{{ Lexicon.experiment_structure }}</p>
     </div>
-</div>
 
-<div class="section">
-    <h2 class="section-title"><u>Main Task</u></h2>
-    <div class="content-box">
-        <p>{{ Lexicon.negotiation_intro }}</p>
-        <ul class="task-list">
-            <li>{{ Lexicon.seller_value }}</li>
-            <li>{{ Lexicon.buyer_value }}</li>
+    <br>
+
+    <div class="section">
+        <h2 class="section-title"><u>Overview</u></h2>
+        <div class="content-box">
+            <p>{{ Lexicon.experiment_structure }}</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title"><u>Main Task</u></h2>
+        <div class="content-box">
+            <p>{{ Lexicon.negotiation_intro }}</p>
+            <ul class="task-list">
+                <li>{{ Lexicon.seller_value }}</li>
+                <li>{{ Lexicon.buyer_value }}</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <br>
+    <h3>{{ Lexicon.price_negotiation_heading }}</h3>
+    <div style="background-color: rgb(249, 249, 249); padding: 10px;">
+        <p>{{ Lexicon.price_negotiation_intro }}</p>
+        <ul>
+            <li>{{ Lexicon.price_submission }}</li>
+            <li>{{ Lexicon.price_update }}</li>
         </ul>
     </div>
-</div>
+
+    <br>
+    <h3>{{ Lexicon.costs_heading }}</h3>
+    <div style="background-color: rgb(249, 249, 249); padding: 10px;">
+        <p>{{ Lexicon.costs_intro }}</p>
+
+        <h4>{{ Lexicon.negotiation_cost_heading }}</h4>
+        <p>
+            {{ Lexicon.negotiation_costs1 }} {{ transaction_costs_in_cents }} {{ Lexicon.negotiation_costs2 }}
+        </p>
+
+        <h4>{{ Lexicon.termination_heading }}</h4>
+        <p>
+            {{ Lexicon.termination_probability1 }} {{ termination_probability_in_percent }} {{
+            Lexicon.termination_probability2 }} {{ expected_termination_time }} {{ Lexicon.termination_probability3 }}
+        </p>
+        <p>{{ Lexicon.termination_explanation }}</p>
+
+        <h3>{{ Lexicon.ending_negotiation_heading }}</h3>
+        <div style="background-color: rgb(249, 249, 249); padding: 10px;">
+            <p>{{ Lexicon.ending_negotiation_intro }}</p>
+            <ul>
+                <li>{{ Lexicon.acceptance_rule }}</li>
+                <li>{{ Lexicon.terminate_rule }}</li>
+                <li>{{ Lexicon.random_termination_rule }}</li>
+            </ul>
+        </div>
+
+        <h3>{{ Lexicon.options_summary_heading }}</h3>
+        <div style="background-color: rgb(249, 249, 249); padding: 10px;">
+            <p>{{ Lexicon.options_summary_intro }}</p>
+            <ol>
+                <li>{{ Lexicon.option_submit_price }}</li>
+                <li>{{ Lexicon.option_terminate }}</li>
+                <li>{{ Lexicon.option_accept }}</li>
+            </ol>
+        </div>
 
 
-<br>
-<h3>1. Price Negotiation</h3>
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>The buyer and seller negotiate the price:</p>
-<ul>
-    <li>Both participants can submit prices by selecting a value on a slider and clicking "Submit." The submitted price will appear on the other person's screen.</li>
-    <li>You can submit new prices at any time during the negotiation. When a new price is submitted, the previous one becomes invalid and disappears from the other person's screen.</li>
-</ul>
-</div>
 
-<br>
-<h3>2. Costs Associated with Delay</h3>
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>During the price negotiation, any delay incurs two types of costs: transaction costs and termination uncertainty.</p>
+        <br>
 
-<h4>2.1 Negotiation Cost</h4>
-<p>Negotiation costs of {{ transaction_costs_in_cents }} Cents are incurred for each second of the negotiation. The longer the negotiation, the higher the cost imposed on both participants. The graph on the left visualizes the cumulative negotiation costs. The sum of the negotiation costs will be deducted from your participation fees (which will be explained later) in this experiment.</p>
+        <hr>
 
-<h4>2.2 Termination Uncertainty</h4>
-<p>Each second during the negotiation, there is a {{ termination_probability_in_percent }} % chance that the computer will end the negotiation. On average, this means, if no agreement is reached before, negotiations are expected to last about {{ expected_termination_time }} seconds before they are terminated.</p>
+        {% load static %}
 
-<p>This process is similar to drawing a ball from a jar with 99 red balls and 1 blue ball at the end of each second. If a red ball is drawn, the negotiation continues; if a blue ball is drawn, the negotiation ends. Each draw is independent, so the outcome of one second does not affect the next.</p>
-</div>
+        <h3>{{ Lexicon.example_buyer_screen }}</h3>
+        <div style="background-color: rgb(249, 249, 249); padding: 10px;">
+            <div style="border: 2px solid #000; padding: 10px;">
+                <img src="{% static 'pictures/buyer_screen_v006.png' %}" alt="Price Negotiation"
+                    style="width: 100%; margin: auto;">
+            </div>
+        </div>
 
-<br>
-<h3>3. Ending the Negotiation</h3>
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>The negotiation ends if:</p>
-<ul>
-    <li>A participant accepts the other's price. You can also accept by making a "stupid" offer. This means if the buyer makes an offer that is lower than the seller's offer, this is treated as an acceptance. Similarly, if the seller makes an offer that is higher than the buyer's offer, this is also treated as an acceptance.</li>
-    <li>Either participant clicks "Terminate," which ends the match with zero trade gains for both, but any incurred negotiation costs will still apply.</li>
-    <li>The negotiation is randomly terminated, which also ends the match with zero trade gains for both, but any incurred negotiation costs will still apply.</li>
-</ul>
-</div>
+        <br>
 
-<br>
-<h3>4. Options Summary</h3>
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<p>Throughout the negotiation, you have three options:</p>
-<ol>
-    <li>Submit a new price.</li>
-    <li>Terminate the negotiation.</li>
-    <li>Accept the other participant's price (only available after the first price is submitted).</li>
-</ol>
-</div>
+        <hr>
+
+        <h3>{{ Lexicon.example_seller_screen }}</h3>
+        <div style="background-color: rgb(249, 249, 249); padding: 10px;">
+            <div style="border: 2px solid #000; padding: 10px;">
+                <img src="{% static 'pictures/seller_screen_v006.png' %}" alt="Price Negotiation"
+                    style="width: 100%; margin: auto;">
+            </div>
+        </div>
 
 
-<br>
-
-<hr>
-
-{% load static %}
-
-<h3>Example of Buyer’s screen</h3>
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<div style="border: 2px solid #000; padding: 10px;">
-    <img src="{% static 'pictures/buyer_screen_v006.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
-</div>
-</div>
-
-<br>
-
-<hr>
-
-<h3>Example of Seller’s screen</h3>
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-<div style="border: 2px solid #000; padding: 10px;">
-    <img src="{% static 'pictures/seller_screen_v006.png' %}" alt="Price Negotiation" style="width: 100%; margin: auto;">
-</div>
-</div>
+        <br>
 
 
-<br>
+        <hr>
+
+        <h2 style="text-decoration: underline;">{{ Lexicon.payment_heading }}</h2>
+
+        <hr>
+        <div style="background-color: rgb(249, 249, 249); padding: 10px;">
+            <p>{{ Lexicon.payment_info }}</p>
+            <p>{{ Lexicon.payment_gains_info }}</p>
+            <p style="margin-left: 2em; background-color: #e6e6e6;"><b>{{ Lexicon.final_payoff_formula }}</b></p>
+        </div>
 
 
-<hr>
-
-<h2 style="text-decoration: underline;">Payment</h2>
-
-<hr>
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
-
-<p>You will receive a participation fee of 20 euros for completing all 30 matches. At the end of the experiment, one match will be randomly selected for payment. If negotiation costs arise in the selected match, they will be deducted from your participation fee. However, the negotiation costs will always be less than the participation fee, ensuring that you receive a positive amount. The remaining participation fee, after deducting any negotiation costs, will be paid immediately after the experiment.</p>
-
-<p>If the selected match results in positive gains from an accepted price, each participant will receive their gains via PayPal. Your final payoff would be:</p>
-
-<p style="margin-left: 2em; background-color: #e6e6e6;"><b>Final Payoff = Show-Up Fee + Gains from Trade – Total negotiation costs</b></p>
-
-</div>
-
-<br>
+        <br>
 
 
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+        <div style="background-color: rgb(249, 249, 249); padding: 10px;">
 
-<p>Here is an example for how buyer's final payoff is calculated: If the price you negotiated is 31€ and the valuation is 38€, and you reach the agreement after 20 seconds, which results in transaction costs (in this example 0.3€ per second), the payoff is:</p>
+            <p>{{ Lexicon.buyer_payoff_example_intro }}</p>
+
+            <p>
+            <div class="statement">
+                <div>{{ Lexicon.buyer_payoff_value }}<span class="amount"> 38 </span></div>
+                <div>{{ Lexicon.buyer_payoff_price }}<span class="amount"> -31</span></div>
+                <div class="line"></div>
+                <div>{{ Lexicon.buyer_payoff_trade_gains }}<span class="amount">7</span></div>
+                <div class="line"></div>
+                <div>{{ Lexicon.buyer_payoff_transaction_costs }}<span class="amount">0.3€/s * 20s = -6€</span></div>
+                <div class="line"></div>
+                <div>{{ Lexicon.buyer_payoff_match }}<span class="amount">1</span></div>
+                <div class="line"></div>
+                <div>{{ Lexicon.buyer_payoff_participation_fee }}<span class="amount">+20</span></div>
+                <div class="double-line"></div>
+                <div>{{ Lexicon.buyer_payoff_total }}<span class="amount">21</span></div>
+            </div>
+            </p>
 
 
-<p>
-  <div class="statement">
-   <div>Value of the Object: <span class="amount"> 38 </span></div>
-   <div>Price: <span class="amount"> -31</span></div>
-   <div class="line"></div>
-   <div>Gains from Trade: <span class="amount">7</span></div>
-   <div class="line"></div>
-   <div>Transaction Costs: <span class="amount">0.3€/s * 20s = -6€</span></div>
-   <div class="line"></div>
-   <div>Payoff from Match: <span class="amount">1</span></div>
-   <div class="line"></div>
-   <div>Participation Fee: <span class="amount">+20</span></div>
-   <div class="double-line"></div>
-       <div>Total Payoff: <span class="amount">21</span></div>
-   </div>
-</p>
+        </div>
 
-</div>
+    </div>
 
-</div>
+    <br>
 
-<br>
+    <div style="background-color: rgb(249, 249, 249); padding: 10px;">
+        <p>{{ Lexicon.seller_payoff_example_intro }}</p>
 
-<div style="background-color: rgb(249, 249, 249); padding: 10px;">
+        <p>
+        <div class="statement">
+            <div>{{ Lexicon.seller_payoff_price }}<span class="amount">20</span></div>
+            <div>{{ Lexicon.seller_payoff_value }}<span class="amount">0</span></div>
+            <div class="line"></div>
+            <div>{{ Lexicon.seller_payoff_trade_gains }}<span class="amount">20</span></div>
+            <div class="line"></div>
+            <div>{{ Lexicon.seller_payoff_transaction_costs }}<span class="amount">0.3€/s * 20s = -6€</span></div>
+            <div class="line"></div>
+            <div>{{ Lexicon.seller_payoff_match }}<span class="amount">14</span></div>
+            <div class="line"></div>
+            <div>{{ Lexicon.seller_payoff_participation_fee }}<span class="amount">+20</span></div>
+            <div class="double-line"></div>
+            <div>{{ Lexicon.seller_payoff_total }}<span class="amount">34</span></div>
+        </div>
+        </p>
+    </div>
+    <hr>
 
-<p>Here is an example for how seller’s final payoff is calculated: If the price you negotiated is 20€ and the valuation is 0€, and you reach the agreement after 20 seconds, which results in transaction costs (in this example 0.3€), the payoff is:</p>
+    <div class="comprehension-questions"></div>
 
-    <p>
-    <div class="statement">
-     <div>Price: <span class="amount">20</span></div>
-     <div>Value of the Object: <span class="amount">0</span></div>
-     <div class="line"></div>
-     <div>Gains from Trade: <span class="amount">20</span></div>
-     <div class="line"></div>
-     <div>Transaction Costs: <span class="amount">0.3€/s * 20s = -6€</span></div>
-     <div class="line"></div>
-     <div>Payoff from Match: <span class="amount">14</span></div>
-     <div class="line"></div>
-     <div>Participation Fee: <span class="amount">+20</span></div>
-     <div class="double-line"></div>
-         <div>Total Payoff: <span class="amount">34</span></div>
-     </div>
-  </p>
-
-</div>
-<hr>
-
-</div>
-
-<div class="comprehension-questions"></div>
-<div class="question" style="max-width: 800px; margin: auto;">
-        <p>Comprehension Question 1: Please choose the incorrect statement</p>
+    <div class="question" style="max-width: 800px; margin: auto;">
+        <p>{{ Lexicon.comprehension_question_1 }}</p>
         {{ form.comprehension_1 }}
     </div>
 
     <br>
 
-
-
     <div class="question" style="max-width: 800px; margin: auto;">
-        <p>Comprehension Question 2: Please choose the incorrect statement</p>
+        <p>{{ Lexicon.comprehension_question_2 }}</p>
         {{ form.comprehension_2 }}
     </div>
 
     <br>
 
     <div class="question" style="max-width: 800px; margin: auto;">
-        <p>Comprehension Question 3: Assume that the negotiation is randomly terminated before the agreement. Which of the following statements is incorrect?</p>
+        <p>{{ Lexicon.comprehension_question_3 }}</p>
         {{ form.comprehension_3 }}
     </div>
 
+    <br>
+
+    </div>
+
+    <hr>
 
     <br>
 
-
-    
-</div>
-
-
-
-
-
-<hr>
+    <div style="max-width: 800px; margin: auto;">
+        <hr>
+        {{ next_button }}
+    </div>
 
 
 
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #888; font-size: 12px;">
+        Code Version 3.3
+    </div>
 
-
-
-
-<br>
-
-<div style="max-width: 800px; margin: auto;">
-    <hr>
-    {{ next_button }}
-</div>
-
-
-
-<div style="position: fixed; bottom: 10px; right: 10px; color: #888; font-size: 12px;">
-    Code Version 3.3
-</div>
-
-{{ endblock }}
+    {{ endblock }}
