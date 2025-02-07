@@ -45,7 +45,7 @@ class Lexicon:
     option_terminate = "Die Verhandlung beenden."
     option_accept = "Das Preisangebot des anderen Teilnehmers akzeptieren (erst verfügbar, nachdem das erste Angebot gemacht wurde)."
     example_buyer_screen = "Beispiel für die Käuferansicht"
-    example_seller_screen = "test"
+    example_seller_screen = "Beispiel für die Verkäuferansicht"
     payment_heading = "Bezahlung"
     payment_info = "Sie erhalten eine Teilnahmegebühr von 20 Euro für die vollständige Teilnahme an allen 30 Runden. Am Ende des Experiments wird eine Runde zufällig für die Auszahlung ausgewählt. Falls in dieser Runde Verhandlungskosten anfallen, werden diese von Ihrer Teilnahmegebühr abgezogen. Die Verhandlungskosten werden jedoch immer geringer als die Teilnahmegebühr sein, sodass sichergestellt ist, dass Sie einen Betrag erhalten. Die verbleibende Teilnahmegebühr nach Abzug eventueller Verhandlungskosten wird direkt nach dem Experiment ausgezahlt."
     payment_gains_info = "Falls in der ausgewählten Runde durch einen akzeptierten Preis Gewinne erzielt werden, erhält jeder Teilnehmer seine Gewinne über PayPal. Ihr endgültiges Auszahlungsergebnis lautet:"
@@ -72,3 +72,20 @@ class Lexicon:
     comprehension_question_1 = "Verständnisfrage 1: Bitte wählen Sie die falsche Aussage"
     comprehension_question_2 = "Verständnisfrage 2: Bitte wählen Sie die falsche Aussage"
     comprehension_question_3 = "Verständnisfrage 3: Angenommen, die Verhandlung wird zufällig vor einer Einigung beendet. Welche der folgenden Aussagen ist falsch?"
+
+    section_overview = "Übersicht"
+    section_main_task = "Hauptaufgabe"
+
+    practice_round_1_title = "Übungsrunde 1 / 3"
+    practice_round_1_text = "In dieser Übungsrunde siehstsehen Sie die Umgebung, Sie können Angebote abgeben oder die Verhandlung beenden. Sie spielen nicht gegen andere Spieler, daher wird nichts passieren. Stattdessen beendet der Computer die Verhandlung automatisch nach 30 Sekunden."
+
+    practice_round_2_title = "Übungsrunde 2 / 3"
+    practice_round_2_text = "In dieser Übungsrunde verhandeln Sie mit dem Computer. Der Computer macht nach 10 Sekunden ein zufälliges Angebot und verbessert es alle 10 Sekunden. Sie können das Angebot annehmen, es ablehnen, ein Gegenangebot machen oder die Verhandlung beenden. Allerdings wird der Computer keines Ihrer Angebote akzeptieren. Die Verhandlung endet automatisch nach 60 Sekunden."
+
+    practice_round_3_title = "Übungsrunde 3 / 3"
+    practice_round_3_text = "In dieser Übungsrunde macht der Computer nach 10 Sekunden ein zufälliges Angebot und verbessert es alle 10 Sekunden. Sie können das Angebot annehmen, es ablehnen, ein Gegenangebot machen oder die Verhandlung beenden. Der Computer wird Ihr zweites Angebot akzeptieren. Falls gemäß der gegebenen Regeln keine Einigung erzielt wird, endet die Verhandlung automatisch nach 120 Sekunden."
+
+
+
+
+

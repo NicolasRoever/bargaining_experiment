@@ -73,3 +73,18 @@ class Lexicon:
     comprehension_question_1 = "Comprehension Question 1: Please choose the incorrect statement"
     comprehension_question_2 = "Comprehension Question 2: Please choose the incorrect statement"
     comprehension_question_3 = "Comprehension Question 3: Assume that the negotiation is randomly terminated before the agreement. Which of the following statements is incorrect?"
+
+    section_overview = "Overview"
+    section_main_task = "Main Task"
+
+    practice_round_1_title = "Practice Round 1 / 3"
+    practice_round_1_text = "In this practice round, you will see the environment, you can submit offers or terminate the negotiation. You will not be playing against other players, so nothing will happen. Instead, the computer will automatically terminate the negotiation after 30 seconds."
+
+    practice_round_2_title = "Practice Round 2 / 3"
+    practice_round_2_text = "In this practice round, you will negotiate with the computer. The computer will make a random offer after 10 seconds and improve it every 10 seconds. You can choose to accept the offer, reject it, make a counter-offer, or terminate the negotiation. However, the computer will not accept any offers you make. The negotiation will automatically end after 60 seconds."
+
+    practice_round_3_title = "Practice Round 3 / 3"
+    practice_round_3_text = "In this practice round, the computer will make a random offer after 10 seconds and improve it every 10 seconds. You can choose to accept the offer, reject it, make a counter-offer, or terminate the negotiation. The computer will accept your second offer. If no agreement is reached according to the given rules, the negotiation will automatically end after 120 seconds."
+
+
+
