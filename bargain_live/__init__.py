@@ -79,8 +79,6 @@ class Player(BasePlayer):
         widget=widgets.CheckboxInput,
         blank=False)
 
-    time_after_consent = models.StringField()
-
     proposal_made = models.BooleanField(initial=False)
     amount_proposed = models.FloatField()#
     amount_accepted = models.IntegerField()#
