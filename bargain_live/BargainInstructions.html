@@ -189,8 +189,14 @@
         <h3>{{ Lexicon.example_buyer_screen }}</h3>
         <div style="background-color: rgb(249, 249, 249); padding: 10px;">
             <div style="border: 2px solid #000; padding: 10px;">
-                <img src="{% static 'pictures/buyer_screen_v006.png' %}" alt="Price Negotiation"
-                    style="width: 100%; margin: auto;">
+
+                {% if en %}
+                    <img src="{% static 'pictures/buyer_screen_v006.png' %}" 
+                        style="width: 100%; margin: auto;">
+                {% else %}
+                    <img src="{% static 'pictures/screenshot_buyer_german.png' %}" 
+                        style="width: 100%; margin: auto;">
+                {% endif %}
             </div>
         </div>
 
@@ -201,8 +207,13 @@
         <h3>{{ Lexicon.example_seller_screen }}</h3>
         <div style="background-color: rgb(249, 249, 249); padding: 10px;">
             <div style="border: 2px solid #000; padding: 10px;">
-                <img src="{% static 'pictures/seller_screen_v006.png' %}" alt="Price Negotiation"
-                    style="width: 100%; margin: auto;">
+                {% if en %}
+                    <img src="{% static 'pictures/seller_screen_v006.png' %}" 
+                        style="width: 100%; margin: auto;">
+                {% else %}
+                    <img src="{% static 'pictures/screenshot_seller_german.png' %}" 
+                        style="width: 100%; margin: auto;">
+                {% endif %}
             </div>
         </div>
 
@@ -236,13 +247,13 @@
                 <div class="line"></div>
                 <div>{{ Lexicon.buyer_payoff_trade_gains }}<span class="amount">7</span></div>
                 <div class="line"></div>
-                <div>{{ Lexicon.buyer_payoff_transaction_costs }}<span class="amount">0.3€/s * 20s = -6€</span></div>
+                <div>{{ Lexicon.buyer_payoff_transaction_costs }}<span class="amount">0.5€/s * 20s = -10€</span></div>
                 <div class="line"></div>
-                <div>{{ Lexicon.buyer_payoff_match }}<span class="amount">1</span></div>
+                <div>{{ Lexicon.buyer_payoff_match }}<span class="amount">-3</span></div>
                 <div class="line"></div>
                 <div>{{ Lexicon.buyer_payoff_participation_fee }}<span class="amount">+20</span></div>
                 <div class="double-line"></div>
-                <div>{{ Lexicon.buyer_payoff_total }}<span class="amount">21</span></div>
+                <div>{{ Lexicon.buyer_payoff_total }}<span class="amount">17</span></div>
             </div>
             </p>
 
@@ -263,13 +274,13 @@
             <div class="line"></div>
             <div>{{ Lexicon.seller_payoff_trade_gains }}<span class="amount">20</span></div>
             <div class="line"></div>
-            <div>{{ Lexicon.seller_payoff_transaction_costs }}<span class="amount">0.3€/s * 20s = -6€</span></div>
+            <div>{{ Lexicon.seller_payoff_transaction_costs }}<span class="amount">0.5€/s * 20s = -10€</span></div>
             <div class="line"></div>
-            <div>{{ Lexicon.seller_payoff_match }}<span class="amount">14</span></div>
+            <div>{{ Lexicon.seller_payoff_match }}<span class="amount">10</span></div>
             <div class="line"></div>
             <div>{{ Lexicon.seller_payoff_participation_fee }}<span class="amount">+20</span></div>
             <div class="double-line"></div>
-            <div>{{ Lexicon.seller_payoff_total }}<span class="amount">34</span></div>
+            <div>{{ Lexicon.seller_payoff_total }}<span class="amount">30</span></div>
         </div>
         </p>
     </div>

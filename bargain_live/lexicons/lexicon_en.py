@@ -1,4 +1,16 @@
 class Lexicon:
+
+
+    #-----------------------------------
+    # Consent
+    #-----------------------------------
+
+    consent_title = "Consent"
+
+    #-----------------------------------
+    # Bargain
+    #-----------------------------------
+
     match_value = "In this match, your value of the object is "
     buyer_value_random = "The Buyer's value of the object will be randomly drawn between 0 and 60€."
     bargaining_starts_in = "Bargaining starts in 5"

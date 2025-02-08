@@ -75,6 +75,12 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
 
+    consent_form = models.BooleanField(label='Ich habe die Teilnehmebedingungen gelesen und bin mit der Teilnahme einverstanden.', 
+        widget=widgets.CheckboxInput,
+        blank=False)
+
+    time_after_consent = models.StringField()
+
     proposal_made = models.BooleanField(initial=False)
     amount_proposed = models.FloatField()#
     amount_accepted = models.IntegerField()#
@@ -269,10 +275,17 @@ def creating_session(subsession):
 
 #--Short Static Pages--#
 
-class WelcomeAndConsent(Page):
+class Consent(Page):
+    form_model = 'player'
+    form_fields = ['consent_form']
+
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
+    
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(Lexicon=Lexicon, **which_language)
 
 
 class BargainInstructions(Page):
@@ -421,8 +434,6 @@ class BargainPracticeOne(Page):
     def js_vars(player: Player):
 
         dictionary = create_dictionary_with_js_variables_for_bargain_page(player=player, C=C, practice_round=True, language_code=LANGUAGE_CODE)
-
-
 
 
         return dictionary
@@ -706,8 +717,8 @@ class BargainReal(Page):
 
 
 
-page_sequence = [#WelcomeAndConsent, 
-                 #BargainInstructions,
+page_sequence = [Consent, 
+                 BargainInstructions,
                  PracticeRoundsIntro,
                  BargainPracticeOneIntro,
                  BargainPracticeTwoIntro,
