@@ -1,5 +1,5 @@
 {{ block title }}
-    End of the Study
+    {{ Lexicon.final_results_title }}
 {{ endblock }}
 
 {{ block content }}
@@ -31,18 +31,17 @@
     }
 </style>
 
-<p>Match Number {{ chosen_round }} was chosen to be payoff-relevant. 
+<p> {{ Lexicon.final_results_1 }} {{ chosen_round }} {{ Lexicon.final_results_2 }} </p>
 
 
 {% if payoff_plus_participation_fee < 15 %}
 
-The payoff from this match would be: {{ payoff_plus_participation_fee }}€.
-However, this is below the minimum payoff of 15€. Thus, your final payoff is 15€.
+<p> {{ Lexicon.below_minimum_payoff_1 }} {{ payoff_plus_participation_fee }} {{ Lexicon.below_minimum_payoff_2 }} </p>
 
 
 {% else %}
     
-This means the money you get for this participating in the experiment is: {{ payoff_plus_participation_fee }}€. We calculate this as follows:</p>
+<p> {{ Lexicon.final_results_3 }} {{ payoff_plus_participation_fee }} {{ Lexicon.final_results_4 }} </p>
 
 {% if is_finished == True %}
 
@@ -51,17 +50,17 @@ This means the money you get for this participating in the experiment is: {{ pay
         {% if player.role == "Buyer" %}
          <p>
            <div class="statement">
-            <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
-            <div>Price: <span class="amount"> {{ negative_deal_price }}</span></div>
+            <div> {{ Lexicon.value_of_object }} <span class="amount">{{ valuation }}</span></div>
+            <div> {{ Lexicon.price_label }} <span class="amount"> {{ negative_deal_price }}</span></div>
             <div class="line"></div>
-            <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
-            <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+            <div> {{ Lexicon.gains_from_trade_label }} <span class="amount">{{ gains_from_trade }}</span></div>
+            <div> {{ Lexicon.transaction_costs_label }} <span class="amount">{{ negative_transaction_costs }}</span></div>
             <div class="line"></div>
-            <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+            <div> {{ Lexicon.payoff_from_match_label }} <span class="amount">{{ payoff }}</span></div>
             <div class="line"></div>
-            <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
+            <div> {{ Lexicon.participation_fee_label }} <span class="amount">{{ participation_fee }}</span></div>
             <div class="double-line"></div>
-                <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+                <div> {{ Lexicon.total_payoff_label }} <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
             </div>
          </p>
 
@@ -69,18 +68,18 @@ This means the money you get for this participating in the experiment is: {{ pay
 
         <p>
             <div class="statement">
-             <div>Price: <span class="amount">{{ deal_price }}</span></div>
-             <div>Value of the Object: <span class="amount"> {{ negative_valuation }}</span></div>
+             <div> {{ Lexicon.price_label }} <span class="amount">{{ deal_price }}</span></div>
+             <div> {{ Lexicon.value_of_object }} <span class="amount"> {{ negative_valuation }}</span></div>
              <div class="line"></div>
-             <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
+             <div> {{ Lexicon.gains_from_trade_label }} <span class="amount">{{ gains_from_trade }}</span></div>
              <div class="line"></div>
-             <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+             <div> {{ Lexicon.transaction_costs_label }} <span class="amount">{{ negative_transaction_costs }}</span></div>
              <div class="line"></div>
-             <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+             <div> {{ Lexicon.payoff_from_match_label }} <span class="amount">{{ payoff }}</span></div>
              <div class="line"></div>
-             <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
+             <div> {{ Lexicon.participation_fee_label }} <span class="amount">{{ participation_fee }}</span></div>
              <div class="double-line"></div>
-                 <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+                 <div> {{ Lexicon.total_payoff_label }} <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
              </div>
           </p>
 
@@ -90,13 +89,13 @@ This means the money you get for this participating in the experiment is: {{ pay
 
     {% elif terminated == True %}
 
-        The deal was terminated. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}.
+        <p> {{ Lexicon.final_results_5 }} {{ participation_fee }} {{ Lexicon.final_results_6 }} {{ transaction_costs }} {{ Lexicon.final_results_7 }} {{ payoff_plus_participation_fee }}. </p>
     {% endif %}
 
 
 {% else %}
     
-   <p> No deal was made in the given time frame. Thus, your final payoff is given by participation fee minus transaction costs, so {{participation_fee}} - {{transaction_costs}} = {{payoff_plus_participation_fee}}. </p>
+   <p> {{ Lexicon.final_results_8 }} {{ participation_fee }} {{ Lexicon.final_results_9 }} {{ transaction_costs }} {{ Lexicon.final_results_10 }} {{ payoff_plus_participation_fee }}. </p>
 
 {% endif %}
 

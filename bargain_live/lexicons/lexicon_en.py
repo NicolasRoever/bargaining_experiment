@@ -87,4 +87,165 @@ class Lexicon:
     practice_round_3_text = "In this practice round, the computer will make a random offer after 10 seconds and improve it every 10 seconds. You can choose to accept the offer, reject it, make a counter-offer, or terminate the negotiation. The computer will accept your second offer. If no agreement is reached according to the given rules, the negotiation will automatically end after 120 seconds."
 
 
+    comprehension_question_1_choice_1 = "The experiment consists of 30 matches."
+    comprehension_question_1_choice_2 = "Participants will be randomly assigned the role of buyer or seller."
+    comprehension_question_1_choice_3 = "The role of buyer and seller will be alternated across matches."
+    comprehension_question_1_choice_4 = "At the beginning of each match, a buyer and a seller will be randomly paired."
+
+    comprehension_question_2_choice_1 = "All participants can submit prices at any time."
+    comprehension_question_2_choice_2 = "The seller’s value for the object is 0 euros."
+    comprehension_question_2_choice_3 = "The buyer’s value for the object will be randomly set between 0 and 60 euros."
+    comprehension_question_2_choice_4 = "At the beginning of each match, the buyer’s value for the object will be known to a seller in the same pair."
+
+    comprehension_question_3_choice_1 = "The gains from trade are zero."
+    comprehension_question_3_choice_2 = "The accumulated negotiation costs will not be deducted from the participation fees."
+    comprehension_question_3_choice_3 = "The accumulated negotiation costs will be deducted from the participation fees."
+
+    intro_practice_rounds_title = "Start of Practice Rounds"
+
+    intro_practice_rounds_1 = "In this experiment, you are assigned the role of"
+    intro_practice_rounds_2 = "and this role will remain the same throughout the entire experiment. Before the experiment begins, you will complete three practice rounds. The main purpose of these practice rounds is to help you become familiar with the environment. No practice round will count toward the final payment. Please read the instructions for each practice round carefully."
+    
+    intro_real_game_title = "End of Practice Rounds"
+    intro_real_game = "Now, the real experiment begins. You will be matched with humans for a total of 30 matches. We will select one of these matches randomly to calculate your final payment."
+
+
+    #-----------------------------------
+    # Results
+    #-----------------------------------
+
+    practice_round_results_title_1 = " Results of this Practice Match (Practice Match"
+    practice_round_results_title_2 = "of"
+    practice_round_results_title_3 = ")"
+
+    real_game_results_title_1 = " Results of this Match (Match"
+    real_game_results_title_2 = "of"
+    real_game_results_title_3 = ")"
+
+    value_of_object = "Value of the Object: "
+    price_label = "Price: "
+    no_deal_text = "No Deal"
+    gains_from_trade_label = "Gains from Trade: "
+    transaction_costs_label = "Transaction Costs: "
+    payoff_from_match_label = "Payoff from Match: "
+    participation_fee_label = "Participation Fee: "
+    total_payoff_label = "Total Payoff: "
+
+    acceptance_1 = "You accepted the price offer by the "
+    acceptance_2 = " of "
+    acceptance_3 = "€."
+
+    acceptance_4 = "The "
+    acceptance_5 = " accepted your offer of "
+    acceptance_6 = "€."
+
+    payoff_calculation_practice_1 = "We would calculate your total payoff in the real experiment as "
+    payoff_calculation_practice_2 = "€. It is calculated as follows: "
+
+    payoff_calculation_real_1 = "If this match is drawn to be payoff-relevant, your total payoff is going to be "
+    payoff_calculation_real_2 = "€. It is calculated as follows: "
+
+    termination_text_computer_1 = "The bargaining was terminated by the computer after "
+    termination_text_computer_2 = " seconds."
+
+    termination_text_player_self = "You terminated the negotation and no deal has been made."
+    termination_text_player_other = "The bargaining was terminated by the other player and no deal has been made."
+
+    no_deal_text = "No deal was made in the given time frame."
+          
+
+    #-----------------------------------
+    # Final Results
+    #-----------------------------------
+
+    final_results_title = "Your Payoff"
+
+        
+    final_results_1 = "Match "
+    final_results_2 = " was chosen to be payoff-relevant. "
+
+    below_minimum_payoff_1 = "The payoff from this match would be: "
+    below_minimum_payoff_2 = "€. However, this is below the minimum payoff of 15€. Thus, your final payoff is 15€."
+
+        
+    final_results_3 = "This means the money you get for this participating in the experiment is: "
+    final_results_4 = "€. We calculate this as follows:"
+
+    final_results_5 = "The deal was terminated. Thus, your final payoff is given by participation fee minus transaction costs, so "
+    final_results_6 = " - "
+    final_results_7 = " = "
+
+    final_results_8 = "No deal was made in the given time frame. Thus, your final payoff is given by participation fee minus transaction costs, so "
+    final_results_9 = " - "
+    final_results_10 = " = "
+
+
+    #-----------------------------------
+    #Bargain Page
+    #-----------------------------------
+
+    bargaining_countdown_text = "Bargaining starts in 5"
+
+    bargain_page_title_practice_1 = "Practice Match "
+    bargain_page_title_practice_2 = " of "
+    bargain_page_title_real_1 = "Match "
+    bargain_page_title_real_2 = " of "
+
+    bargain_page_own_value = "In this match, your value of the object is"
+    value_of_object_for_seller = "The value of the object for the seller is 0."
+    value_of_object_for_buyer = "The value of the object for the buyer is randomly drawn between 0 and 60€."
+
+    bargain_page_negotiation_costs_heading = "Negotiation Costs"
+    bargain_page_negotiation_costs_current = "Current negotiation costs per 1 second"
+    bargain_page_negotiation_costs_total = "Total negotiation costs"
+
+
+    bargain_time = "Time: "
+    seconds = " seconds"
+
+    bargain_page_current_price_offer = "Your current submitted price offer:"
+
+    submit = "Submit"
+    accept_other_player_offer = "Accept"
+
+    bargain_page_other_player_accepts_your_current_offer = "If the other player accepts your current offer:"
+
+    bargain_page_your_payoff = "Your payoff:"
+    bargain_page_payoff_other_player = "Payoff Other Player:"
+
+    bargain_page_other_player_current_price_offer = "Other Player's current submitted price offer:"
+
+    bargain_page_if_you_accept_the_offer = "If you accept the offer: "
+
+
+    bargain_page_accept_other_player_offer = "Accept Other Player's Offer"
+
+    bargain_page_if_you_accept_the_offer = "If you accept the offer: "
+
+    bargain_page_risk_of_termination = "Risk of Termination"
+
+    bargain_page_probability_of_termination = "The probability that the computer will terminate the negotiation in the next second is "
+
+    bargain_page_payoffs_heading = "Payoffs"
+    bargain_page_payoffs_heading_1 = "If an offer is accepted:"
+    bargain_page_payoffs_seller_payoff = "Seller's payoff: Accepted offer - Negotiation costs"
+    bargain_page_payoffs_buyer_payoff = "Buyer's payoff: Buyer's valuation - Accepted offer - Negotiation costs"
+
+    bargain_page_payoffs_heading_2 = "If buyer or seller terminates the negotiation:"
+    bargain_page_payoffs_both_payoff = "Both payoff: - Negotiation costs"
+
+    bargain_page_terminate_negotiation_button = "Terminate"
+    bargain_page_terminate_negotiation = "Terminate the Negotiation"
+    bargain_page_terminate_negotiation_if_you = "If you terminate the negotiation:"
+    bargain_page_terminate_negotiation_both_payoff = "Both players receive a payoff of: "
+    bargain_page_terminate_negotiation_other_payoff = "Other Player's Payoff: "
+
+    bargain_page_terminate_negotiation_heading = "Termination"
+    bargain_page_terminate_negotiation_heading_1 = "If you terminate the negotiation:"
+    bargain_page_terminate_negotiation_heading_2 = "If the other player terminates the negotiation:"
+    
+
+
+
+
 

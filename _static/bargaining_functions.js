@@ -77,6 +77,48 @@ function sendOffer({ buttonId, slider, startTime, myId, myRole }) {
     liveSend(offerDetails);
 }
 
+function logImportSuccess() {
+    console.log("Successful Import");
+}
+
+function startCountdown(overlayId, js_vars, initialCount = 5) {
+    /**
+ * Starts a countdown on a specified overlay element.
+ *
+ * @param {string} overlayId - The DOM id of the element where the countdown will be displayed.
+ * @param {object} js_vars - An object containing language settings (e.g., { langague_code: "en" }).
+ * @param {number} initialCount - The starting count value (default is 5).
+ */
+
+    const overlay = document.getElementById(overlayId);
+    if (!overlay) {
+        console.error(`Element with id "${overlayId}" not found.`);
+        return;
+    }
+
+    let count = initialCount;
+
+    // Determine prefix based on the language code passed in js_vars.
+    const prefix = (js_vars["langague_code"] === "en")
+        ? "Bargaining starts in"
+        : "Die Verhandlung beginnt in";
+
+    // Initialize the overlay text immediately.
+    overlay.textContent = `${prefix} ${count}`;
+
+    // Countdown functionality using setInterval.
+    const countdownInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+            overlay.textContent = `${prefix} ${count}`;
+        } else {
+            overlay.style.display = 'none';
+            clearInterval(countdownInterval);
+        }
+    }, 1000);
+}
+
+
 // This function is called when the player clicks the "Accept" button to accept an offer.
 function sendAccept({ payoffElement, startTime, myId }) {
     // Retrieve the text content from the provided element
@@ -382,5 +424,13 @@ function createSinglePercentageBarChart(chartName, percentage) {
         plugins: [ChartDataLabels] // Enable data labels plugin
     });
 }
+
+
+
+
+
+
+
+
 
 module.exports = {  sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay } ; // Export the function for testing

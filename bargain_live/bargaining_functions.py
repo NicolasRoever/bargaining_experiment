@@ -885,7 +885,7 @@ def create_dictionary_with_html_variables_for_bargain_page(player: Any,
     return dictionary
 
 
-def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, practice_round: bool = False) -> Dict[str, Any]:
+def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, practice_round: bool = False, language_code: str = 'en') -> Dict[str, Any]:
     """
     Creates a dictionary with the variables needed for the JavaScript page Bargain.html.
 
@@ -916,6 +916,8 @@ def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, pr
             dictionary['other_valuation'] = 0
         else:
             dictionary['other_valuation'] = np.nan
+
+    dictionary["language_code"] = language_code
 
     return dictionary
 
@@ -952,7 +954,7 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
             broadcast["seller_proposal"] = data.get('amount')
             broadcast["notification_seller_proposal"] = True 
 
-            if player.current_amount_proposed <  group.current_buyer_offer:
+            if group.field_maybe_none('current_buyer_offer') is not None and player.current_amount_proposed < group.field_maybe_none('current_buyer_offer'):
 
                 treat_seller_offer_lower_than_buyer_as_acceptance(
                     broadcast=broadcast, 
@@ -971,7 +973,7 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
             broadcast["notification_buyer_proposal"] = True 
 
 
-            if group.current_seller_offer < player.current_amount_proposed:
+            if group.field_maybe_none('current_seller_offer') is not None and group.field_maybe_none('current_seller_offer') < player.current_amount_proposed:
 
                 treat_buyer_offer_larger_than_seller_as_acceptance(
                     broadcast=broadcast, 

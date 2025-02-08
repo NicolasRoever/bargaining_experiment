@@ -1,8 +1,8 @@
 {{ block title }}
     {{ if practice_round == True }}
-        Results of this Practice Match (Practice Match {{ round_number }} of {{ C.NUM_PRACTICE_ROUNDS }})
+        {{ Lexicon.practice_round_results_title_1 }} {{ round_number }} {{ Lexicon.practice_round_results_title_2 }} {{ C.NUM_PRACTICE_ROUNDS }} {{ Lexicon.practice_round_results_title_3 }}
     {{ else }}
-        Results of this Match (Match {{ round_number }} of {{ C.NUM_REAL_ROUNDS }})
+        {{ Lexicon.real_game_results_title_1 }} {{ round_number }} {{ Lexicon.real_game_results_title_2 }} {{ C.NUM_REAL_ROUNDS }} {{ Lexicon.real_game_results_title_3 }}
     {{ endif }}
 {{ endblock }}
 
@@ -44,21 +44,21 @@
         {% if group.accepted_by == player.id_in_group %}
 
         <p>
-        You accepted the price offer by the {{ other_role }} of {{ deal_price }}€.
+        {{ Lexicon.acceptance_1 }} {{ deal_price }} {{ Lexicon.acceptance_3 }}
         </p>
         
         {% elif group.accepted_by != player.id_in_group %}
         <p>
-            The {{ other_role }} accepted your offer of {{ deal_price }}€.
+            {{ Lexicon.acceptance_4 }} {{ deal_price }} {{ Lexicon.acceptance_6 }}
         </p>
     
         {% endif %}
 
         <p>
         {% if practice_round == True %}
-        We would calculate your total payoff in the real experiment as {{ payoff_plus_participation_fee }}€. It is calculated as follows: 
+        {{ Lexicon.payoff_calculation_practice_1 }} {{ payoff_plus_participation_fee }} {{ Lexicon.payoff_calculation_practice_2 }}
         {% else %}
-        If this match is drawn to be payoff-relevant, your total payoff is going to be {{ payoff_plus_participation_fee }}€. It is calculated as follows: 
+        {{ Lexicon.payoff_calculation_real_1 }} {{ payoff_plus_participation_fee }} {{ Lexicon.payoff_calculation_real_2 }}
         {% endif %}
         </p>
 
@@ -67,18 +67,18 @@
         {% if role_in_game == "Buyer" %}
          <p>
            <div class="statement">
-            <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
-            <div>Price: <span class="amount"> {{ negative_deal_price }}</span></div>
+            <div>{{ Lexicon.value_of_object }}<span class="amount">{{ valuation }}</span></div>
+            <div>{{ Lexicon.price_label }}<span class="amount">{{ Lexicon.no_deal_text }}</span></div>
             <div class="line"></div>
-            <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
+            <div>{{ Lexicon.gains_from_trade_label }}<span class="amount">0</span></div>
             <div class="line"></div>
-            <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+            <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
             <div class="line"></div>
-            <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+            <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
             <div class="line"></div>
-            <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
+            <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
             <div class="double-line"></div>
-                <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+            <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
             </div>
          </p>
 
@@ -86,18 +86,18 @@
 
         <p>
             <div class="statement">
-             <div>Price: <span class="amount">{{ deal_price }}</span></div>
-             <div>Value of the Object: <span class="amount"> {{ negative_valuation }}</span></div>
+             <div>{{ Lexicon.seller_payoff_price }}<span class="amount">{{ deal_price }}</span></div>
+             <div>{{ Lexicon.value_of_object }}<span class="amount"> {{ negative_valuation }}</span></div>
              <div class="line"></div>
-             <div>Gains from Trade: <span class="amount">{{ gains_from_trade }}</span></div>
+             <div>{{ Lexicon.gains_from_trade_label }}<span class="amount">{{ gains_from_trade }}</span></div>
              <div class="line"></div>
-             <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+             <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
              <div class="line"></div>
-             <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+             <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
              <div class="line"></div>
-             <div>Participation Fee: <span class="amount">{{ participation_fee }}</span></div>
+             <div>{{ Lexicon.participation_fee_label }}<span class="amount">{{ participation_fee }}</span></div>
              <div class="double-line"></div>
-                 <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+             <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
              </div>
           </p>
 
@@ -106,48 +106,48 @@
     {% elif group.termination_mode == 'Random_Termination' %}
 
         <p>
-            The bargaining was terminated by the computer after {{ group.termination_time }} seconds.
+            {{ Lexicon.termination_text_computer_1 }} {{ group.termination_time }} {{ Lexicon.termination_text_computer_2 }}
         </p>
 
         {% if practice_round == True %}
-        <p> We would calculate your total payoff in the real experiment as {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
+        <p> {{ Lexicon.payoff_calculation_practice_1 }} {{ payoff_plus_participation_fee }} {{ Lexicon.payoff_calculation_practice_2 }}</p>
         {% else %}
-        <p> If this match is drawn to be payoff-relevant, your total payoff is going to be {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
+        <p> {{ Lexicon.payoff_calculation_real_1 }} {{ payoff_plus_participation_fee }} {{ Lexicon.payoff_calculation_real_2 }}</p>
         {% endif %}
 
         {% if role_in_game == "Buyer" %}
         <p>
             <div class="statement">
-                <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
-                <div>Price: <span class="amount"> No Deal</span></div>
+                <div>{{ Lexicon.value_of_object }}<span class="amount">{{ valuation }}</span></div>
+                <div>{{ Lexicon.price_label }}<span class="amount">{{ Lexicon.no_deal_text }}</span></div>
                 <div class="line"></div>
-                <div>Gains from Trade: <span class="amount"> 0 </span></div>
+                <div>{{ Lexicon.gains_from_trade_label }}<span class="amount"> 0 </span></div>
                 <div class="line"></div>
-                <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+                <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
                 <div class="line"></div>
-                <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+                <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
                 <div class="line"></div>
-                <div>Participation Fee: <span class="amount">+ {{ participation_fee }}</span></div>
+                <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
                 <div class="double-line"></div>
-                    <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+                    <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
                 </div>
             </p>
     
         {% else %}
         <p>
             <div class="statement">
-                <div>Price: <span class="amount">No Deal</span></div>
-                <div>Value of the Object: <span class="amount"> 0</span></div>
+                <div>{{ Lexicon.price_label }}<span class="amount">{{ Lexicon.no_deal_text }}</span></div>
+                <div>{{ Lexicon.value_of_object }}<span class="amount"> 0</span></div>
                 <div class="line"></div>
-                <div>Gains from Trade: <span class="amount">0</span></div>
+                <div>{{ Lexicon.gains_from_trade_label }}<span class="amount">0</span></div>
                 <div class="line"></div>
-                <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+                <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
                 <div class="line"></div>
-                <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+                <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
                 <div class="line"></div>
-                <div>Participation Fee: <span class="amount">+ {{ participation_fee }}</span></div>
+                <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
                 <div class="double-line"></div>
-                    <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+                    <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
                 </div>
             </p>
         {% endif %}
@@ -157,52 +157,54 @@
 
         {% if group.terminated_by == player.id_in_group %}
 
-                <p>You terminated the negotation and no deal has been made.</p>
+                <p>
+                    {{ Lexicon.termination_text_player_self }}
+                </p>
             {% elif group.terminated_by != player.id_in_group %}
                 <p>
-                    The bargaining was terminated by the {{ other_role }} and no deal has been made.
+                    {{ Lexicon.termination_text_player_other }}
                 </p>
         {% endif %}
 
         {% if practice_round == True %}
-        <p> We would calculate your total payoff in the real experiment as {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
+        <p> {{ Lexicon.payoff_calculation_practice_1 }} {{ payoff_plus_participation_fee }} {{ Lexicon.payoff_calculation_practice_2 }}</p>
         {% else %}
-        <p> If this match is drawn to be payoff-relevant, your total payoff is going to be {{ payoff_plus_participation_fee }}€. It is calculated as follows:</p>
+        <p> {{ Lexicon.payoff_calculation_real_1 }} {{ payoff_plus_participation_fee }} {{ Lexicon.payoff_calculation_real_2 }}</p>
         {% endif %}
         
         {% if role_in_game == "Buyer" %}
         <p>
             <div class="statement">
-                <div>Value of the Object: <span class="amount">{{ valuation }}</span></div>
-                <div>Price: <span class="amount"> No Deal</span></div>
+                <div>{{ Lexicon.value_of_object }}<span class="amount">{{ valuation }}</span></div>
+                <div>{{ Lexicon.price_label }}<span class="amount">{{ Lexicon.no_deal_text }}</span></div>
                 <div class="line"></div>
-                <div>Gains from Trade: <span class="amount"> 0 </span></div>
+                <div>{{ Lexicon.gains_from_trade_label }}<span class="amount"> 0 </span></div>
                 <div class="line"></div>
-                <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+                <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
                 <div class="line"></div>
-                <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+                <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
                 <div class="line"></div>
-                <div>Participation Fee: <span class="amount">+ {{ participation_fee }}</span></div>
+                <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
                 <div class="double-line"></div>
-                    <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+                    <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
                 </div>
             </p>
     
         {% else %}
         <p>
             <div class="statement">
-                <div>Price: <span class="amount">0</span></div>
-                <div>Value of the Object: <span class="amount"> 0</span></div>
+                <div>{{ Lexicon.price_label }}<span class="amount">0</span></div>
+                <div>{{ Lexicon.value_of_object }}<span class="amount"> 0</span></div>
                 <div class="line"></div>
-                <div>Gains from Trade: <span class="amount">0</span></div>
+                <div>{{ Lexicon.gains_from_trade_label }}<span class="amount">0</span></div>
                 <div class="line"></div>
-                <div>Transaction Costs: <span class="amount">{{ negative_transaction_costs }}</span></div>
+                <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
                 <div class="line"></div>
-                <div>Payoff from Match: <span class="amount">{{ payoff }}</span></div>
+                <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
                 <div class="line"></div>
-                <div>Participation Fee: <span class="amount">+ {{ participation_fee }}</span></div>
+                <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
                 <div class="double-line"></div>
-                    <div>Total Payoff: <span class="amount">{{ payoff_plus_participation_fee }}</span></div>
+                    <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
                 </div>
             </p>
         {% endif %}
@@ -215,7 +217,7 @@
 
 {% else %}
     
-   <p> No deal was made in the given time frame. </p>
+   <p> {{ Lexicon.no_deal_text }} </p>
 
 {% endif %}
 

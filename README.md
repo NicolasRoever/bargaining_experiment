@@ -107,6 +107,12 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
+- Translate the pictures in the instructions to German
+
+- Add the consent form from populism
+
+- Change transaction costs in the instructions to 0.50€/s
+
 
 
 
