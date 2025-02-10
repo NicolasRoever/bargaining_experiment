@@ -18,7 +18,6 @@ class Lexicon:
     current_price_offer = "Ihr aktuell abgegebenes Preisangebot: "
     no_offer_yet = "Noch kein Angebot."
     your_payoff = "Ihr Gewinn: "
-    seconds = "Sekunden"
     submit = "Absenden"
     instructions = "Erklärung"
 
@@ -45,7 +44,7 @@ class Lexicon:
     termination_heading = "2.2 Kosten durch Verzögerung"
     termination_probability1 = "In jeder Sekunde der Verhandlung besteht eine "
     termination_probability2 = "-prozentige Wahrscheinlichkeit, dass der Computer die Verhandlung beendet. Im Durchschnitt bedeutet dies, dass Verhandlungen, wenn keine Einigung erzielt wird, etwa "
-    termination_probability3 = " Sekunden dauern, bevor sie vom Computerbeendet werden."
+    termination_probability3 = " Sekunden dauern, bevor sie vom Computer beendet werden."
 
     termination_explanation = "Dieser Prozess ähnelt dem Ziehen einer Kugel aus einer Urne mit 99 roten Kugeln und 1 blauen Kugel am Ende jeder Sekunde. Wird eine rote Kugel gezogen, geht die Verhandlung weiter; wird eine blaue Kugel gezogen, endet sie. Jede Ziehung ist unabhängig, sodass das Ergebnis einer Sekunde die nächste nicht beeinflusst."
 
@@ -103,7 +102,7 @@ class Lexicon:
 
 
 
-    comprehension_question_1_choice_1 = "Das Experiment besteht aus 30 Rungen."
+    comprehension_question_1_choice_1 = "Das Experiment besteht aus 30 Runden."
     comprehension_question_1_choice_2 = "Die Teilnehmer werden zufällig entweder als Käufer oder als Verkäufer zugewiesen."
     comprehension_question_1_choice_3 = "In manchen Runden haben Sie die Rolle des Verkäufers und in anderen Runden die Rolle des Käufers."
     comprehension_question_1_choice_4 = "Zu Beginn jeder Runde werden ein Käufer und ein Verkäufer zufällig gepaart."
@@ -118,10 +117,10 @@ class Lexicon:
 
     intro_practice_rounds_title = "Beginn der Übungsrunden"
     intro_practice_rounds_1 = "In diesem Experiment sind Sie"
-    intro_practice_rounds_2 = "und diese Rolle bleibt während des gesamten Experiments gleich. Bevor das Experiment beginnt, werden Sie drei Übungsrunde durchführen. Der Hauptzweck dieser Übungsrunden ist es, Sie mit der Umgebung vertraut zu machen. Keine Übungsrunde trägt zu Ihrer endgültigen Auszahlung bei."
+    intro_practice_rounds_2 = "und diese Rolle bleibt während des gesamten Experiments gleich. Bevor das Experiment beginnt, werden Sie drei Übungsrunden durchführen. Der Hauptzweck dieser Übungsrunden ist es, Sie mit der Umgebung vertraut zu machen. Keine Übungsrunde trägt zu Ihrer endgültigen Auszahlung bei."
 
     intro_real_game_title = "Ende der Übungsrunden"
-    intro_real_game = "Jetzt beginnt das eigentliche Experiment. Sie werden mit Menschen für insgesamt 30 Runden verhandeln. Wir werden eine dieser Runden zufällig auswählen, um Ihre endgültige Auszahlung zu berechnen."
+    intro_real_game = "Jetzt beginnt das eigentliche Experiment. Sie werden mit anderen Experimentteilnehmern für insgesamt 30 Runden verhandeln. Wir werden eine dieser Runden zufällig auswählen, um Ihre endgültige Auszahlung zu berechnen."
     
 
     #-----------------------------------
@@ -221,7 +220,6 @@ class Lexicon:
 
     bargain_page_current_price_offer = "Ihr aktuelles Preisangebot:"
     
-    submit = "Absenden"
     accept_other_player_offer = "Akzeptieren"
 
     bargain_page_other_player_accepts_your_current_offer = "Wenn der andere Spieler Ihr aktuelles Angebot akzeptiert:"

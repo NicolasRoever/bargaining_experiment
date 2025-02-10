@@ -15,7 +15,7 @@ SESSION_CONFIGS = [
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
     termination_treatment = "low_prob", # either "low_prob" or "high_prob"
-    transaction_costs = 0.05,
+    transaction_costs = 0.15,
     doc="""
     Adjust the number of groups dependent on the number of participants. There are 8 participants per group."""
     )
@@ -23,8 +23,7 @@ SESSION_CONFIGS = [
     
 
 # ISO-639 code
-# for example: de, fr, ja, ko, zh-hans
-LANGUAGE_CODE = 'de'
+LANGUAGE_CODE = 'de' # or 'en
 
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
