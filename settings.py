@@ -41,6 +41,14 @@ PARTICIPANT_FIELDS = [
 
 SESSION_FIELDS = []
 
+ROOMS = [
+    dict(
+        name='bargain_live',
+        display_name='Bargain Live',
+        participant_label_file='participant_labels/generated_labels_for_20_participants.txt'
+    )
+]
+
 
 # e.g. EUR, GBP, CNY, JPY
 REAL_WORLD_CURRENCY_CODE = 'EUR'

@@ -134,6 +134,10 @@ These are the commands for the university server we are using to run the experim
 - Then start the server
 
 
+## When Doing a New Data Collection
+
+- Check that you have the right participant label file in the room settings!
+
 
 
 
