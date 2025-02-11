@@ -136,7 +136,11 @@ These are the commands for the university server we are using to run the experim
 
 ## When Doing a New Data Collection
 
+
+
 - Check that you have the right participant label file in the room settings!
+- Set up the session with the right number of PLAYERS AND GROUPS
+
 
 
 
