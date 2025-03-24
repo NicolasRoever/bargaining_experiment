@@ -161,16 +161,22 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     Returns:
         None
     """
+
+    print("Here is the offer the server receives: ", data.get('amount'))
     
     # Update the amount_proposed_list field
     amount_proposed_list = json.loads(player.amount_proposed_list)
-    amount_proposed_list.append(data.get('amount'))
+    offer = data.get('amount')
+    if offer is not None:
+        amount_proposed_list.append(float(offer))
     player.amount_proposed_list = json.dumps(amount_proposed_list)
     player.current_amount_proposed = data.get('amount')
 
     # Update the offer_time_list field
     offer_time_list = json.loads(player.offer_time_list)
-    offer_time_list.append(data.get('offer_time'))
+    offer_time = data.get('offer_time')
+    if offer_time is not None:
+        offer_time_list.append(float(offer_time))
     player.offer_time_list = json.dumps(offer_time_list)
     player.proposal_made = True
 

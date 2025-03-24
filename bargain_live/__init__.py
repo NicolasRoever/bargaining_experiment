@@ -684,6 +684,7 @@ class BargainReal(Page):
                                                             practice_round = False)
                         
     
+        print('Offer time list: ', player.offer_time_list)
         return {0: broadcast}
     
 
@@ -715,17 +716,17 @@ class BargainReal(Page):
 
 
 
-page_sequence = [Consent, 
-                 BargainInstructions,
-                 PracticeRoundsIntro,
-                 BargainPracticeOneIntro,
-                 BargainPracticeTwoIntro,
-                 BargainPracticeThreeIntro,
-                 BargainInfoRealGame,
+page_sequence = [#Consent, 
+                 #BargainInstructions,
+                 #PracticeRoundsIntro,
+                 #BargainPracticeOneIntro,
+                 #BargainPracticeTwoIntro,
+                 #BargainPracticeThreeIntro,
+                 #BargainInfoRealGame,
                  BargainWaitPage,
-                 BargainPracticeOne,
-                 BargainPracticeTwo,
-                 BargainPracticeThree,
+                 #BargainPracticeOne,
+                 #BargainPracticeTwo,
+                 #BargainPracticeThree,
                  BargainReal, 
                  RoundResults, 
                  FinalResults]

@@ -107,6 +107,10 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
+- Some players report switching between buyer and seller roles. This is bad! Label: xok4JQIx , but I think the guy was confused
+- Also, there seems to be "Keine Eingigung", obwohl angenommen wurde. I guess it is a mistake in the if-clause? 
+- When setting the final payoffs, I make a mistake: people who have a payoff below 0 are set to 0, not to 15.
+- The offer times list only records NULL's :(
 
 
 
