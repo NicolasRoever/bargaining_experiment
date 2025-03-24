@@ -106,15 +106,17 @@ class Lexicon:
 
     comprehension_question_2_choice_1 = "All participants can submit prices at any time."
     comprehension_question_2_choice_2 = "The seller’s value for the object is 0 euros."
-    comprehension_question_2_choice_3 = "The buyer’s value for the object will be randomly set between 0 and 60 euros."
+    comprehension_question_2_choice_3 = "The buyer’s value for the object will be randomly set between 1 and 30 euros."
     comprehension_question_2_choice_4 = "At the beginning of each match, the buyer’s value for the object will be known to a seller in the same pair."
 
     comprehension_question_3_choice_1 = "The gains from trade are zero."
     comprehension_question_3_choice_2 = "The accumulated negotiation costs will not be deducted from the participation fees."
     comprehension_question_3_choice_3 = "The accumulated negotiation costs will be deducted from the participation fees."
 
-    strategy_question_buyer = "Suppose you are a buyer with a valuation of 20. Describe your strategy for the bargaining game."
-    strategy_question_seller = "Suppose you are a seller with a valuation of 0 and a buyer makes an offer of 10. Describe your strategy for the bargaining game."
+    strategy_question_buyer = "Suppose you are a buyer with a valuation of 20. Describe your strategy for the bargaining game. Write at least 2 sentences."
+    strategy_question_seller = "Suppose you are a seller with a valuation of 0 and a buyer makes an offer of 10. Describe your strategy for the bargaining game. Write at least 2 sentences."
+
+
 
     intro_practice_rounds_title = "Start of Practice Rounds"
 

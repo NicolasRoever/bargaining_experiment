@@ -109,7 +109,7 @@ class Lexicon:
 
     comprehension_question_2_choice_1 = "Alle Teilnehmer können jederzeit Angebote abgeben."
     comprehension_question_2_choice_2 = "Der Wert des Objekts für den Verkäufer beträgt 0 Euro."
-    comprehension_question_2_choice_3 = "Der Wert des Objekts für den Käufer wird zufällig zwischen 0 und 60 Euro festgelegt."
+    comprehension_question_2_choice_3 = "Der Wert des Objekts für den Käufer wird zufällig zwischen 1 und 30 Euro festgelegt."
     comprehension_question_2_choice_4 = "Der Verkäufer kennt den Wert des Objekts für den Käufer."
 
     comprehension_question_3_choice_1 = "Die angesammelten Verhandlungskosten werden nicht von der Teilnahmevergütung abgezogen."
@@ -122,8 +122,8 @@ class Lexicon:
     intro_real_game_title = "Ende der Übungsrunden"
     intro_real_game = "Jetzt beginnt das eigentliche Experiment. Sie werden mit anderen Experimentteilnehmern für insgesamt 30 Runden verhandeln. Wir werden eine dieser Runden zufällig auswählen, um Ihre endgültige Auszahlung zu berechnen."
 
-    strategy_question_buyer = "Stellen Sie sich vor, dass Sie ein Käufer sind und um ein Object verhandeln, dass Ihnen 20 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario."
-    strategy_question_seller = "Stellen Sie sich vor, dass Sie ein Verkäufer sind und um ein Object verhandeln, dass Ihnen 0 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario."
+    strategy_question_buyer = "Stellen Sie sich vor, dass Sie ein Käufer sind und um ein Object verhandeln, dass Ihnen 20 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario. Schreiben Sie mindestens 3 Sätze."
+    strategy_question_seller = "Stellen Sie sich vor, dass Sie ein Verkäufer sind und um ein Object verhandeln, dass Ihnen 0 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario. Schreiben Sie mindestens 3 Sätze."
     
 
     #-----------------------------------

@@ -23,7 +23,7 @@ SESSION_CONFIGS = [
     
 
 # ISO-639 code
-LANGUAGE_CODE = 'de' # or 'en
+LANGUAGE_CODE = 'en' # 'en' or 'de'
 
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

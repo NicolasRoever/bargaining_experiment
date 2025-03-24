@@ -57,7 +57,7 @@ function processOfferSubmission(slider, player_role, threshold, sendOfferParams)
     if (player_role == "Seller") {
         sendOffer(sendOfferParams);
     } else {
-        if (slider.value() < threshold) {
+        if (slider.value() <= threshold) {
             sendOffer(sendOfferParams);
         } else {
             // Get the warning div element and display it.
@@ -89,11 +89,12 @@ function processOfferSubmission(slider, player_role, threshold, sendOfferParams)
 function sendOffer({ buttonId, slider, startTime, myId, myRole }) {
     const button = document.getElementById(buttonId);
     button.classList.add('active');
+    const startTimeInSeconds = new Date(startTime).getTime() / 1000;
 
     const offerDetails = {
         type: 'propose',
         amount: slider.value(),
-        offer_time: Math.floor(Date.now() / 1000 - startTime),
+        offer_time: Math.floor(Date.now() / 1000 - startTimeInSeconds),
         proposal_by_id: myId, 
         proposal_by_role: myRole
 
@@ -149,11 +150,13 @@ function sendAccept({ payoffElement, startTime, myId }) {
 
     console.log("Payoff inside acceppt function",payoff);
 
+    const startTimeInSeconds = new Date(startTime).getTime() / 1000;
+
     // Prepare the data to be sent via liveSend
     const data = {
         type: 'accept',
         amount: payoff,
-        acceptance_time: Math.floor(Date.now() / 1000 - startTime),
+        acceptance_time: Math.floor(Date.now() / 1000 - startTimeInSeconds),
         accepted_by: myId,
     };
 
@@ -164,9 +167,10 @@ function sendAccept({ payoffElement, startTime, myId }) {
 
 // This function is called when the player clicks the "Terminate" button to terminate the game.
 function sendTerminate({ startTime, myId }) {
+    const startTimeInSeconds = new Date(startTime).getTime() / 1000;
     liveSend({
         type: 'terminate',
-        termination_time: Math.floor(Date.now() / 1000 - startTime),
+        termination_time: Math.floor(Date.now() / 1000 - startTimeInSeconds),
         terminated_by: myId
     });
 }

@@ -293,7 +293,7 @@ class Consent(Page):
 
 class BargainInstructions(Page):
     form_model = 'player'
-    form_fields = ['comprehension_1', 'comprehension_2', 'comprehension_3', 'question_strategy']
+    form_fields = ['comprehension_1', 'comprehension_2', 'question_strategy']
     @staticmethod
     def vars_for_template(player: Player):
 
@@ -313,9 +313,7 @@ class BargainInstructions(Page):
         
         if values['comprehension_2'] != 4:
             return "You have not answered the second question correctly. Please try again."
-        
-        if values['comprehension_3'] != 1:
-            return "You have not answered the third question correctly. Please try again."
+    
 
     @staticmethod
     def is_displayed(player):
@@ -722,16 +720,17 @@ class BargainReal(Page):
 
 
 page_sequence = [#Consent, 
-                 #BargainInstructions,
-                 #PracticeRoundsIntro,
-                 #BargainPracticeOneIntro,
-                 #BargainPracticeTwoIntro,
-                 #BargainPracticeThreeIntro,
-                 #BargainInfoRealGame,
+                 BargainInstructions,
+                 PracticeRoundsIntro,
+                 BargainPracticeOneIntro,
+                 BargainPracticeTwoIntro,
+                 BargainPracticeThreeIntro,
+                 BargainInfoRealGame,
                  BargainWaitPage,
-                 #BargainPracticeOne,
-                 #BargainPracticeTwo,
-                 #BargainPracticeThree,
+                 BargainPracticeOne,
+                 BargainPracticeTwo,
+                 BargainPracticeThree,
                  BargainReal, 
                  RoundResults, 
-                 FinalResults]
+                 FinalResults
+                 ]
