@@ -32,7 +32,7 @@ function initializeElements() {
 // Function to initialize the sliders
 function initializeSliders() {
     // Initialize the first slider (my_slider)
-    window.my_slider = new mgslider("offer", 0.00000000001, 60, 1);
+    window.my_slider = new mgslider("offer", 0.00000000001, 30, 1);
     my_slider.f2s = function (val) {
         return val.toFixed(2) + '€';
     };
@@ -51,6 +51,39 @@ function initializeSliders() {
     // slider_other.recall();
 }
 
+//This function either displays a warning or calls the sendOffer function
+function processOfferSubmission(slider, player_role, threshold, sendOfferParams) {
+
+    if (player_role == "Seller") {
+        sendOffer(sendOfferParams);
+    } else {
+        if (slider.value() < threshold) {
+            sendOffer(sendOfferParams);
+        } else {
+            // Get the warning div element and display it.
+            var warningDiv = document.getElementById('offer_submit_warning');
+            warningDiv.style.display = 'block';
+            // Get the warning div element and display it.
+        var warningDiv = document.getElementById('offer_submit_warning');
+        warningDiv.style.display = 'block';
+
+        // Set up a one-time event listener for the confirm button.
+        document.getElementById('confirmButton').addEventListener('click', function onConfirm() {
+        // Hide the warning div.
+        warningDiv.style.display = 'none';
+        // Call sendOffer upon confirmation.
+        sendOffer(sendOfferParams);
+        }, { once: true });
+
+        // Set up a one-time event listener for the cancel button.
+        document.getElementById('cancelButton').addEventListener('click', function onCancel() {
+            // Simply hide the warning div.
+            warningDiv.style.display = 'none';
+        }, { once: true });
+        }
+    }
+
+}
 
 // This function is called when the player clicks the "Submit" button to make an offer. 
 function sendOffer({ buttonId, slider, startTime, myId, myRole }) {
