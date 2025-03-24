@@ -148,6 +148,11 @@ class Player(BasePlayer):
         ], 
         blank=True
     )
+
+    question_strategy = models.LongStringField(
+        blank=False
+    )
+
     
 
 #-----------------------------------------------------------------------------------------------   
@@ -288,7 +293,7 @@ class Consent(Page):
 
 class BargainInstructions(Page):
     form_model = 'player'
-    form_fields = ['comprehension_1', 'comprehension_2', 'comprehension_3']
+    form_fields = ['comprehension_1', 'comprehension_2', 'comprehension_3', 'question_strategy']
     @staticmethod
     def vars_for_template(player: Player):
 

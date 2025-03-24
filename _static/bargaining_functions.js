@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 function initializeElements() {
     // This function initializes global variables at the beginning of the game
     window.btnSliderSubmit = document.getElementById('btn-offer-slider');
@@ -73,13 +66,10 @@ function sendOffer({ buttonId, slider, startTime, myId, myRole }) {
 
     };
 
-
     liveSend(offerDetails);
 }
 
-function logImportSuccess() {
-    console.log("Successful Import");
-}
+
 
 function startCountdown(overlayId, js_vars, initialCount = 5) {
     /**

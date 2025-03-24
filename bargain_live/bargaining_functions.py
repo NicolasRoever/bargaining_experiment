@@ -161,8 +161,6 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     Returns:
         None
     """
-
-    print("Here is the offer the server receives: ", data.get('amount'))
     
     # Update the amount_proposed_list field
     amount_proposed_list = json.loads(player.amount_proposed_list)
@@ -175,6 +173,7 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     # Update the offer_time_list field
     offer_time_list = json.loads(player.offer_time_list)
     offer_time = data.get('offer_time')
+    print("Here is the offer time: ", offer_time)
     if offer_time is not None:
         offer_time_list.append(float(offer_time))
     player.offer_time_list = json.dumps(offer_time_list)
@@ -761,9 +760,12 @@ def create_dictionary_with_html_variables_for_bargain_instructions(player: Any) 
 
     transaction_costs_in_cents = round(transaction_costs * 100)
 
+    player_role = player.participant.vars['role_in_game']
+
     return {'termination_probability_in_percent': termination_probability_in_percent, 
             'transaction_costs_in_cents': transaction_costs_in_cents, 
-            'expected_termination_time': expected_termination_time
+            'expected_termination_time': expected_termination_time,
+            'player_role': player_role
             }
 
 

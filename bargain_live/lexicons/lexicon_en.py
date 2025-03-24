@@ -113,6 +113,9 @@ class Lexicon:
     comprehension_question_3_choice_2 = "The accumulated negotiation costs will not be deducted from the participation fees."
     comprehension_question_3_choice_3 = "The accumulated negotiation costs will be deducted from the participation fees."
 
+    strategy_question_buyer = "Suppose you are a buyer with a valuation of 20. Describe your strategy for the bargaining game."
+    strategy_question_seller = "Suppose you are a seller with a valuation of 0 and a buyer makes an offer of 10. Describe your strategy for the bargaining game."
+
     intro_practice_rounds_title = "Start of Practice Rounds"
 
     intro_practice_rounds_1 = "In this experiment, you are assigned the role of"
@@ -164,6 +167,9 @@ class Lexicon:
     termination_text_player_other = "The bargaining was terminated by the other player and no deal has been made."
 
     no_deal_text = "No deal was made in the given time frame."
+
+
+    bargain_page_warning_message = "Your offer is higher than the value of the object for you. Are you sure you want to submit your offer?"
           
 
     #-----------------------------------

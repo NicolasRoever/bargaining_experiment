@@ -260,7 +260,17 @@
         <div class="three_columns_right" style="background-color: #ffffff; flex: 0.5"></div>
     </div>
 
-    <div id="notification" style="display:none; position: fixed; top: 52.5%; left: 80%; transform: translate(-50%, -50%); background-color: #ffebee; padding: 1.5%; border-radius: 2%; color: #c62828; font-size: 1.5em; z-index: 9999; text-align: center; width: 80%; max-width: 400px; box-shadow: 0 2px 4px rgba(198,40,40,0.2);">Notification text</div>
+    <div id="offer_submit_warning" style="display:none; position: fixed; top: 52.5%; left: 80%; transform: translate(-50%, -50%); background-color: #ffebee; padding: 1.5%; border-radius: 2%; color: #c62828; font-size: 1.5em; z-index: 9999; text-align: center; width: 80%; max-width: 400px; box-shadow: 0 2px 4px rgba(198,40,40,0.2);">
+        {{ Lexicon.bargain_page_warning_message }}
+        <br>
+        <button id="confirmButton" style="margin: 10px; padding: 0.5em 1em; background-color: #a5d6a7; border: none; border-radius: 4px; color: #1b5e20; font-size: 1em;">
+          ✅ Yes
+        </button>
+        <button id="cancelButton" style="margin: 10px; padding: 0.5em 1em; background-color: #ef9a9a; border: none; border-radius: 4px; color: #b71c1c; font-size: 1em;">
+          ❌ No
+        </button>
+      </div>
+      
 
 </div>
 
@@ -282,27 +292,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     //Countdown
-    let count = 5;
-    const overlay = document.getElementById('countdown-overlay');
-
-    // Determine prefix based on the language code passed in js_vars.
-    const prefix = (js_vars["langague_code"] === "en")
-        ? "Bargaining starts in"
-        : "Die Verhandlung beginnt in";
-
-    // Initialize the overlay text immediately.
-    overlay.textContent = `${prefix} ${count}`;
-
-    // Countdown functionality using setInterval.
-    const countdownInterval = setInterval(() => {
-        count--;
-        if (count > 0) {
-            overlay.textContent = `${prefix} ${count}`;
-        } else {
-            overlay.style.display = 'none';
-            clearInterval(countdownInterval);
-        }
-    }, 1000);
+    startCountdown(overlayId='countdown-overlay', js_vars=js_vars);
 
     initializeElements();  
     initializeSliders();

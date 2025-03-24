@@ -121,6 +121,9 @@ class Lexicon:
 
     intro_real_game_title = "Ende der Übungsrunden"
     intro_real_game = "Jetzt beginnt das eigentliche Experiment. Sie werden mit anderen Experimentteilnehmern für insgesamt 30 Runden verhandeln. Wir werden eine dieser Runden zufällig auswählen, um Ihre endgültige Auszahlung zu berechnen."
+
+    strategy_question_buyer = "Stellen Sie sich vor, dass Sie ein Käufer sind und um ein Object verhandeln, dass Ihnen 20 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario."
+    strategy_question_seller = "Stellen Sie sich vor, dass Sie ein Verkäufer sind und um ein Object verhandeln, dass Ihnen 0 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario."
     
 
     #-----------------------------------
@@ -255,6 +258,9 @@ class Lexicon:
     bargain_page_terminate_negotiation_heading = "Beendung der Verhandlung"
     bargain_page_terminate_negotiation_heading_1 = "Wenn Sie die Verhandlung beenden:"
     bargain_page_terminate_negotiation_heading_2 = "Wenn der andere Spieler die Verhandlung beendet:"
+
+
+    bargain_page_warning_message = "Ihr Angebot ist höher als der Wert des Objekts für Sie. Sind Sie sicher, dass Sie das Angebot absenden möchten?"
 
 
 

@@ -311,6 +311,21 @@
 
     </div>
 
+
+    {% if player_role == "Buyer" %}
+    <p>
+    
+    {{ Lexicon.strategy_question_buyer }}
+    </p>
+    {% else %}
+    <p>
+    {{ Lexicon.strategy_question_seller }}
+    </p>
+    {% endif %}
+    <form method="post">
+        {{ form.question_strategy }}
+    </form>
+
     <hr>
 
     <br>
