@@ -407,7 +407,7 @@ def set_final_player_payoff(player: Any, C: Any) -> None:
 
     player.participant.random_round = random.choice(list(range(1, C.NUM_ROUNDS)))
     player.participant.payoff = player.in_round(player.participant.random_round).payoff + player.group.subsession.session.config['participation_fee']
-    player.participant.vars["clerpay_amount"] = float(player.participant.payoff) if float(player.participant.payoff) >= 0 else 0
+    player.participant.vars["clerpay_amount"] = float(player.participant.payoff) if float(player.participant.payoff) >= 7.5 else 7.5
 
 
 
@@ -762,10 +762,13 @@ def create_dictionary_with_html_variables_for_bargain_instructions(player: Any) 
 
     player_role = player.participant.vars['role_in_game']
 
+    minimum_payoff = player.group.subsession.session.config['minimum_payoff']
+
     return {'termination_probability_in_percent': termination_probability_in_percent, 
             'transaction_costs_in_cents': transaction_costs_in_cents, 
             'expected_termination_time': expected_termination_time,
-            'player_role': player_role
+            'player_role': player_role, 
+            'minimum_payoff': minimum_payoff
             }
 
 

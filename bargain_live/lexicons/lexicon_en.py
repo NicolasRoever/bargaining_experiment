@@ -99,6 +99,12 @@ class Lexicon:
     practice_round_3_text = "In this practice round, the computer will make a random offer after 10 seconds and improve it every 10 seconds. You can choose to accept the offer, reject it, make a counter-offer, or terminate the negotiation. The computer will accept your second offer. If no agreement is reached according to the given rules, the negotiation will automatically end after 120 seconds."
 
 
+    minimum_payoff_text_1 = "The minimum payoff in this experiment is "
+    minimum_payoff_text_2 = "€. If your payoff in the round we select for payment is under "
+    minimum_payoff_text_3 = "€, you will receive "
+    minimum_payoff_text_4 = "€."
+
+
     comprehension_question_1_choice_1 = "The experiment consists of 30 matches."
     comprehension_question_1_choice_2 = "Participants will be randomly assigned the role of buyer or seller."
     comprehension_question_1_choice_3 = "The role of buyer and seller will be alternated across matches."
@@ -185,7 +191,7 @@ class Lexicon:
     final_results_2 = " was chosen to be payoff-relevant. "
 
     below_minimum_payoff_1 = "The payoff from this match would be: "
-    below_minimum_payoff_2 = "€. However, this is below the minimum payoff of 15€. Thus, your final payoff is 15€."
+    below_minimum_payoff_2 = "€. However, this is below the minimum payoff of 7.5€. Thus, your final payoff is 7.5€."
 
         
     final_results_3 = "This means the money you get for this participating in the experiment is: "

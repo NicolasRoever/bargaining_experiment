@@ -101,6 +101,10 @@ class Lexicon:
     practice_round_3_text = "In dieser Übungsrunde macht der Computer nach 10 Sekunden ein zufälliges Angebot und verbessert es alle 10 Sekunden. Sie können das Angebot annehmen, es ablehnen, ein Gegenangebot machen oder die Verhandlung beenden. Der Computer wird Ihr zweites Angebot akzeptieren. Falls gemäß der gegebenen Regeln keine Einigung erzielt wird, endet die Verhandlung automatisch nach 120 Sekunden."
 
 
+    minimum_payoff_text_1 = "Hinweis: Die minimale Auszahlung in diesem Experiment beträgt "
+    minimum_payoff_text_2 = "€. Wenn ihr Gewinn in der Runde, die wir für die Auszahlung auswählen, unter "
+    minimum_payoff_text_3 = "€ liegt, erhalten Sie als Vergütung "
+    minimum_payoff_text_4 = "€."
 
     comprehension_question_1_choice_1 = "Das Experiment besteht aus 30 Runden."
     comprehension_question_1_choice_2 = "Die Teilnehmer werden zufällig entweder als Käufer oder als Verkäufer zugewiesen."
@@ -122,8 +126,8 @@ class Lexicon:
     intro_real_game_title = "Ende der Übungsrunden"
     intro_real_game = "Jetzt beginnt das eigentliche Experiment. Sie werden mit anderen Experimentteilnehmern für insgesamt 30 Runden verhandeln. Wir werden eine dieser Runden zufällig auswählen, um Ihre endgültige Auszahlung zu berechnen."
 
-    strategy_question_buyer = "Stellen Sie sich vor, dass Sie ein Käufer sind und um ein Object verhandeln, dass Ihnen 20 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario. Schreiben Sie mindestens 3 Sätze."
-    strategy_question_seller = "Stellen Sie sich vor, dass Sie ein Verkäufer sind und um ein Object verhandeln, dass Ihnen 0 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario. Schreiben Sie mindestens 3 Sätze."
+    strategy_question_buyer = "Stellen Sie sich vor, dass Sie ein Käufer sind und um ein Objekt verhandeln, dass Ihnen 20 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario. Schreiben Sie mindestens 3 Sätze."
+    strategy_question_seller = "Stellen Sie sich vor, dass Sie ein Verkäufer sind und um ein Objekt verhandeln, dass Ihnen 0 Euro wert ist. Beschreiben Sie Ihre Strategie für das Verhandlungsszenario. Schreiben Sie mindestens 3 Sätze."
     
 
     #-----------------------------------
@@ -168,7 +172,7 @@ class Lexicon:
     termination_text_player_self = "Sie haben die Verhandlung beendet und es wurde keine Einigung erzielt."
     termination_text_player_other = "Die Verhandlung wurde von dem anderen Teilnehmer beendet und es wurde keine Einigung erzielt."
 
-    no_deal_text = "Es wurde keine Einigung erzielt in der gegebenen Zeitspanne."
+    no_deal_text = "Keine Einigung."
 
 
     #-----------------------------------
@@ -182,7 +186,7 @@ class Lexicon:
     final_results_2 = " wurde für die Auszahlung ausgewählt. "
 
     below_minimum_payoff_1 = "Der Gewinn aus dieser Runde wäre: "
-    below_minimum_payoff_2 = "€. Allerdings ist dieser Gewinn unter dem Minimum von 15€. Deshalb beträgt Ihre endgültige Auszahlung 15€."
+    below_minimum_payoff_2 = "€. Allerdings ist dieser Gewinn unter dem Minimum von 7.5€. Deshalb beträgt Ihre endgültige Auszahlung 7.5€."
 
     final_results_3 = "Das bedeutet, dass das Geld, das Sie für diese Teilnahme im Experiment erhalten, beträgt: "
     final_results_4 = "€. Es wird wie folgt berechnet:"

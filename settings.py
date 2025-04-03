@@ -15,7 +15,8 @@ SESSION_CONFIGS = [
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
     termination_treatment = "low_prob", # either "low_prob" or "high_prob"
-    transaction_costs = 0.1,
+    transaction_costs = 0.05,
+    minimum_payoff = 7.5,
     doc="""
     Adjust the number of groups dependent on the number of participants. There are 8 participants per group."""
     )
@@ -32,7 +33,7 @@ LANGUAGE_CODE = 'en' # 'en' or 'de'
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1.00, participation_fee=20.00, doc=""
+    real_world_currency_per_point=1.00, participation_fee=10.00, doc=""
 )
 
 PARTICIPANT_FIELDS = [
@@ -45,7 +46,7 @@ ROOMS = [
     dict(
         name='bargain_live',
         display_name='Bargain Live',
-        participant_label_file='participant_labels/generated_labels_for_20_participants.txt'
+        participant_label_file='participant_labels/generated_labels_for_12_participants.txt'
     )
 ]
 
