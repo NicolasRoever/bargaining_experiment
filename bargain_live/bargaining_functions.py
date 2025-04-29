@@ -80,7 +80,7 @@ def update_broadcast_dict_with_basic_values(
     """
     # Calculate elapsed bargaining time
     bargaining_time_elapsed = round(
-        (datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds()
+        time.time() - group.bargain_start_time
     )
     
     # Set variables based on elapsed time
@@ -222,7 +222,7 @@ def update_group_database_upon_random_termination(group: Any) -> None:
     Returns:
         None
     """
-    bargaining_time_elapsed = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
+    bargaining_time_elapsed = round(time.time() - group.bargain_start_time)
     group.is_finished = True
     group.termination_time = bargaining_time_elapsed
     group.termination_mode = 'Random_Termination'
@@ -1004,7 +1004,7 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
         broadcast["finished"] = True
 
     # Update database and finish bargaining if random termination time is reached
-    bargaining_time_elapsed = round((datetime.now(tz=timezone.utc)- datetime.fromisoformat(group.bargain_start_time)).total_seconds())
+    bargaining_time_elapsed = round(time.time() - group.bargain_start_time)
 
     if bargaining_time_elapsed >= group.random_termination_time_current_round:
 

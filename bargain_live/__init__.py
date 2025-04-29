@@ -62,7 +62,7 @@ class Group(BaseGroup):
     termination_time = models.IntegerField()
     terminated_by = models.IntegerField()
 
-    bargain_start_time = models.StringField()
+    bargain_start_time = models.FloatField()
     bargaining_duration = models.FloatField()
    
     current_seller_offer = models.FloatField()
@@ -343,9 +343,8 @@ class BargainWaitPage(WaitPage):
 
     @staticmethod
     def after_all_players_arrive(group):
-        # Set start time 3 seconds in the future
-        bargain_start_time = datetime.now(tz=timezone.utc) + timedelta(seconds=5)
-        group.bargain_start_time = bargain_start_time.isoformat()
+        # Set start time 5 seconds in the future
+        group.bargain_start_time = time.time() + 5
 
 
 class BargainPracticeOneIntro(TranslationTemplate):
@@ -496,7 +495,7 @@ class BargainPracticeTwo(Page):
         #Initialize variables
         group = player.group
         broadcast = {}
-        bargaining_time_elapsed = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
+        bargaining_time_elapsed = round(time.time() - group.bargain_start_time)
 
         broadcast = update_broadcast_dict_with_basic_values(
             player=player,
@@ -569,7 +568,7 @@ class BargainPracticeThree(Page):
         #Initialize variables
         group = player.group
         broadcast = {}
-        bargaining_time_elapsed = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
+        bargaining_time_elapsed = round(time.time() - group.bargain_start_time)
         amount_proposed_list = json.loads(player.amount_proposed_list)
 
         broadcast = update_broadcast_dict_with_basic_values(
