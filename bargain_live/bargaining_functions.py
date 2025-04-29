@@ -85,7 +85,6 @@ def update_broadcast_dict_with_basic_values(
     
     # Set variables based on elapsed time
     if bargaining_time_elapsed < 0:
-        current_discount_factor = None
         current_transaction_costs = None
         current_survival_probability = 1
         cumulated_TA_costs = None
@@ -94,7 +93,6 @@ def update_broadcast_dict_with_basic_values(
         total_cost_y_values = json.loads(player.total_costs_list)[:bargaining_time_elapsed]
         termination_probabilities_list = json.loads(player.termination_probabilities_list)
         current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
-        current_discount_factor = json.loads(player.discount_factors_list)[bargaining_time_elapsed]
         current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
         current_survival_probability = 1 - current_termination_probability
         cumulated_TA_costs = total_cost_y_values[bargaining_time_elapsed - 1] if total_cost_y_values else None
@@ -104,7 +102,6 @@ def update_broadcast_dict_with_basic_values(
         player.current_TA_costs = current_transaction_costs
         player.cumulated_TA_costs = cumulated_TA_costs
         player.current_payoff_terminate = -cumulated_TA_costs
-        player.current_discount_factor = current_discount_factor
     
     # Update the broadcast dictionary with the new values
     broadcast.update({
@@ -116,7 +113,6 @@ def update_broadcast_dict_with_basic_values(
         'total_cost_y_values': total_cost_y_values,
         'x_axis_values_TA_graph': json.loads(player.x_axis_values_TA_graph),
         'current_transaction_costs': current_transaction_costs,
-        'current_discount_factor': current_discount_factor,
         'current_survival_probability': current_survival_probability,
     })
     
@@ -339,7 +335,6 @@ def record_player_payoff_from_round(player: Any) -> None:
     if player.group.field_maybe_none('deal_price'):
 
         transaction_costs = player.cumulated_TA_costs
-        discount_factor = player.current_discount_factor #Recall that this is a percentage of the money to keee.
 
         if player.participant.vars['role_in_game'] == "Seller":
             player.payoff = (player.group.deal_price - player.valuation)  - transaction_costs 
@@ -698,18 +693,8 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
         Dict[str, Any]: A dictionary containing the results of the round.
     """
 
-    deal_price = player.group.field_maybe_none('deal_price')
-    negative_deal_price = -deal_price if deal_price is not None else None
-    transaction_costs = player.cumulated_TA_costs
-    negative_transaction_costs = -transaction_costs
-    valuation = player.valuation
-    negative_valuation = -valuation
-    payoff = player.payoff
-    participation_fee = player.group.subsession.session.config['participation_fee']
-    payoff_plus_participation_fee = payoff + participation_fee
     role_in_game = player.participant.vars['role_in_game']
-
-    
+    negative_deal_price = -player.group.field_maybe_none('deal_price') if player.group.field_maybe_none('deal_price') is not None else None
 
     if practice_round == True:
         other_role = "Buyer" if player.participant.vars['role_in_game'] == "Seller" else "Seller"
@@ -717,29 +702,28 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
     else:
         other_role = player.get_others_in_group()[0].participant.vars['role_in_game']
         round_number = player.round_number - 3
-    if deal_price is not None:
+
+    if player.group.field_maybe_none('deal_price') is not None:
         if player.participant.vars['role_in_game'] == "Buyer":
-            gains_from_trade = valuation - deal_price
+            gains_from_trade = player.valuation - player.group.field_maybe_none('deal_price')
         else:
-            gains_from_trade = deal_price - valuation
+            gains_from_trade = player.group.field_maybe_none('deal_price') - player.valuation
     else:
-        loss_from_discounting = None
-        negative_loss_from_discounting = None
         gains_from_trade = None
-        discounted_gains_from_trade = None
 
     return dict(
-        deal_price=round_or_fallback(deal_price),
+        deal_price=round_or_fallback(player.group.field_maybe_none('deal_price')),
         negative_deal_price=round_or_fallback(negative_deal_price),
-        valuation=round_or_fallback(valuation),
-        negative_valuation=round_or_fallback(negative_valuation),
+        valuation=round_or_fallback(player.valuation),
+        negative_valuation=round_or_fallback(-player.valuation),
         gains_from_trade=round_or_fallback(gains_from_trade),
-        transaction_costs=round_or_fallback(transaction_costs),
-        negative_transaction_costs=round_or_fallback(negative_transaction_costs),
+        transaction_costs=round_or_fallback(player.cumulated_TA_costs),
+        negative_transaction_costs=round_or_fallback(-player.cumulated_TA_costs),
         other_role=other_role,
-        payoff=round_or_fallback(payoff),
-        participation_fee=round_or_fallback(participation_fee),
-        payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee),
+        payoff=round_or_fallback(player.payoff),
+        participation_fee=round_or_fallback(player.group.subsession.session.config['participation_fee']),
+        payoff_plus_participation_fee=round_or_fallback(player.payoff + player.group.subsession.session.config['participation_fee']),
+        TA_treatment = player.group.subsession.session.vars['TA_treatment'],
         round_number = round_number,
         practice_round = practice_round, 
         role_in_game = role_in_game

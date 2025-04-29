@@ -68,11 +68,14 @@
         <div>{{ Lexicon.price_label }}<span class="amount">{{ negative_deal_price }}</span></div>
         <div class="line"></div>
         <div>{{ Lexicon.gains_from_trade_label }}<span class="amount">{{ gains_from_trade }}</span></div>
+        
         <div class="line"></div>
+        {% if TA_treatment == True %}
         <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
         <div class="line"></div>
         <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
         <div class="line"></div>
+        {% endif %}
         <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
         <div class="double-line"></div>
         <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
@@ -88,10 +91,12 @@
             <div class="line"></div>
             <div>{{ Lexicon.gains_from_trade_label }}<span class="amount">{{ gains_from_trade }}</span></div>
             <div class="line"></div>
+            {% if TA_treatment == True %}
             <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
             <div class="line"></div>
             <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
             <div class="line"></div>
+            {% endif %}
             <div>{{ Lexicon.participation_fee_label }}<span class="amount">{{ participation_fee }}</span></div>
             <div class="double-line"></div>
             <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
@@ -120,10 +125,12 @@
             <div class="line"></div>
             <div>{{ Lexicon.gains_from_trade_label }}<span class="amount"> 0 </span></div>
             <div class="line"></div>
+            {% if TA_treatment == True %}
             <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
             <div class="line"></div>
             <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
             <div class="line"></div>
+            {% endif %}
             <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
             <div class="double-line"></div>
                 <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
@@ -138,10 +145,13 @@
             <div class="line"></div>
             <div>{{ Lexicon.gains_from_trade_label }}<span class="amount">0</span></div>
             <div class="line"></div>
+            {% if TA_treatment == True %}
             <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
             <div class="line"></div>
+
             <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
             <div class="line"></div>
+            {% endif %}
             <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
             <div class="double-line"></div>
                 <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
@@ -177,10 +187,13 @@
             <div class="line"></div>
             <div>{{ Lexicon.gains_from_trade_label }}<span class="amount"> 0 </span></div>
             <div class="line"></div>
+            {% if TA_treatment == True %}
             <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
             <div class="line"></div>
+
             <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
             <div class="line"></div>
+            {% endif %}
             <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
             <div class="double-line"></div>
                 <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>
@@ -195,10 +208,12 @@
             <div class="line"></div>
             <div>{{ Lexicon.gains_from_trade_label }}<span class="amount">0</span></div>
             <div class="line"></div>
+            {% if TA_treatment == True %}
             <div>{{ Lexicon.transaction_costs_label }}<span class="amount">{{ negative_transaction_costs }}</span></div>
             <div class="line"></div>
             <div>{{ Lexicon.payoff_from_match_label }}<span class="amount">{{ payoff }}</span></div>
             <div class="line"></div>
+            {% endif %}
             <div>{{ Lexicon.participation_fee_label }}<span class="amount">+ {{ participation_fee }}</span></div>
             <div class="double-line"></div>
                 <div>{{ Lexicon.total_payoff_label }}<span class="amount">{{ payoff_plus_participation_fee }}</span></div>

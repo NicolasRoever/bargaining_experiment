@@ -208,9 +208,6 @@ def creating_session(subsession):
                                         cost_factor=subsession.session.config['transaction_costs'],
                                         total_bargaining_time=C.TOTAL_BARGAINING_TIME)
             
-            setup_player_shrinking_pie_discount_factors(player=player,
-                                                        delay_treatment_high=subsession.session.config['delay_treatment_high'],
-                                                        total_bargaining_time=C.TOTAL_BARGAINING_TIME)
             
             player.termination_probabilities_list = json.dumps(create_list_with_termination_probabilities_from_geometric_distribution(number_of_seconds=C.TOTAL_BARGAINING_TIME,
             probability_of_termination=subsession.session.config['termination_treatment']))
@@ -295,13 +292,15 @@ class Consent(TranslationTemplate):
         return player.subsession.round_number == 1
 
 
-class BargainInstructions(TranslationTemplate):
+class BargainInstructions(Page):
     form_model = 'player'
     form_fields = ['comprehension_1', 'comprehension_2', 'question_strategy']
     @staticmethod
     def vars_for_template(player: Player):
 
         dictionary_with_variables = create_dictionary_with_html_variables_for_bargain_instructions(player=player)
+
+        dictionary_with_variables.update(dict(Lexicon=Lexicon, **which_language))
 
         return dictionary_with_variables
     
@@ -321,18 +320,18 @@ class BargainInstructions(TranslationTemplate):
         return player.subsession.round_number == 1
     
 
-class PracticeRoundsIntro(TranslationTemplate):
+class PracticeRoundsIntro(Page):
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
-    
-    
     
     @staticmethod
     def vars_for_template(player: Player):
         role_in_game = player.participant.vars['role_in_game']
 
         dictionary = {'role_in_game': role_in_game}
+
+        dictionary.update(dict(Lexicon=Lexicon, **which_language))
 
 
         return dictionary
@@ -704,8 +703,8 @@ class BargainReal(Page):
 
 
 
-page_sequence = [Consent, 
-                 BargainInstructions,
+page_sequence = [#Consent, 
+                 #BargainInstructions,
                  PracticeRoundsIntro,
                  BargainPracticeOneIntro,
                  BargainPracticeTwoIntro,
