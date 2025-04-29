@@ -783,7 +783,7 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
     participation_fee = round_data.group.subsession.session.config['participation_fee']
     payoff_plus_participation_fee = payoff + participation_fee
     is_finished = round_data.group.is_finished
-    terminated = round_data.group.terminated
+
     deal_accepted_by = round_data.group.field_maybe_none('accepted_by')
 
     if deal_price is not None:
@@ -809,9 +809,10 @@ def create_payoff_dictionary(player: Any) -> Dict[str, Any]:
         participation_fee=round_or_fallback(participation_fee),
         payoff_plus_participation_fee=round_or_fallback(payoff_plus_participation_fee),
         is_finished=is_finished,
-        terminated=terminated,
+        terminated= round_data.group.terminated,
         deal_accepted_by=deal_accepted_by,
-        chosen_round=chosen_round
+        chosen_round=chosen_round,
+        TA_treatment = round_data.group.subsession.session.vars['TA_treatment']
     )
 
 def draw_termination_times(number_of_rounds: int, probability_of_termination: float) -> List[int]:

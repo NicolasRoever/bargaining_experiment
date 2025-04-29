@@ -247,11 +247,14 @@ class Lexicon:
     bargain_page_payoffs_heading = "Auszahlungen"
 
     bargain_page_payoffs_heading_1 = "Wenn ein Angebot akzeptiert wird:"
-    bargain_page_payoffs_seller_payoff = "Verkäufer: Akzeptiertes Angebot - Verhandlungskosten"
-    bargain_page_payoffs_buyer_payoff = "Käufer: Wert des Objekts - Akzeptiertes Angebot - Verhandlungskosten"
+    bargain_page_payoffs_seller_payoff_ta_costs = "Verkäufer: Akzeptiertes Angebot - Verhandlungskosten"
+    bargain_page_payoffs_buyer_payoff_ta_costs = "Käufer: Wert des Objekts - Akzeptiertes Angebot - Verhandlungskosten"
+    bargain_page_payoffs_seller_payoff_0_ta_costs = "Käufer: Wert des Objekts - Akzeptiertes Angebot"
+    bargain_page_payoffs_buyer_payoff_0_ta_costs = "Verkäufer: Akzeptiertes Angebot"
 
     bargain_page_payoffs_heading_2 = "Wenn der Käufer oder der Verkäufer die Verhandlung beendet:"
-    bargain_page_payoffs_both_payoff = "Beide: - Verhandlungskosten"
+    bargain_page_payoffs_both_payoff_ta_costs = "Beide: - Verhandlungskosten"
+    bargain_page_payoffs_both_payoff_0_ta_costs = "Beide: 0€"
 
     bargain_page_terminate_negotiation_button = "Beenden"
     bargain_page_terminate_negotiation = "Verhandlung beenden"

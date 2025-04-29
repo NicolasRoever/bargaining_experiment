@@ -254,11 +254,14 @@ class Lexicon:
 
     bargain_page_payoffs_heading = "Payoffs"
     bargain_page_payoffs_heading_1 = "If an offer is accepted:"
-    bargain_page_payoffs_seller_payoff = "Seller's payoff: Accepted offer - Negotiation costs"
-    bargain_page_payoffs_buyer_payoff = "Buyer's payoff: Buyer's valuation - Accepted offer - Negotiation costs"
+    bargain_page_payoffs_seller_payoff_ta_costs = "Seller's payoff: Accepted offer - Negotiation costs"
+    bargain_page_payoffs_buyer_payoff_ta_costs = "Buyer's payoff: Buyer's valuation - Accepted offer - Negotiation costs"
+    bargain_page_payoffs_seller_payoff_0_ta_costs = "Seller's payoff: Accepted offer"
+    bargain_page_payoffs_buyer_payoff_0_ta_costs = "Buyer's payoff: Buyer's valuation - Accepted offer"
 
     bargain_page_payoffs_heading_2 = "If buyer or seller terminates the negotiation:"
-    bargain_page_payoffs_both_payoff = "Both payoff: - Negotiation costs"
+    bargain_page_payoffs_both_payoff_ta_costs = "Both payoff: - Negotiation costs"
+    bargain_page_payoffs_both_payoff_0_ta_costs = "Both payoff: 0€"
 
     bargain_page_terminate_negotiation_button = "Terminate"
     bargain_page_terminate_negotiation = "Terminate the Negotiation"
