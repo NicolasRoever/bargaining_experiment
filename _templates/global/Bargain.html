@@ -164,10 +164,12 @@
 
     <div class="three_columns_container">
         <div class="three_columns_left" style="flex: 0.5;">
+            {% if TA_treatment %}
             <h5>{{ Lexicon.bargain_page_negotiation_costs_heading }}</h5>
             <p style="display:inline">{{ Lexicon.bargain_page_negotiation_costs_current }}: <div style="display: inline" id ="TA_costs"></div></p>
             <p style="display:inline">{{ Lexicon.bargain_page_negotiation_costs_total }}: <div style="display: inline" id ="cumulated_TA_costs"></div></p>
             <canvas id="TA_cost_chart" style="width: 100%; min-height: 200px; height: 200px;"></canvas>
+            {% endif %}
         </div>
 
         <div class="three_columns_middle" style="flex: 1;">
@@ -370,17 +372,14 @@ function liveRecv(data) {
             );
 
             if (js_vars.language_code == "en"){
-
-            updateElementText(
-                elementId="other_payoff_other_accepts_live_seller",
-                content="Buyer's valuation - " + "Your Offer ("+Math.round(data.seller_proposal * 100) / 100 + "€) - Negotiation Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)"
-            );
-
-            } else if (js_vars.language_code == "de"){
-
                 updateElementText(
                     elementId="other_payoff_other_accepts_live_seller",
-                    content="Käufer: Wert des Objekts - " + "Ihr Angebot ("+Math.round(data.seller_proposal * 100) / 100 + "€) - Verhandlungskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)"
+                    content="Buyer's valuation - " + "Your Offer ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+                );
+            } else if (js_vars.language_code == "de"){
+                updateElementText(
+                    elementId="other_payoff_other_accepts_live_seller",
+                    content="Käufer: Wert des Objekts - " + "Ihr Angebot ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
                 );
             }
 
@@ -449,19 +448,15 @@ function liveRecv(data) {
 
 
             if (js_vars.language_code == "en"){
-
-            updateElementText(
-                elementId="other_payoff_accept_seller",
-                content= "Buyer's valuation - Buyer Offer (" + Math.round(data.buyer_proposal * 100) / 100 + "€) - Negotiation Costs (" + Math.round(data.cumulated_TA_costs * 100) / 100 + "€) "
-            );
-
-            } else if (js_vars.language_code == "de"){
-
                 updateElementText(
                     elementId="other_payoff_accept_seller",
-                    content= "Käufer: Wert des Objekts - " + "Ihr Angebot (" + Math.round(data.buyer_proposal * 100) / 100 + "€) - Verhandlungskosten (" + Math.round(data.cumulated_TA_costs * 100) / 100 + "€) "
+                    content= "Buyer's valuation - Buyer Offer (" + Math.round(data.buyer_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs (" + Math.round(data.cumulated_TA_costs * 100) / 100 + "€) " : "")
                 );
-
+            } else if (js_vars.language_code == "de"){
+                updateElementText(
+                    elementId="other_payoff_accept_seller",
+                    content= "Käufer: Wert des Objekts - " + "Ihr Angebot (" + Math.round(data.buyer_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten (" + Math.round(data.cumulated_TA_costs * 100) / 100 + "€) " : "")
+                );
             }
 
             enableButton(

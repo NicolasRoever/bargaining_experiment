@@ -855,7 +855,7 @@ def create_dictionary_with_html_variables_for_bargain_page(player: Any,
     dictionary['role_in_game'] = player.participant.vars['role_in_game']
     dictionary['valuation'] = player.valuation
     dictionary['information_asymmetry'] = player.group.subsession.session.config['information_asymmetry']
-    dictionary['treatment_communication'] = player.group.subsession.session.config['treatment_communication']
+    dictionary['TA_treatment'] = player.group.subsession.session.vars['TA_treatment']
 
     if practice_round == False:
         dictionary['other_valuation'] = player.get_others_in_group()[0].valuation
@@ -900,6 +900,7 @@ def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, pr
     dictionary['maximum_bargain_time'] = C.TOTAL_BARGAINING_TIME
     dictionary['x_values_TA_graph'] = json.loads(player.x_axis_values_TA_graph)
     dictionary['y_axis_maximum_TA_graph'] = player.y_axis_maximum_TA_graph
+    dictionary['TA_treatment'] = player.group.subsession.session.vars['TA_treatment']
 
     if practice_round == False:
         dictionary['other_id'] = player.get_others_in_group()[0].id_in_group

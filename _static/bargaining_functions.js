@@ -27,6 +27,9 @@ function initializeElements() {
             return formatted.replace(/\./g, '').replace(',', '.');
         }
     };
+
+    // Set initial visibility of transaction cost elements
+    setTransactionCostsVisibility(js_vars.TA_treatment);
 }
 
 // Function to initialize the sliders
@@ -238,7 +241,14 @@ function createChart(chartName, xValues, yValues, yLabel, yMin, yMax) {
 }
 
 function updateCurrencyElement(elementId, amount) {
-    document.getElementById(elementId).innerHTML = EuroFormatter.format(amount);
+    console.log("Attempting to update element:", elementId);
+    const element = document.getElementById(elementId);
+    if (!element) {
+        console.log("Element not found:", elementId);
+        return;
+    }
+    console.log("Element found, updating with amount:", amount);
+    element.innerHTML = EuroFormatter.format(amount);
 }
 
 function updateElementText(elementId, content) {
@@ -281,14 +291,15 @@ function updateTimeChangingElements(js_vars, data) {
     updateElementText('time_spent', data.bargaining_time_elapsed);
 
     // Update currency elements 
-    updateCurrencyElement('TA_costs', data.current_TA_costs);
-    updateCurrencyElement('cumulated_TA_costs', data.cumulated_TA_costs);
+    if (js_vars.TA_treatment) {
+        updateCurrencyElement('TA_costs', data.current_TA_costs);
+        updateCurrencyElement('cumulated_TA_costs', data.cumulated_TA_costs);
+        // Update charts with the provided data and js_vars
+        updateCharts(data, js_vars);
+    }
+    
     updateCurrencyElement('my_payoff_terminate', data.current_payoff_terminate);
     updateCurrencyElement('other_payoff_terminate', -data.other_player_transaction_cost);
-
-
-    // Update charts with the provided data and js_vars
-    updateCharts(data, js_vars);
 }
 
 
@@ -452,12 +463,11 @@ function createSinglePercentageBarChart(chartName, percentage) {
     });
 }
 
-
-
-
-
-
-
-
+function setTransactionCostsVisibility(TA_treatment) {
+    const taElements = document.querySelectorAll('#TA_costs, #cumulated_TA_costs, #TA_cost_chart, .three_columns_left h5, .three_columns_left p');
+    taElements.forEach(element => {
+        element.style.display = TA_treatment ? '' : 'none';
+    });
+}
 
 module.exports = {  sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay } ; // Export the function for testing
