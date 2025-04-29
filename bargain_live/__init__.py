@@ -164,6 +164,9 @@ def creating_session(subsession):
     This function is called before each subsession starts. 
     """
 
+    #Set the TA treatment
+    subsession.session.vars['TA_treatment'] = True if subsession.session.config['transaction_costs'] > 0 else False
+
     #Load the pre-drawn groupings and participant data
     participant_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'participant_data_{subsession.session.config["number_of_groups"]}_groups.pkl')
 
@@ -273,32 +276,32 @@ def creating_session(subsession):
 #-----------------------------------------------------------------------------------------------
 # PAGES
 
+#---Page Template for Translation---#
+
+class TranslationTemplate(Page):
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(Lexicon=Lexicon, **which_language)
+
 
 #--Short Static Pages--#
 
-class Consent(Page):
+class Consent(TranslationTemplate):
     form_model = 'player'
     form_fields = ['consent_form']
 
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
-    
-    @staticmethod
-    def vars_for_template(player: Player):
-        return dict(Lexicon=Lexicon, **which_language)
 
 
-class BargainInstructions(Page):
+class BargainInstructions(TranslationTemplate):
     form_model = 'player'
     form_fields = ['comprehension_1', 'comprehension_2', 'question_strategy']
     @staticmethod
     def vars_for_template(player: Player):
 
         dictionary_with_variables = create_dictionary_with_html_variables_for_bargain_instructions(player=player)
-
-        #Add language variables
-        dictionary_with_variables.update(dict(Lexicon=Lexicon, **which_language))
 
         return dictionary_with_variables
     
@@ -318,7 +321,7 @@ class BargainInstructions(Page):
         return player.subsession.round_number == 1
     
 
-class PracticeRoundsIntro(Page):
+class PracticeRoundsIntro(TranslationTemplate):
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
@@ -331,7 +334,6 @@ class PracticeRoundsIntro(Page):
 
         dictionary = {'role_in_game': role_in_game}
 
-        dictionary.update(dict(Lexicon=Lexicon, **which_language))
 
         return dictionary
 
@@ -347,42 +349,28 @@ class BargainWaitPage(WaitPage):
         group.bargain_start_time = bargain_start_time.isoformat()
 
 
-class BargainPracticeOneIntro(Page):
+class BargainPracticeOneIntro(TranslationTemplate):
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
     
-    @staticmethod
-    def vars_for_template(player: Player):
     
-        return  dict(Lexicon=Lexicon, **which_language)
-    
-class BargainPracticeTwoIntro(Page):
+class BargainPracticeTwoIntro(TranslationTemplate):
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 2
     
-    @staticmethod
-    def vars_for_template(player: Player):
-        return  dict(Lexicon=Lexicon, **which_language)
     
-class BargainPracticeThreeIntro(Page):
+class BargainPracticeThreeIntro(TranslationTemplate):
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 3
     
-    @staticmethod
-    def vars_for_template(player: Player):
-        return  dict(Lexicon=Lexicon, **which_language)
 
-class BargainInfoRealGame(Page):
+class BargainInfoRealGame(TranslationTemplate):
     @staticmethod
     def is_displayed(player):
         return player.subsession.field_maybe_none('real_round_number') == 1
-    
-    @staticmethod
-    def vars_for_template(player: Player):
-        return  dict(Lexicon=Lexicon, **which_language)
     
 
 class RoundResults(Page):

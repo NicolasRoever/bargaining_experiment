@@ -11,11 +11,10 @@ SESSION_CONFIGS = [
     app_sequence = ["clerpay_start", "bargain_live", "clerpay_end"],
     num_demo_participants=8,
     number_of_groups = 1, 
-    delay_treatment_high = False,
     information_asymmetry = "Buyer", # Which valuation is known? # Buyer, Seller or None
     treatment_communication = False,
     termination_treatment = "low_prob", # either "low_prob" or "high_prob"
-    transaction_costs = 0.05,
+    transaction_costs =0.05,
     minimum_payoff = 7.5,
     doc="""
     Adjust the number of groups dependent on the number of participants. There are 8 participants per group."""

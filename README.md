@@ -108,14 +108,40 @@ While some of the functions are quite long as they carry special functionalities
 This section is only for me as a developer. You can ignore it. 
 
 - Also, there seems to be "Keine Eingigung", obwohl angenommen wurde. I guess it is a mistake in the if-clause? 
-- The offer times list only records NULL's :(, the issue is with different date formats in the client and the server
-- 2. The offer is restricted between 0 and 30, but during the practice matches, the computer sometimes makes offers above 30. 
+- Can you see where the outliers in bargaining time are coming from?
 
 3. Players cannot actually offer 30 euros, because the slider doesn't quite reach that point. I don’t think this is critical (no one will accept 30 euros), but just in case this isn’t intentional.
 
 4. The screenshots in the instructions show a previous version of the experiment.
 
-
+- Node sachen nicht commiten
+- Javascript libraries loeschen
+- RHistory im static
+- Ein Ordner subordner otree
+- Private github
+- Json encoding: \
+- Labels loschen
+- Black pre commit hook
+- Dataframe als csv
+- Werte in konstanten reinlesen
+- Werte termination probablities loeschen
+- Remove dead code
+- Last line 33 
+- Update braucht man nicht mehr
+- Blank = True rausnehmen!
+- Time value as constant. Unix time stamp everywhere
+- CSS animation ist eleganter
+- Styles und javascript in in separate files
+- Javascripts in die static files reinladen
+- Inline styles streamlinen
+- oder bootstrap 
+- broadcast update kombinieren
+- Bargain Practice DRY
+- pseudo field fuer bargain real
+- Random payoff ueberschreiben und randint
+- Any typo annotations
+- round function
+- deal price ist unsinning; re.sub rausnehmen
 
 
 ## Errors to monitor (Longlist)
