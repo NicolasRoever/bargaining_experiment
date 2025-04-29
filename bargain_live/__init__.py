@@ -168,11 +168,11 @@ def creating_session(subsession):
     subsession.session.vars['TA_treatment'] = True if subsession.session.config['transaction_costs'] > 0 else False
 
     #Load the pre-drawn groupings and participant data
-    participant_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'participant_data_{subsession.session.config["number_of_groups"]}_groups.pkl')
+    participant_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'participant_data_{subsession.session.config["number_of_groups"]}_groups_{subsession.session.config["information_asymmetry"]}.pkl')
 
     is_valid_dataframe(participant_data, "participant_data")
 
-    groups_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups.pkl')
+    groups_data = pd.read_pickle(CURRENT_PATH / 'randomization_values' / f'round_groupings_{subsession.session.config["number_of_groups"]}_groups_{subsession.session.config["information_asymmetry"]}.pkl')
 
     is_valid_list(groups_data, "groups_data")
 
