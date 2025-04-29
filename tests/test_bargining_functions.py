@@ -199,7 +199,7 @@ def test_correct_transaction_costs_and_delay_treatments(number_of_groups, buyer_
 
 
 #-------------------------
-# Test cases for create_participant_data
+# Test cases for create_participant_data one-sided information asymmetry
 
 @pytest.fixture
 def buyer_valuations():
@@ -214,13 +214,13 @@ def buyer_valuations():
 
 def test_correct_number_of_participants(number_of_groups, buyer_valuations):
     # Test that the dataframe has the correct number of participants
-    df = create_participant_data(number_of_groups, buyer_valuations)
+    df = create_participant_data(number_of_groups, buyer_valuations, information_asymmetry="one-sided")
     expected_number_of_participants = number_of_groups * 8
     assert len(df) == expected_number_of_participants, "The number of participants is incorrect."
 
 def test_half_buyers_half_sellers_per_group(number_of_groups, buyer_valuations):
     # Test that each group has exactly 4 buyers and 4 sellers
-    df = create_participant_data(number_of_groups, buyer_valuations)
+    df = create_participant_data(number_of_groups, buyer_valuations, information_asymmetry="one-sided")
     for group_id, group_data in df.groupby('Group_ID'):
         buyers = group_data[group_data['Role'] == 'Buyer']
         sellers = group_data[group_data['Role'] == 'Seller']
@@ -229,7 +229,7 @@ def test_half_buyers_half_sellers_per_group(number_of_groups, buyer_valuations):
 
 def test_unique_group_assignments(number_of_groups, buyer_valuations):
     # Test that each participant is uniquely assigned to a group
-    df = create_participant_data(number_of_groups, buyer_valuations)
+    df = create_participant_data(number_of_groups, buyer_valuations, information_asymmetry="one-sided")
     assert df['Group_ID'].nunique() == number_of_groups, "The number of unique groups is incorrect."
 
 def test_buyer_valuations(number_of_groups, buyer_valuations):
@@ -263,10 +263,58 @@ def test_buyer_valuations(number_of_groups, buyer_valuations):
 
         ]})
     
-    actual_result = create_participant_data(number_of_groups, buyer_valuations)
+    actual_result = create_participant_data(number_of_groups, buyer_valuations, information_asymmetry="one-sided")
 
 
     pd.testing.assert_frame_equal(actual_result, expected_result, check_dtype=False)
+
+#-------------------------
+# Test cases for create_participant_data two-sided information asymmetry
+
+def test_buyer_valuations_two_sided(number_of_groups, buyer_valuations):
+
+    np.random.seed(0)
+
+    #For the test, seller valuations are just the buyer valuations + 1
+    seller_valuations = [buyer_valuation + 1 for buyer_valuation in buyer_valuations]
+
+    expected_result = pd.DataFrame({
+         'Participant_ID': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        'Group_ID': [1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 2, 2, 1, 1, 1, 2],
+        'Role': ['Buyer', 'Seller', 'Seller', 'Buyer', 
+    'Buyer', 'Seller', 'Buyer', 'Buyer', 
+    'Seller', 'Buyer', 'Buyer', 'Seller', 
+    'Seller', 'Buyer', 'Seller', 'Seller'],
+        'Valuation':[
+            np.arange(1, 21).tolist(),           # [1, 2, 3, ..., 20]
+    np.arange(2, 22).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(2, 22).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(1, 21).tolist(),           # [1, 2, 3, ..., 20]
+    np.arange(21, 41).tolist(),          # [21, 22, ..., 40]
+    np.arange(22, 42).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(21, 41).tolist(),          # [21, 22, ..., 40]
+    np.arange(41, 61).tolist(),          # [41, 42, ..., 60]
+    np.arange(22, 42).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(41, 61).tolist(),          # [41, 42, ..., 60]
+    np.arange(61, 81).tolist(),          # [61, 62, ..., 80]
+    np.arange(42, 62).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(42, 62).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(61, 81).tolist(),          # [61, 62, ..., 80]
+    np.arange(62, 82).tolist(),               # [0.0, 0.0, ..., 0.0]
+    np.arange(62, 82).tolist()    
+
+        ]})
+    
+    actual_result = create_participant_data(number_of_groups, buyer_valuations, seller_valuations, information_asymmetry="two-sided")
+
+
+    pd.testing.assert_frame_equal(actual_result, expected_result, check_dtype=False)
+
+
+
+
+
+
 
 #-------------------------
 # Test cases for create_group_matrix_for_individual_round

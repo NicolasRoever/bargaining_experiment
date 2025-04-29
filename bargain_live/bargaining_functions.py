@@ -502,14 +502,14 @@ def create_matches_for_rounds(df: pd.DataFrame, num_rounds: int = 20) -> pd.Data
     return df
 
 
-def create_participant_data(number_of_groups: int, buyer_valuations: List[List], number_of_rounds: int = 20) -> pd.DataFrame:
+def create_participant_data(number_of_groups: int, buyer_valuations: List[List], seller_valuations: List[List], information_asymmetry: str, number_of_rounds: int = 20) -> pd.DataFrame:
     """
     Creates a dataframe with group assignments, roles treatments and valuations for each participant.
 
     Args:
         number_of_groups (int): The number of groups; each group consists of eight participants.
-        buyer_valuations (List[List]): This is a list of four lists, each containing the 20  valuations of the buyers in a group.
-
+        buyer_valuations (List[List]): This is a list of four lists, each containing the 30  valuations of the buyers in a group.
+        seller_valuations (List[List]): This is a list of four lists, each containing the 30  valuations of the sellers in a group.
     Returns:
         pd.Dataframe: A dataframe with group assignments.
         Columns:
@@ -530,13 +530,25 @@ def create_participant_data(number_of_groups: int, buyer_valuations: List[List],
     df["Role"] =  df.groupby('Group_ID')['Participant_ID'].transform(
     lambda x: np.random.permutation(['Seller'] * 4 + ['Buyer'] * 4))
 
-    # Initialize Valuations
-    df['Valuation'] = [np.zeros(number_of_rounds).tolist()] * len(df)
-    for group_id, group_data in df.groupby('Group_ID'):
-        buyers_indices = group_data[group_data['Role'] == 'Buyer'].index
-        for i, buyer_index in enumerate(buyers_indices):
-            df.at[buyer_index, 'Valuation'] = buyer_valuations[i].tolist()
-        
+    if information_asymmetry == "one-sided":
+        # Initialize Valuations
+        df['Valuation'] = [np.zeros(number_of_rounds).tolist()] * len(df)
+        for group_id, group_data in df.groupby('Group_ID'):
+            buyers_indices = group_data[group_data['Role'] == 'Buyer'].index
+            for i, buyer_index in enumerate(buyers_indices):
+                df.at[buyer_index, 'Valuation'] = buyer_valuations[i].tolist()
+
+    elif information_asymmetry == "two-sided":
+        # Initialize Valuations
+        df['Valuation'] = [np.zeros(number_of_rounds).tolist()] * len(df)
+        for group_id, group_data in df.groupby('Group_ID'):
+            buyers_indices = group_data[group_data['Role'] == 'Buyer'].index
+            for i, buyer_index in enumerate(buyers_indices):
+                df.at[buyer_index, 'Valuation'] = buyer_valuations[i].tolist()
+                
+            sellers_indices = group_data[group_data['Role'] == 'Seller'].index
+            for i, seller_index in enumerate(sellers_indices):
+                df.at[seller_index, 'Valuation'] = seller_valuations[i].tolist()
   
     return df
 
