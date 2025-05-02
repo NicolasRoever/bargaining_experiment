@@ -214,8 +214,9 @@ class Lexicon:
     bargaining_countdown_text = "Die Verhandlung beginnt in 5"
 
     bargain_page_own_value = "In dieser Runde beträgt der Wert des Objekts für Sie"
-    value_of_object_for_seller = "Der Wert des Objekts für den Verkäufer beträgt 0€."
-    value_of_object_for_buyer = "Der Wert des Objekts für den Käufer wird zufällig zwischen 0 und 60€ gezogen."
+    value_of_object_for_seller_0 = "Der Wert des Objekts für den Verkäufer beträgt 0€."
+    value_of_object_for_seller_random = "Der Wert des Objekts für den Verkäufer ist eine zufällige Zahl zwischen 0 und 30€."
+    value_of_object_for_buyer = "Der Wert des Objekts für den Käufer wird zufällig zwischen 0 und 30€ gezogen."
 
 
     bargain_page_negotiation_costs_heading = "Verhandlungskosten"

@@ -155,7 +155,11 @@
 
             {{Lexicon.bargain_page_own_value}} <b>{{ valuation }}€.</b><br/><br/>
             {% if player.participant.role_in_game == "Buyer" %}
-                {{ Lexicon.value_of_object_for_seller }}
+            {% if information_asymmetry == "one-sided" %}
+                {{ Lexicon.value_of_object_for_seller_0 }}
+            {% else %}
+                {{ Lexicon.value_of_object_for_seller_random }}
+            {% endif %}
             {% else %}
                 {{ Lexicon.value_of_object_for_buyer }}
             {% endif %}

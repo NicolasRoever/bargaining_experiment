@@ -114,6 +114,8 @@ This section is only for me as a developer. You can ignore it.
 
 4. The screenshots in the instructions show a previous version of the experiment.
 
+- Bei den Uebungsrunden sind alle Verkaeufer
+
 - Node sachen nicht commiten
 - Javascript libraries loeschen
 - RHistory im static

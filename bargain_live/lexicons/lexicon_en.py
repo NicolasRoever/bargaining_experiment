@@ -218,7 +218,8 @@ class Lexicon:
     bargain_page_title_real_2 = " of "
 
     bargain_page_own_value = "In this match, your value of the object is"
-    value_of_object_for_seller = "The value of the object for the seller is 0."
+    value_of_object_for_seller_0 = "The value of the object for the seller is 0."
+    value_of_object_for_seller_random = "The value of the object for the seller is a random number between 0 and 30€."
     value_of_object_for_buyer = "The value of the object for the buyer is randomly drawn between 0 and 30€."
 
     bargain_page_negotiation_costs_heading = "Negotiation Costs"
