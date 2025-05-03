@@ -92,7 +92,6 @@ def update_broadcast_dict_with_basic_values(
     else:
         total_cost_y_values = json.loads(player.total_costs_list)[:bargaining_time_elapsed]
         termination_probabilities_list = json.loads(player.termination_probabilities_list)
-        print("bargaining_time_elapsed: ", bargaining_time_elapsed)
         current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
         current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
         current_survival_probability = 1 - current_termination_probability
@@ -754,6 +753,7 @@ def create_dictionary_with_html_variables_for_bargain_instructions(player: Any) 
     expected_termination_time = round(1 / termination_probability)
 
     transaction_costs = player.group.subsession.session.config['transaction_costs']
+    
 
     transaction_costs_in_cents = round(transaction_costs * 100)
 
@@ -765,7 +765,8 @@ def create_dictionary_with_html_variables_for_bargain_instructions(player: Any) 
             'transaction_costs_in_cents': transaction_costs_in_cents, 
             'expected_termination_time': expected_termination_time,
             'player_role': player_role, 
-            'minimum_payoff': minimum_payoff
+            'minimum_payoff': minimum_payoff,
+            'information_asymmetry': player.group.subsession.session.config['information_asymmetry']
             }
 
 

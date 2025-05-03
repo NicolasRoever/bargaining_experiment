@@ -107,6 +107,11 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
+- There is a mistake in the screen for the information what is shown for the payoffs if there is accepatce in the beginning (undefined variable)
+
+- Implement automatic acceptance for seller as well (relevant for two-sided asymmetry)
+
+
 - Also, there seems to be "Keine Eingigung", obwohl angenommen wurde. I guess it is a mistake in the if-clause? 
 - Can you see where the outliers in bargaining time are coming from?
 
@@ -114,7 +119,6 @@ This section is only for me as a developer. You can ignore it.
 
 4. The screenshots in the instructions show a previous version of the experiment.
 
-- Bei den Uebungsrunden sind alle Verkaeufer
 
 - Node sachen nicht commiten
 - Javascript libraries loeschen

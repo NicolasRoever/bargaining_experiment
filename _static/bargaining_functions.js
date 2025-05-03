@@ -465,6 +465,8 @@ function createSinglePercentageBarChart(chartName, percentage) {
 
 function updateOtherPayoffAcceptanceElementBuyer(elementId, data, js_vars) {
 
+    console.log("Function updateOtherPayoffAcceptanceElementBuyer called");
+
     if (js_vars.information_asymmetry == "one-sided") {
         updateCurrencyElement(
             elementId = elementId,
@@ -476,13 +478,13 @@ function updateOtherPayoffAcceptanceElementBuyer(elementId, data, js_vars) {
             elementId = elementId, 
             content = data.seller_proposal +"- Seller Value of Object" + (js_vars.TA_treatment ? " - Transaction Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
         );
-    } else {
+         } else {
         updateElementText(
             elementId = elementId, 
             content = data.seller_proposal +"- Objektwert Verkäufer" + (js_vars.TA_treatment ? " - Transaktionskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
         );
+        }
     }
-}
 
 }
 

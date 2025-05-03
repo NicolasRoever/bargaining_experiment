@@ -187,12 +187,27 @@
         <div style="background-color: rgb(249, 249, 249); padding: 10px;">
             <div style="border: 2px solid #000; padding: 10px;">
 
-                {% if en %}
-                    <img src="{% static 'pictures/buyer_screen_v006.png' %}" 
-                        style="width: 100%; margin: auto;">
+                {% if information_asymmetry == "one-sided" %}
+
+                    {% if transaction_costs > 0 %}
+                    <img src="{% static 'pictures/Instructions_PNGs/instructions_buyer_onesided_5.png' %}" 
+                    style="width: 100%; margin: auto;">
+
+                    {% else %}
+                    <img src="{% static 'pictures/Instructions_PNGs/instructions_buyer_onesided_0.png' %}" 
+                    style="width: 100%; margin: auto;">
+                    {% endif %}
+                    
                 {% else %}
-                    <img src="{% static 'pictures/screenshot_buyer_german.png' %}" 
-                        style="width: 100%; margin: auto;">
+
+                {% if transaction_costs > 0 %}
+                <img src="{% static 'pictures/Instructions_PNGs/instructions_buyer_twosided_5.png' %}" 
+                style="width: 100%; margin: auto;">
+                {% else %}
+                <img src="{% static 'pictures/Instructions_PNGs/instructions_buyer_twosided_0.png' %}" 
+                style="width: 100%; margin: auto;">
+                {% endif %}
+
                 {% endif %}
             </div>
         </div>
@@ -204,12 +219,26 @@
         <h3>{{ Lexicon.example_seller_screen }}</h3>
         <div style="background-color: rgb(249, 249, 249); padding: 10px;">
             <div style="border: 2px solid #000; padding: 10px;">
-                {% if en %}
-                    <img src="{% static 'pictures/seller_screen_v006.png' %}" 
-                        style="width: 100%; margin: auto;">
+                {% if information_asymmetry == "one-sided" %}
+
+                {% if transaction_costs > 0 %}
+                <img src="{% static 'pictures/Instructions_PNGs/instructions_seller_onesided_5.png' %}" 
+                style="width: 100%; margin: auto;">
                 {% else %}
-                    <img src="{% static 'pictures/screenshot_seller_german.png' %}" 
-                        style="width: 100%; margin: auto;">
+                <img src="{% static 'pictures/Instructions_PNGs/instructions_seller_onesided_0.png' %}" 
+                style="width: 100%; margin: auto;">
+                {% endif %}
+
+                {% else %}
+
+                {% if transaction_costs > 0 %}
+                <img src="{% static 'pictures/Instructions_PNGs/instructions_seller_twosided_5.png' %}" 
+                style="width: 100%; margin: auto;">
+                {% else %}
+                <img src="{% static 'pictures/Instructions_PNGs/instructions_seller_twosided_0.png' %}" 
+                style="width: 100%; margin: auto;">
+                {% endif %}
+
                 {% endif %}
             </div>
         </div>
