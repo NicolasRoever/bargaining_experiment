@@ -463,6 +463,45 @@ function createSinglePercentageBarChart(chartName, percentage) {
     });
 }
 
+function updateOtherPayoffAcceptanceElementBuyer(elementId, data, js_vars) {
+
+    if (js_vars.information_asymmetry == "one-sided") {
+        updateCurrencyElement(
+            elementId = elementId,
+            amount = (data.seller_proposal - js_vars.other_valuation - data.cumulated_TA_costs).toFixed(2)
+        );
+    } else {
+        if (js_vars.langague_code == "en") {
+            updateElementText(
+            elementId = elementId, 
+            content = data.seller_proposal +"- Seller Value of Object" + (js_vars.TA_treatment ? " - Transaction Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+        );
+    } else {
+        updateElementText(
+            elementId = elementId, 
+            content = data.seller_proposal +"- Objektwert Verkäufer" + (js_vars.TA_treatment ? " - Transaktionskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+        );
+    }
+}
+
+}
+
+
+function updateOtherPayoffAcceptanceElementSeller(elementId, data, js_vars) {
+    if (js_vars.language_code == "en"){
+        updateElementText(
+            elementId=elementId,
+            content="Buyer's valuation - " + "Your Offer ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+        );
+    } else if (js_vars.language_code == "de"){
+        updateElementText(
+            elementId=elementId,
+            content="Käufer: Wert des Objekts - " + "Ihr Angebot ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+        );
+    }
+}
+
+
 function setTransactionCostsVisibility(TA_treatment) {
     const taElements = document.querySelectorAll('#TA_costs, #cumulated_TA_costs, #TA_cost_chart, .three_columns_left h5, .three_columns_left p');
     taElements.forEach(element => {

@@ -386,17 +386,11 @@ function liveRecv(data) {
                 amount=(data.seller_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
             );
 
-            if (js_vars.language_code == "en"){
-                updateElementText(
-                    elementId="other_payoff_other_accepts_live_seller",
-                    content="Buyer's valuation - " + "Your Offer ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
-                );
-            } else if (js_vars.language_code == "de"){
-                updateElementText(
-                    elementId="other_payoff_other_accepts_live_seller",
-                    content="Käufer: Wert des Objekts - " + "Ihr Angebot ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
-                );
-            }
+            updateOtherPayoffAcceptanceElementSeller(
+                elementId="other_payoff_other_accepts_live_seller",
+                data=data,
+                js_vars=js_vars
+            )
 
         }
          // This changes what the buyer sees on the page.  
@@ -411,9 +405,10 @@ function liveRecv(data) {
                 amount=(js_vars.my_valuation - data.seller_proposal - data.cumulated_TA_costs)
             );
 
-            updateCurrencyElement(
+            updateOtherPayoffAcceptanceElementBuyer(
                 elementId="other_payoff_accept_buyer",
-                amount=Math.round((data.seller_proposal - js_vars.other_valuation - data.cumulated_TA_costs) * 100) / 100
+                data=data,
+                js_vars=js_vars
             ); 
 
             enableButton(
@@ -442,10 +437,11 @@ function liveRecv(data) {
             );
 
     
-            updateCurrencyElement(
+            updateOtherPayoffAcceptanceElementBuyer(
                 elementId="other_payoff_other_accepts_live_buyer",
-                amount=(data.buyer_proposal - js_vars.other_valuation - data.cumulated_TA_costs)
-            );
+                data=data,
+                js_vars=js_vars
+            )
         }
 
         // This changes what the seller sees on the page.   
@@ -461,18 +457,11 @@ function liveRecv(data) {
                 amount=(data.buyer_proposal - js_vars.my_valuation - data.cumulated_TA_costs)
             );
 
-
-            if (js_vars.language_code == "en"){
-                updateElementText(
-                    elementId="other_payoff_accept_seller",
-                    content= "Buyer's valuation - Buyer Offer (" + Math.round(data.buyer_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs (" + Math.round(data.cumulated_TA_costs * 100) / 100 + "€) " : "")
-                );
-            } else if (js_vars.language_code == "de"){
-                updateElementText(
-                    elementId="other_payoff_accept_seller",
-                    content= "Käufer: Wert des Objekts - " + "Ihr Angebot (" + Math.round(data.buyer_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten (" + Math.round(data.cumulated_TA_costs * 100) / 100 + "€) " : "")
-                );
-            }
+            updateOtherPayoffAcceptanceElementSeller(
+                elementId="other_payoff_accept_seller",
+                data=data,
+                js_vars=js_vars
+            )
 
             enableButton(
                 buttonId="btn-accept"

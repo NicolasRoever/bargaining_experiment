@@ -92,6 +92,7 @@ def update_broadcast_dict_with_basic_values(
     else:
         total_cost_y_values = json.loads(player.total_costs_list)[:bargaining_time_elapsed]
         termination_probabilities_list = json.loads(player.termination_probabilities_list)
+        print("bargaining_time_elapsed: ", bargaining_time_elapsed)
         current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
         current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
         current_survival_probability = 1 - current_termination_probability
@@ -1143,7 +1144,7 @@ def accept_deal_as_bot(broadcast: Dict, player: Any, group: Any, data: Dict[str,
     data['proposal_by_role'] = player.participant.vars['role_in_game']
     data['proposal_by_id'] = player.id_in_group
     data['amount'] = player.current_amount_proposed 
-    data['acceptance_time'] = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
+    data['acceptance_time'] = round(time.time() - group.bargain_start_time)
     data['accepted_by'] = player.id_in_group + 1
 
     update_group_database_upon_acceptance(
@@ -1230,7 +1231,7 @@ def treat_buyer_offer_larger_than_seller_as_acceptance(broadcast: Dict, player: 
     data['proposal_by_role'] = player.participant.vars['role_in_game']
     data['proposal_by_id'] = player.id_in_group
     data['amount'] = group.current_seller_offer
-    data['acceptance_time'] = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
+    data['acceptance_time'] = round(time.time() - group.bargain_start_time)
     data['accepted_by'] = player.id_in_group
 
     group.deal_price = float(re.sub(r'[^\d.]', '', str(group.current_seller_offer))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
@@ -1252,7 +1253,7 @@ def treat_seller_offer_lower_than_buyer_as_acceptance(broadcast: Dict, player: A
     data['proposal_by_role'] = player.participant.vars['role_in_game']
     data['proposal_by_id'] = player.id_in_group
     data['amount'] = group.current_buyer_offer
-    data['acceptance_time'] = round((datetime.now(tz=timezone.utc) - datetime.fromisoformat(group.bargain_start_time)).total_seconds())
+    data['acceptance_time'] = round(time.time() - group.bargain_start_time)
     data['accepted_by'] = player.id_in_group
 
     group.deal_price = float(re.sub(r'[^\d.]', '', str(group.current_buyer_offer))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
