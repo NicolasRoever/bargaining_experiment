@@ -277,7 +277,7 @@ class Consent(TranslationTemplate):
 
 class BargainInstructions(Page):
     form_model = 'player'
-    form_fields = ['comprehension_1', 'comprehension_2', 'question_strategy']
+    form_fields = ['comprehension_1', 'question_strategy']
     @staticmethod
     def vars_for_template(player: Player):
 
