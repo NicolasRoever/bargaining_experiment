@@ -766,7 +766,8 @@ def create_dictionary_with_html_variables_for_bargain_instructions(player: Any) 
             'expected_termination_time': expected_termination_time,
             'player_role': player_role, 
             'minimum_payoff': minimum_payoff,
-            'information_asymmetry': player.group.subsession.session.config['information_asymmetry']
+            'information_asymmetry': player.group.subsession.session.config['information_asymmetry'], 
+            'transaction_costs': transaction_costs
             }
 
 

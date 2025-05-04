@@ -14,7 +14,7 @@ SESSION_CONFIGS = [
     information_asymmetry = "two-sided", # either "one-sided" or "two-sided", in case of one-sided, the buyer knows the seller's valuation, in case of two-sided, both players dont know each other's valuation
     treatment_communication = False,
     termination_treatment = "low_prob", # either "low_prob" or "high_prob"
-    transaction_costs =0.05,
+    transaction_costs =0.00,
     delay_treatment_high = False,
     minimum_payoff = 7.5,
     doc="""
@@ -24,7 +24,7 @@ SESSION_CONFIGS = [
     
 
 # ISO-639 code
-LANGUAGE_CODE = 'de' # 'en' or 'de'
+LANGUAGE_CODE = 'en' # 'en' or 'de'
 
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

@@ -129,25 +129,8 @@ class Player(BasePlayer):
         blank=True
     )
 
-    comprehension_2 = models.IntegerField(
-        label="Which of the following statements is incorrect?",
-        choices=[
-            [1, Lexicon.comprehension_question_2_choice_1],
-            [2, Lexicon.comprehension_question_2_choice_2],
-            [3, Lexicon.comprehension_question_2_choice_3],
-            [4, Lexicon.comprehension_question_2_choice_4]
-        ], 
-        blank=True
-    )
+    comprehension_2 = models.IntegerField()
 
-    comprehension_3 = models.IntegerField(
-        label="Which of the following statements is incorrect?",
-        choices=[
-            [1, Lexicon.comprehension_question_3_choice_1],
-            [2, Lexicon.comprehension_question_3_choice_2],
-        ], 
-        blank=True
-    )
 
     question_strategy = models.LongStringField(
         blank=False
@@ -310,9 +293,6 @@ class BargainInstructions(Page):
         # Check answers
         if values['comprehension_1'] != 3:
             return "You have not answered the first question correctly. Please try again."
-        
-        if values['comprehension_2'] != 4:
-            return "You have not answered the second question correctly. Please try again."
     
 
     @staticmethod
@@ -703,7 +683,7 @@ class BargainReal(Page):
 
 
 page_sequence = [#Consent, 
-                 #BargainInstructions,
+                 BargainInstructions,
                  #PracticeRoundsIntro,
                  #BargainPracticeOneIntro,
                  #BargainPracticeTwoIntro,
