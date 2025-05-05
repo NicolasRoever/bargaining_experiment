@@ -129,8 +129,6 @@ class Player(BasePlayer):
         blank=True
     )
 
-    comprehension_2 = models.IntegerField()
-
 
     question_strategy = models.LongStringField(
         blank=False
