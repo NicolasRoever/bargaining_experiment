@@ -54,38 +54,72 @@ function initializeSliders() {
     // slider_other.recall();
 }
 
-//This function either displays a warning or calls the sendOffer function
-function processOfferSubmission(slider, player_role, threshold, sendOfferParams) {
-
-    if (player_role == "Seller") {
-        sendOffer(sendOfferParams);
+/**
+ * Main entrypoint: decide whether to warn or to send right away.
+ *
+ * @param {{ value: () => number }} slider           some p5 or UI slider giving .value()
+ * @param {"Buyer"|"Seller"} player_role
+ * @param {number} threshold
+ * @param {Object} sendOfferParams                   whatever your sendOffer needs
+ * @param {(params: Object) => void} sendOffer        function that actually does the send
+ */
+function processOfferSubmission(slider, player_role, threshold, sendOfferParams, sendOffer) {
+    const offerValue = slider.value();
+  
+    if (needsWarning(offerValue, player_role, threshold)) {
+      // show warning, then send once confirmed
+      showWarningAndSend(() => sendOffer(sendOfferParams));
     } else {
-        if (slider.value() <= threshold) {
-            sendOffer(sendOfferParams);
-        } else {
-            // Get the warning div element and display it.
-            var warningDiv = document.getElementById('offer_submit_warning');
-            warningDiv.style.display = 'block';
-            // Get the warning div element and display it.
-        var warningDiv = document.getElementById('offer_submit_warning');
-        warningDiv.style.display = 'block';
-
-        // Set up a one-time event listener for the confirm button.
-        document.getElementById('confirmButton').addEventListener('click', function onConfirm() {
-        // Hide the warning div.
-        warningDiv.style.display = 'none';
-        // Call sendOffer upon confirmation.
-        sendOffer(sendOfferParams);
-        }, { once: true });
-
-        // Set up a one-time event listener for the cancel button.
-        document.getElementById('cancelButton').addEventListener('click', function onCancel() {
-            // Simply hide the warning div.
-            warningDiv.style.display = 'none';
-        }, { once: true });
-        }
+      // immediate send
+      sendOffer(sendOfferParams);
     }
+}
 
+/**
+ * Show the warning overlay, wire up confirm/cancel, then sendOffer on confirm.
+ *
+ * @param {() => void} sendOffer      callback to actually send the offer
+ */
+function showWarningAndSend(sendOffer) {
+    const warningDiv = document.getElementById("offer_submit_warning");
+    const confirmBtn = document.getElementById("confirmButton");
+    const cancelBtn  = document.getElementById("cancelButton");
+  
+    warningDiv.style.display = "block";
+  
+    function cleanup() {
+      warningDiv.style.display = "none";
+      confirmBtn.removeEventListener("click", onConfirm);
+      cancelBtn.removeEventListener("click", onCancel);
+    }
+  
+    function onConfirm() {
+      cleanup();
+      sendOffer();
+    }
+  
+    function onCancel() {
+      cleanup();
+    }
+  
+    confirmBtn.addEventListener("click", onConfirm, { once: true });
+    cancelBtn .addEventListener("click", onCancel,  { once: true });
+}
+
+/**
+ * @param {number} offerValue   The value from the slider
+ * @param {"Buyer"|"Seller"} role
+ * @param {number} threshold    For Buyers: max they'll pay; for Sellers: min they'll accept
+ * @returns {boolean}           true if we should show the warning rather than immediately sending
+ */
+function needsWarning(offerValue, role, threshold) {
+    if (role === "Buyer") {
+      // Buyer: warning if offer is ABOVE threshold
+      return offerValue > threshold;
+    } else {
+      // Seller: warning if offer is BELOW threshold
+      return offerValue < threshold;
+    }
 }
 
 // This function is called when the player clicks the "Submit" button to make an offer. 
@@ -105,8 +139,6 @@ function sendOffer({ buttonId, slider, startTime, myId, myRole }) {
 
     liveSend(offerDetails);
 }
-
-
 
 function startCountdown(overlayId, js_vars, initialCount = 5) {
     /**
@@ -145,7 +177,6 @@ function startCountdown(overlayId, js_vars, initialCount = 5) {
     }, 1000);
 }
 
-
 // This function is called when the player clicks the "Accept" button to accept an offer.
 function sendAccept({ payoffElement, startTime, myId }) {
     // Retrieve the text content from the provided element
@@ -167,7 +198,6 @@ function sendAccept({ payoffElement, startTime, myId }) {
     liveSend(data);
 }
 
-
 // This function is called when the player clicks the "Terminate" button to terminate the game.
 function sendTerminate({ startTime, myId }) {
     const startTimeInSeconds = new Date(startTime).getTime() / 1000;
@@ -177,8 +207,6 @@ function sendTerminate({ startTime, myId }) {
         terminated_by: myId
     });
 }
-
-
 
 function createChart(chartName, xValues, yValues, yLabel, yMin, yMax) {
     const ctx = document.getElementById(chartName).getContext('2d');
@@ -266,7 +294,6 @@ function updateCharts(data, js_vars) {
     );
 }
 
-
 function updateSliderDisplay(sliderComponent, proposalInCents) {
     // Generate the ID for the element to update
     const elementId = sliderComponent.id("cur");
@@ -285,7 +312,6 @@ function enableButton(buttonId) {
     document.getElementById(buttonId).disabled = false;
 }
 
-
 function updateTimeChangingElements(js_vars, data) {
     // Update text elements
     updateElementText('time_spent', data.bargaining_time_elapsed);
@@ -301,8 +327,6 @@ function updateTimeChangingElements(js_vars, data) {
     updateCurrencyElement('my_payoff_terminate', data.current_payoff_terminate);
     updateCurrencyElement('other_payoff_terminate', -data.other_player_transaction_cost);
 }
-
-
 
 function createStackedBarChart(chartName, firstPercentage, secondPercentage) {
     const ctx = document.getElementById(chartName).getContext('2d');
@@ -467,42 +491,73 @@ function updateOtherPayoffAcceptanceElementBuyer(elementId, data, js_vars) {
 
     console.log("Function updateOtherPayoffAcceptanceElementBuyer called");
 
-    if (js_vars.information_asymmetry == "one-sided") {
-        updateCurrencyElement(
-            elementId = elementId,
-            amount = (data.seller_proposal - js_vars.other_valuation - data.cumulated_TA_costs).toFixed(2)
-        );
-    } else {
-        if (js_vars.langague_code == "en") {
+   
+    // Case 1: The buyer makes an offer and we want to show the seller's payoff.
+    if (elementId == "other_payoff_other_accepts_live_buyer"){
+
+        if (js_vars.information_asymmetry == "one-sided") {
+            updateCurrencyElement(
+                elementId = elementId,
+                amount = (js_vars.other_valuation - data.buyer_proposal - data.cumulated_TA_costs).toFixed(2)
+            );
+        } else {
+            console.log("Updating other_payoff_pther_accepts_live, data.buyer_proposal:", data.buyer_proposal);
             updateElementText(
-            elementId = elementId, 
-            content = data.seller_proposal +"- Seller Value of Object" + (js_vars.TA_treatment ? " - Transaction Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
-        );
-         } else {
-        updateElementText(
-            elementId = elementId, 
-            content = data.seller_proposal +"- Objektwert Verkäufer" + (js_vars.TA_treatment ? " - Transaktionskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
-        );
+                elementId = elementId,
+                amount = (data.buyer_proposal.toFixed(2) + " - Objektwert Verkäufer" + (js_vars.TA_treatment ? " - Transaktionskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : ""))
+            );
+        }
+    } else if (elementId == "other_payoff_accept_buyer"){
+
+        if (js_vars.information_asymmetry == "one-sided") {
+            updateCurrencyElement(
+                elementId = elementId,
+                amount = ( js_vars.other_valuation - data.seller_proposal - data.cumulated_TA_costs).toFixed(2)
+            );
+        } else {
+            updateElementText(
+                elementId = elementId,
+                amount = ( "Objektwert Verkäufer" + data.seller_proposal.toFixed(2) - (js_vars.TA_treatment ? " - Transaktionskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : ""))
+            );
         }
     }
 
 }
 
-
 function updateOtherPayoffAcceptanceElementSeller(elementId, data, js_vars) {
-    if (js_vars.language_code == "en"){
-        updateElementText(
+
+    //Case 1: This is the element that shows what happens when the seller makes an offer and the buyer accepts it.
+    if (elementId == "other_payoff_other_accepts_live_seller"){
+
+        if (js_vars.language_code == "en"){
+            updateElementText(
             elementId=elementId,
             content="Buyer's valuation - " + "Your Offer ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
-        );
-    } else if (js_vars.language_code == "de"){
+            );
+        } else if (js_vars.language_code == "de"){
         updateElementText(
             elementId=elementId,
-            content="Käufer: Wert des Objekts - " + "Ihr Angebot ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+            content="Wert des Objekts - " + "Ihr Angebot ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
         );
+        } 
+    } 
+
+    //Case 2: This is the element that shows what happens when the buyer makes an offer and the seller accepts it.
+    else if (elementId == "other_payoff_accept_seller"){
+
+        if (js_vars.language_code == "en"){
+            updateElementText(
+            elementId=elementId,
+            content="Buyer's valuation - " + "Your Offer ("+Math.round(data.buyer_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+            );
+        } else if (js_vars.language_code == "de"){
+        updateElementText(
+            elementId=elementId,
+            content="Wert des Objekts - " + "Ihr Angebot ("+Math.round(data.buyer_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+        );
+        } 
     }
 }
-
 
 function setTransactionCostsVisibility(TA_treatment) {
     const taElements = document.querySelectorAll('#TA_costs, #cumulated_TA_costs, #TA_cost_chart, .three_columns_left h5, .three_columns_left p');
@@ -511,4 +566,13 @@ function setTransactionCostsVisibility(TA_treatment) {
     });
 }
 
-module.exports = {  sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay } ; // Export the function for testing
+module.exports = {
+    sendAccept,
+    sendOffer,
+    sendTerminate,
+    createChart,
+    updateSliderDisplay,
+    needsWarning,
+    showWarningAndSend,
+    processOfferSubmission
+};

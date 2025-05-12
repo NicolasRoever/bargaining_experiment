@@ -184,7 +184,8 @@ class Lexicon:
     no_deal_text = "No deal was made in the given time frame."
 
 
-    bargain_page_warning_message = "Your offer is higher than the value of the object for you. Are you sure you want to submit your offer?"
+    bargain_page_warning_message_buyer = "Your offer is higher than the value of the object for you. Are you sure you want to submit your offer?"
+    bargain_page_warning_message_seller = "Your offer is lower than the value of the object for the other player. Are you sure you want to submit your offer?"
           
 
     #-----------------------------------

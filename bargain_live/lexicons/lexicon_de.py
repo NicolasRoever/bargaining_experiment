@@ -33,7 +33,7 @@ class Lexicon:
 
     buyer_value = "Der Wert des Objekts ist jede Runde eine neue Zufallszahl zwischen 0 und 30 Euro."
     seller_value_one_sided = "Der Wert des Objekts für den Verkäufer <b>beträgt immer 0 Euro</b>."
-    seller_value_two_sided = "Der Wert des Objekts für den Verkäufer ist auch eine zufällige Zahl zwischen 0 und 30 Euro."
+    seller_value_two_sided = "Der Wert des Objekts für den Verkäufer ist auch eine Zufallszahl zwischen 0 und 30 Euro."
     information_one_sided = "Das bedeutet, der Verkäufer kennt den Wert des Objekts für den Käufer <b>nicht</b>."
     information_two_sided = "Das bedeutet, keiner in der Verhandlung kennt den Wert des Objekts vom anderen."
     
@@ -74,7 +74,7 @@ class Lexicon:
     final_payoff_formula_no_ta_costs = "Endgültige Auszahlung = Teilnahmevergütung (10€) + Handelsgewinne"
 
     buyer_payoff_example_intro_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Asuzahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 31€ beträgt und die Bewertung 38€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
-    buyer_payoff_example_intro_no_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Asuzahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 31€ beträgt und die Bewertung 38€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
+    buyer_payoff_example_intro_no_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Asuzahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 31€ beträgt, der Wert 38€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
     buyer_payoff_value = "Wert des Objekts: "
     buyer_payoff_price = "Preis: "
     buyer_payoff_trade_gains = "Handelsgewinne: "
@@ -83,8 +83,8 @@ class Lexicon:
     buyer_payoff_participation_fee = "Teilnahmevergütung: "
     buyer_payoff_total = "Gesamtauszahlung: "
 
-    seller_payoff_example_intro_transaction_costs = "Hier ist ein Beispiel, wie die Auszahlung des Verkäufers berechnet wird: Wenn der ausgehandelte Preis 20€ beträgt und der Wert 0€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
-    seller_payoff_example_intro_no_transaction_costs = "Hier ist ein Beispiel, wie die Auszahlung des Verkäufers berechnet wird: Wenn der ausgehandelte Preis 20€ beträgt und der Wert 5€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
+    seller_payoff_example_intro_transaction_costs = "Hier ist ein Beispiel, wie die Auszahlung des Verkäufers berechnet wird: Wenn der ausgehandelte Preis 20€ beträgt, der Wert 0€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
+    seller_payoff_example_intro_no_transaction_costs = "Hier ist ein Beispiel, wie die Auszahlung des Verkäufers berechnet wird: Wenn der ausgehandelte Preis 20€ beträgt, der Wert 5€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
     seller_payoff_price = "Preis: "
     seller_payoff_value = "Wert des Objekts: "
     seller_payoff_trade_gains = "Handelsgewinne: "
@@ -122,7 +122,7 @@ class Lexicon:
 
     comprehension_question_2_choice_1 = "Alle Teilnehmer können jederzeit Angebote abgeben."
     comprehension_question_2_choice_2 = "Der Wert des Objekts für den Verkäufer beträgt 0 Euro."
-    comprehension_question_2_choice_3 = "Der Wert des Objekts für den Käufer wird zufällig zwischen 1 und 30 Euro festgelegt."
+    comprehension_question_2_choice_3 = "Der Wert des Objekts für den Käufer wird zufällig zwischen 0 und 30 Euro festgelegt."
     comprehension_question_2_choice_4 = "Der Verkäufer kennt den Wert des Objekts für den Käufer."
 
     comprehension_question_3_choice_1 = "Die angesammelten Verhandlungskosten werden nicht von der Teilnahmevergütung abgezogen."
@@ -277,7 +277,8 @@ class Lexicon:
     bargain_page_terminate_negotiation_heading_2 = "Wenn der andere Spieler die Verhandlung beendet:"
 
 
-    bargain_page_warning_message = "Ihr Angebot ist höher als der Wert des Objekts für Sie. Sind Sie sicher, dass Sie das Angebot absenden möchten?"
+    bargain_page_warning_message_buyer = "Ihr Angebot ist höher als der Wert des Objekts für Sie. Sind Sie sicher, dass Sie das Angebot absenden möchten?"
+    bargain_page_warning_message_seller = "Ihr Angebot ist niedriger als der Wert des Objekts für den anderen Spieler. Sind Sie sicher, dass Sie das Angebot absenden möchten?"
 
 
 

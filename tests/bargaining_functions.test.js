@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------
-const    { sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay }    = require('../_static/bargaining_functions.js');
+const    { sendAccept, sendOffer, sendTerminate, createChart, updateSliderDisplay, needsWarning, showWarningAndSend, processOfferSubmission}    = require('../_static/bargaining_functions.js');
 
 
 
@@ -160,3 +160,24 @@ describe('updateSliderDisplay', () => {
         expect(targetElement.innerHTML).toBe('$50.00');
     });
 });
+
+
+//-----------------------------------------------------------------------------------------------
+// Test offer submission within warning and processOfferSubmission
+describe("needsWarning()", () => {
+    test("Buyer under threshold → no warning", () => {
+      expect(needsWarning( 50, "Buyer", 100 )).toBe(false);
+    });
+    test("Buyer over threshold → warning", () => {
+      expect(needsWarning(150, "Buyer", 100)).toBe(true);
+    });
+    test("Seller above threshold → no warning", () => {
+      expect(needsWarning(120, "Seller", 100)).toBe(false);
+    });
+    test("Seller below threshold → warning", () => {
+      expect(needsWarning( 80, "Seller", 100)).toBe(true);
+    });
+  });
+
+
+  
