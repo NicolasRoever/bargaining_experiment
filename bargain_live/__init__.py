@@ -499,7 +499,7 @@ class BargainPracticeTwo(Page):
                                                         data=data, 
                                                         player=player, 
                                                         group=group, 
-                                                        initial_offer_from_bot=15,
+                                                        initial_offer_from_bot=12,
                                                         bargaining_time_elapsed=bargaining_time_elapsed)
         
         #Override the termination time to 60 for this practice round
@@ -574,13 +574,13 @@ class BargainPracticeThree(Page):
             data=data,
             player=player,
             group=group,
-            initial_offer_from_bot=16,
+            initial_offer_from_bot=14,
             bargaining_time_elapsed=bargaining_time_elapsed,
             amount_proposed_list=amount_proposed_list
         )
 
         #Override the termination time to 120 for this practice round
-        player.group.random_termination_time_current_round = 120
+        player.group.random_termination_time_current_round = 90
 
         return {0: broadcast}
     
