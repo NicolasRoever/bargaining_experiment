@@ -680,13 +680,13 @@ class BargainReal(Page):
 
 
 
-page_sequence = [#Consent, 
+page_sequence = [Consent, 
                  BargainInstructions,
-                 #PracticeRoundsIntro,
-                 #BargainPracticeOneIntro,
-                 #BargainPracticeTwoIntro,
-                 #BargainPracticeThreeIntro,
-                 #BargainInfoRealGame,
+                 PracticeRoundsIntro,
+                 BargainPracticeOneIntro,
+                 BargainPracticeTwoIntro,
+                 BargainPracticeThreeIntro,
+                 BargainInfoRealGame,
                  BargainWaitPage,
                  BargainPracticeOne,
                  BargainPracticeTwo,

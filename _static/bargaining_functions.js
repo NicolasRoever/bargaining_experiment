@@ -498,26 +498,25 @@ function updateOtherPayoffAcceptanceElementBuyer(elementId, data, js_vars) {
         if (js_vars.information_asymmetry == "one-sided") {
             updateCurrencyElement(
                 elementId = elementId,
-                amount = (js_vars.other_valuation - data.buyer_proposal - data.cumulated_TA_costs).toFixed(2)
+                amount = (data.buyer_proposal- js_vars.other_valuation  - data.cumulated_TA_costs).toFixed(2)
             );
         } else {
-            console.log("Updating other_payoff_pther_accepts_live, data.buyer_proposal:", data.buyer_proposal);
             updateElementText(
                 elementId = elementId,
-                amount = (data.buyer_proposal.toFixed(2) + " - Objektwert Verkäufer" + (js_vars.TA_treatment ? " - Transaktionskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : ""))
+                amount = (data.buyer_proposal.toFixed(2) + " - Objektwert Verkäufer" + (js_vars.TA_treatment ? " - Transaktionskosten ("+data.cumulated_TA_costs.toFixed(2) + "€)" : ""))
             );
         }
-    } else if (elementId == "other_payoff_accept_buyer"){
+    } else if (elementId == "other_payoff_I_accept_buyer"){
 
         if (js_vars.information_asymmetry == "one-sided") {
             updateCurrencyElement(
                 elementId = elementId,
-                amount = ( js_vars.other_valuation - data.seller_proposal - data.cumulated_TA_costs).toFixed(2)
+                amount = (data.seller_proposal - js_vars.other_valuation - data.cumulated_TA_costs).toFixed(2)
             );
         } else {
             updateElementText(
                 elementId = elementId,
-                amount = ( "Objektwert Verkäufer" + data.seller_proposal.toFixed(2) - (js_vars.TA_treatment ? " - Transaktionskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : ""))
+                amount = (data.seller_proposal.toFixed(2) + " - Objektwert Verkäufer" + (js_vars.TA_treatment ? " - Transaktionskosten ("+data.cumulated_TA_costs.toFixed(2) + "€)" : ""))
             );
         }
     }
@@ -532,28 +531,28 @@ function updateOtherPayoffAcceptanceElementSeller(elementId, data, js_vars) {
         if (js_vars.language_code == "en"){
             updateElementText(
             elementId=elementId,
-            content="Buyer's valuation - " + "Your Offer ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+            content="Buyer's valuation - " + "Offer ("+data.seller_proposal.toFixed(2) + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs ("+data.cumulated_TA_costs.toFixed(2) + "€)" : "")
             );
         } else if (js_vars.language_code == "de"){
         updateElementText(
             elementId=elementId,
-            content="Wert des Objekts - " + "Ihr Angebot ("+Math.round(data.seller_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+            content="Objektwert Käufer - " + "Angebot ("+data.seller_proposal.toFixed(2) + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+data.cumulated_TA_costs.toFixed(2) + "€)" : "")
         );
         } 
     } 
 
     //Case 2: This is the element that shows what happens when the buyer makes an offer and the seller accepts it.
-    else if (elementId == "other_payoff_accept_seller"){
+    else if (elementId == "other_payoff_I_accept_seller"){
 
         if (js_vars.language_code == "en"){
             updateElementText(
             elementId=elementId,
-            content="Buyer's valuation - " + "Your Offer ("+Math.round(data.buyer_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+            content="Buyer's valuation - " + "Offer ("+data.buyer_proposal.toFixed(2) + "€)" + (js_vars.TA_treatment ? " - Negotiation Costs ("+data.cumulated_TA_costs.toFixed(2) + "€)" : "")
             );
         } else if (js_vars.language_code == "de"){
         updateElementText(
             elementId=elementId,
-            content="Wert des Objekts - " + "Ihr Angebot ("+Math.round(data.buyer_proposal * 100) / 100 + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+Math.round(data.cumulated_TA_costs * 100) / 100 + "€)" : "")
+            content="Objektwert Käufer - " + "Angebot ("+data.buyer_proposal.toFixed(2) + "€)" + (js_vars.TA_treatment ? " - Verhandlungskosten ("+data.cumulated_TA_costs.toFixed(2) + "€)" : "")
         );
         } 
     }

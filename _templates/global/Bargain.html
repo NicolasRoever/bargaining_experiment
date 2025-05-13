@@ -217,11 +217,11 @@
                 <p id="my_payoff_accept_text" style="display: inline; "> {{ Lexicon.bargain_page_your_payoff }}<div style="display: inline" id ="my_payoff_accept">  - </div></p>
                 <p style="display: inline;">{{ Lexicon.bargain_page_payoff_other_player }}
                 {% if role_in_game == "Buyer" %}
-                    <div style="display: inline" id="other_payoff_accept_buyer"> 
+                    <div style="display: inline" id="other_payoff_I_accept_buyer"> 
                         - 
                     </div>
                 {% else %}
-                <div style="display: inline" id="other_payoff_accept_seller"> 
+                <div style="display: inline" id="other_payoff_I_accept_seller"> 
                     - 
                 </div>
                 {% endif %}
@@ -409,7 +409,7 @@ function liveRecv(data) {
             );
 
             updateOtherPayoffAcceptanceElementBuyer(
-                elementId="other_payoff_accept_buyer",
+                elementId="other_payoff_I_accept_buyer",
                 data=data,
                 js_vars=js_vars
             ); 
@@ -461,7 +461,7 @@ function liveRecv(data) {
             );
 
             updateOtherPayoffAcceptanceElementSeller(
-                elementId="other_payoff_accept_seller",
+                elementId="other_payoff_I_accept_seller",
                 data=data,
                 js_vars=js_vars
             )
