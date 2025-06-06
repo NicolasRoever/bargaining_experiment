@@ -1,0 +1,291 @@
+{{ block title }}
+<h1 style="color: #1340c7; font-weight: bold;">{{Lexicon.demographics_preferences_title}}</h1>
+<hr>
+{{ endblock }}
+
+{{ block content }}
+
+<p><strong>{{Lexicon.question_number_one}}</strong></p>
+
+<p>{{ Lexicon.ultimatum_intro }}</p>
+
+<p>{{ Lexicon.ultimatum_proposer_instruction }}</p>
+<label for="id_ultimatum_offer">{{ Lexicon.ultimatum_proposer_instruction_label }}</label> {{ form.ultimatum_offer }}
+
+<!-- 
+  A second, read-only field that shows "50 – offer". 
+  We assign it id="id_other_gets" so our JavaScript can update it.
+-->
+<div style="margin-top: 1em;">
+  <label for="id_other_gets">
+    {{ Lexicon.ultimatum_other_label }}
+  </label>
+  <strong id="id_other_gets" style="width: 4em; text-align: right;">-</strong>
+  &nbsp;€
+</div>
+
+<hr style="margin: 2em 0;">
+<p><strong>{{Lexicon.question_number_two}}</strong></p>
+
+<p>{{ Lexicon.risk_elicitation_label }}</p>
+    <!-- ───── Risk-elicitation field ───── -->
+    <div class="form-group">
+      {% for value, label_text in form.risk_elicitation_choice.choices %}
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="risk_elicitation_choice"
+            id="id_risk_{{ value }}"
+            value="{{ value }}"
+          >
+          <label class="form-check-label" for="id_risk_{{ value }}">
+            {{ label_text }}
+          </label>
+        </div>
+      {% endfor %}
+    </div>
+
+
+<hr style="margin: 2em 0;">
+<p><strong>{{Lexicon.question_number_three}}</strong></p>
+<p>{{ Lexicon.time_preference_label }}</p>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th style="width: 30%;">{{ Lexicon.time_preference_label_choice_a }}</th>
+      <th style="width: 30%;">{{ Lexicon.time_preference_label_choice_b }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- ───────── Row 1 ───────── -->
+    <tr>
+
+      <!-- Option A column: 100 (now) + radio button -->
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_1"
+            value="1"
+          >
+          <label class="form-check-label" for="id_choice_row_1_A">
+            €100 
+          </label>
+        </div>
+      </td>
+
+      <!-- Option B column: 105 (in t₂) + radio button -->
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_1"
+            value="2"
+          >
+          <label class="form-check-label" for="id_time_row_1_B">
+            €105
+          </label>
+        </div>
+      </td>
+    </tr>
+
+    <!-- ───────── Row 2 ───────── -->
+    <tr>
+
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_2"
+            value="1"
+          >
+          <label class="form-check-label" for="id_time_row_2_A">
+            €100
+          </label>
+        </div>
+      </td>
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_2"
+            value="2"
+          >
+          <label class="form-check-label" for="id_time_row_2_B">
+            €110
+          </label>
+        </div>
+      </td>
+    </tr>
+
+    <!-- ───────── Row 3 ───────── -->
+    <tr>
+
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_3"
+            value="1"
+          >
+          <label class="form-check-label" for="id_time_row_3_A">
+            €100
+          </label>
+        </div>
+      </td>
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_3"
+            value="2"
+          >
+          <label class="form-check-label" for="id_choice_row_3_B">
+            €115
+          </label>
+        </div>
+      </td>
+    </tr>
+
+    <!-- ───────── Row 4 ───────── -->
+    <tr>
+
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_4"
+            value="1"
+          >
+          <label class="form-check-label" for="id_time_row_4_A">
+            €100 
+          </label>
+        </div>
+      </td>
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_4"
+            value="2"
+          >
+          <label class="form-check-label" for="id_choice_row_4_B">
+            €120 
+          </label>
+        </div>
+      </td>
+    </tr>
+
+    <!-- ───────── Row 5 ───────── -->
+    <tr>
+
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_5"
+            value="1"
+          >
+          <label class="form-check-label" for="id_time_row_5_A">
+            €100 
+          </label>
+        </div>
+      </td>
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_5"
+            value="2"
+          >
+          <label class="form-check-label" for="id_time_row_5_B">
+            €125 
+          </label>
+        </div>
+      </td>
+    </tr>
+
+    <!-- ───────── Row 6 ───────── -->
+    <tr>
+ 
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_6"
+            value="1"
+          >
+          <label class="form-check-label" for="id_time_row_6_A">
+            €100 
+          </label>
+        </div>
+      </td>
+      <td>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="time_row_6"
+            value="2"
+          >
+          <label class="form-check-label" for="id_time_row_6_B">
+            €130 
+          </label>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<hr style="margin: 2em 0;">
+<p><strong>{{Lexicon.question_number_four}}</strong></p>
+<p>{{ Lexicon.age_label }}</p>
+
+    {{ form.age }}
+
+<hr style="margin: 2em 0;">
+<p><strong>{{Lexicon.question_number_five}}</strong></p>
+<p>{{ Lexicon.gender_label }}</p>
+
+    {{ form.gender }}
+
+    <hr style="margin: 2em 0;">
+
+    {{form.errors}}
+
+    {{ next_button }}
+
+
+
+
+<!-- JavaScript: recalc other_gets = 50 – offer on the fly -->
+<script>
+  // Use the actual Django/oTree‐generated ID, which is "id_ultimatum_offer"
+  const offerInput = document.getElementById("id_ultimatum_offer");
+  const otherInput = document.getElementById("id_other_gets");
+
+  function updateOther() {
+    const offerVal = parseInt(offerInput.value) || 0;
+    otherInput.textContent = 50 - offerVal;
+  }
+
+  offerInput.addEventListener("input", updateOther);
+</script>
+
+
+
+{{ endblock }}

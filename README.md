@@ -119,6 +119,10 @@ This section is only for me as a developer. You can ignore it.
 
 4. The screenshots in the instructions show a previous version of the experiment.
 
+- Hey, es waren ein paar Rechtschreibfehler in dem Text und der Abbildung. Nichts, was gravierend war oder das Leseverständnis behindert hat, aber besser etwas zu sagen als nicht :)
+
+- Mir wurde häufig nicht der ermittelte Gewinn angezeigt. Ansonsten lief alles problemlos
+
 
 - Node sachen nicht commiten
 - Javascript libraries loeschen
@@ -174,7 +178,6 @@ These are the commands for the university server we are using to run the experim
 
 
 ## When Doing a New Data Collection
-
 
 
 - Check that you have the right participant label file in the room settings!

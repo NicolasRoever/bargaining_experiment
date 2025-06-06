@@ -126,7 +126,7 @@ class Player(BasePlayer):
             [3, Lexicon.comprehension_question_1_choice_3],
             [4, Lexicon.comprehension_question_1_choice_4]
         ], 
-        blank=True
+        blank=False
     )
 
 
@@ -134,6 +134,82 @@ class Player(BasePlayer):
         blank=False
     )
 
+    #Demographics and preferences
+    ultimatum_offer = models.FloatField(min=0, max=50)
+
+    risk_elicitation_choice = models.IntegerField(
+        label="Which lottery would you choose?",
+        choices=[
+            [1, Lexicon.risk_elicitation_choice_1],
+            [2, Lexicon.risk_elicitation_choice_2],
+            [3, Lexicon.risk_elicitation_choice_3],
+            [4, Lexicon.risk_elicitation_choice_4],
+            [5, Lexicon.risk_elicitation_choice_5],
+            [6, Lexicon.risk_elicitation_choice_6],
+        ],
+    )
+    #Time Preferences
+    time_row_1 = models.IntegerField(
+        choices=[
+            [1, "A"],  # we'll render "100 (now)" next to this in the template
+            [2, "B"],  # "105 (in t₂)"
+        ], 
+        blank=False
+    )
+
+    time_row_2 = models.IntegerField(
+        choices=[
+            [1, "A"],  # "100 (now)"
+            [2, "B"],  # "110 (in t₂)"
+        ],   blank=False
+    )
+
+    time_row_3 = models.IntegerField(
+        choices=[
+            [1, "A"],  # "100 (now)"
+            [2, "B"],  # "115 (in t₂)"
+        ],
+          blank=False
+    )
+
+    time_row_4 = models.IntegerField(
+        choices=[
+            [1, "A"],  # "100 (now)"
+            [2, "B"],  # "120 (in t₂)"
+        ], 
+          blank=False
+    )
+
+    time_row_5 = models.IntegerField(
+        choices=[
+            [1, "A"],  # "100 (now)"
+            [2, "B"],  # "125 (in t₂)"
+        ], 
+          blank=False
+    )
+
+    time_row_6 = models.IntegerField(
+        choices=[
+            [1, "A"],  # "100 (now)"
+            [2, "B"],  # "130 (in t₂)"
+        ], 
+          blank=False
+    )
+
+
+    age = models.IntegerField(
+        choices=list(range(18, 101)),
+        blank=False
+    )
+
+    gender = models.IntegerField(
+        choices=[
+            [1, Lexicon.gender_male],
+            [2, Lexicon.gender_female],
+            [3, Lexicon.gender_other],
+        ],
+        blank=False
+    )
     
 
 #-----------------------------------------------------------------------------------------------   
@@ -360,6 +436,25 @@ class RoundResults(Page):
         dictionary_with_results.update(dict(Lexicon=Lexicon, **which_language))
 
         return dictionary_with_results
+    
+class DemographicsPreferences(TranslationTemplate):
+
+    form_model = 'player'
+    form_fields = ['ultimatum_offer', 'risk_elicitation_choice',
+        'time_row_1',
+        'time_row_2',
+        'time_row_3',
+        'time_row_4',
+        'time_row_5',
+        'time_row_6', 'age', 'gender']
+
+
+
+    @staticmethod
+    def is_displayed(player):
+        return player.subsession.round_number == C.NUM_ROUNDS
+    
+
 
 class FinalResults(Page):
     @staticmethod
@@ -680,18 +775,19 @@ class BargainReal(Page):
 
 
 
-page_sequence = [Consent, 
-                 BargainInstructions,
-                 PracticeRoundsIntro,
-                 BargainPracticeOneIntro,
-                 BargainPracticeTwoIntro,
-                 BargainPracticeThreeIntro,
-                 BargainInfoRealGame,
-                 BargainWaitPage,
-                 BargainPracticeOne,
-                 BargainPracticeTwo,
-                 BargainPracticeThree,
-                 BargainReal, 
-                 RoundResults, 
-                 FinalResults
+page_sequence = [#Consent, 
+                 #BargainInstructions,
+                 #PracticeRoundsIntro,
+                #  BargainPracticeOneIntro,
+                #  BargainPracticeTwoIntro,
+                #  BargainPracticeThreeIntro,
+                #  BargainInfoRealGame,
+                #  BargainWaitPage,
+                #  BargainPracticeOne,
+                #  BargainPracticeTwo,
+                #  BargainPracticeThree,
+                #  BargainReal, 
+                #  RoundResults, 
+                 DemographicsPreferences,
+                 #FinalResults
                  ]

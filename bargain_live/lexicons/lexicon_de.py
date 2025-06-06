@@ -281,6 +281,48 @@ class Lexicon:
     bargain_page_warning_message_seller = "Ihr Angebot ist niedriger als der Wert des Objekts für den anderen Spieler. Sind Sie sicher, dass Sie das Angebot absenden möchten?"
 
 
+#-----------------------------------
+# Demographics Preferences
+#-----------------------------------
+
+    question_number_one = "Frage 1"
+    question_number_two = "Frage 2"
+    question_number_three = "Frage 3"
+    question_number_four = "Frage 4"
+    question_number_five = "Frage 5"
+    question_number_six = "Frage 6"
+
+    risk_elicitation_label = "Stellen Sie sich vor, Sie können an einem der folgenden Gewinnspiele teilnehmen. Sie gewinnen entweder mit der angegebenen Wahrscheinlichkeit die angegebene Summe oder nichts. Welches Gewinnspiel würden Sie bevorzugen?"
+
+    risk_elicitation_choice_1 = "80% Wahrscheinlichkeit, 2€ zu gewinnen"
+    risk_elicitation_choice_2 = "70% Wahrscheinlichkeit, 3€ zu gewinnen"
+    risk_elicitation_choice_3 = "60% Wahrscheinlichkeit, 4€ zu gewinnen"
+    risk_elicitation_choice_4 = "50% Wahrscheinlichkeit, 5€ zu gewinnen"
+    risk_elicitation_choice_5 = "40% Wahrscheinlichkeit, 6€ zu gewinnen"
+    risk_elicitation_choice_6 = "30% Wahrscheinlichkeit, 7€ zu gewinnen"
+
+    ultimatum_proposer_instruction_label = "Ihr Vorschlag:"
+
+    time_preference_label_choice_a = "Jetzt erhalten"
+    time_preference_label_choice_b = "In 6 Monaten erhalten"
+
+    gender_male = "männlich"
+    gender_female = "weiblich"
+    gender_other = "divers"
+
+ 
+
+    demographics_preferences_title = "Abschliessende Fragen"
+    ultimatum_intro = 'Stellen Sie sich folgende Situation vor: Sie erhalten 50 Euro, und müssen diese zwischen Ihnen und einem anderen zufällig ausgewählten Experimentteilnehmer aufteilen. Nachdem Sie Ihren Vorschlag abgegeben haben, kann der andere Spieler es akzeptieren oder ablehnen. Wenn er es ablehnt, erhalten Sie und der andere Spieler 0 Euro. Wenn er es akzeptiert, erhalten beide das Geld.'
+
+    ultimatum_proposer_instruction = 'Welchen Vorschlag würden Sie abgeben? (0€ - 50€)'
+    ultimatum_other_label = "Der andere Spieler erhält:"
+
+    age_label = "Wie alt sind Sie?"
+    gender_label = "Was ist Ihr Geschlecht?"
+
+    
+    time_preference_label = "Stellen Sie sich vor, sie erhalten Geld geschenkt. Sie können wählen, ob sie eine Summe eintweder jetzt, oder eine andere Summe in 6 Monaten erhalten. Für die folgenden 6 Optionen, sagen Sie uns, welche Sie bevorzugen."
 
 
 

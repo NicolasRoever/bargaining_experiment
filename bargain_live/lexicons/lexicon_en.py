@@ -281,7 +281,47 @@ class Lexicon:
     bargain_page_terminate_negotiation_heading = "Termination"
     bargain_page_terminate_negotiation_heading_1 = "If you terminate the negotiation:"
     bargain_page_terminate_negotiation_heading_2 = "If the other player terminates the negotiation:"
-    
+
+    #-----------------------------------
+    # Demographics Preferences
+    #-----------------------------------
+
+    question_number_one = "Question 1"
+    question_number_two = "Question 2"
+    question_number_three = "Question 3"
+    question_number_four = "Question 4"
+    question_number_five = "Question 5"
+    question_number_six = "Question 6"
+
+    risk_elicitation_choice_1 = "80% chance of winning €2"
+    risk_elicitation_choice_2 = "70% chance of winning €3"
+    risk_elicitation_choice_3 = "60% chance of winning €4"
+    risk_elicitation_choice_4 = "50% chance of winning €5"
+    risk_elicitation_choice_5 = "40% chance of winning €6"
+    risk_elicitation_choice_6 = "30% chance of winning €7"
+
+    ultimatum_proposer_instruction_label = "Your Offer:"
+
+    gender_male = "male"
+    gender_female = "female"
+    gender_other = "other"
+
+        
+    time_preference_label = "Imagine, you can choose between receiving money now or in 6 months. For each of the following options, tell us which you would prefer to receive."
+
+    time_preference_label_choice_a = "Receive Now"
+    time_preference_label_choice_b = "Receive in 6 months"
+
+    demographics_preferences_title = "Concluding Questions"
+    ultimatum_intro = 'Imagine you receive 50 euros, and you have to divide it between you and another randomly selected participant in the experiment. After you submit your offer, the other participant can accept or reject it. If they reject it, you and the other participant receive 0 euros. If they accept it, you both receive the money.'
+
+    ultimatum_proposer_instruction = 'What offer would you make?'
+    ultimatum_other_label = "The other player receives:"
+
+    age_label = "How old are you?"
+    gender_label = "What is your gender?"
+    perceived_time_pressure_label = "How much time pressure did you feel during the bargaining? (0 = no time pressure, 100 = high time pressure)"
+    risk_elicitation_label = "For each of the following 6 options, tell us which you would prefer to receive."
 
 
 
