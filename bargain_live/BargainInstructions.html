@@ -106,12 +106,6 @@
 </head>
 
 <body>
-    <div style="background-color: rgb(249, 249, 249); padding: 10px;">
-        <p>{{ Lexicon.welcome_message }}<span style="color: #800020;">PayPal</span>.</p>
-
-    </div>
-
-    <br>
 
     <div class="section">
         <h2 class="section-title"><u>{{ Lexicon.section_overview }}</u></h2>
@@ -125,10 +119,12 @@
         <div class="content-box">
             <p>{{ Lexicon.negotiation_intro }}</p>
             <ul class="task-list">
-                <li>{{ Lexicon.buyer_value }}</li>
+               
                 {% if information_asymmetry == "one-sided" %}
+                <li>{{ Lexicon.buyer_value_one_sided }}</li>
                 <li>{{ Lexicon.seller_value_one_sided }}</li>
                 {% else %}
+                <li>{{ Lexicon.buyer_value_two_sided }}</li>
                 <li>{{ Lexicon.seller_value_two_sided }}</li>
                 {% endif %}
 
@@ -172,6 +168,10 @@
             Lexicon.termination_probability2 }} {{ expected_termination_time }} {{ Lexicon.termination_probability3 }}
         </p>
 
+    </div>
+
+        <br>
+
         <h3>{{ Lexicon.ending_negotiation_heading }}</h3>
         <div style="background-color: rgb(249, 249, 249); padding: 10px;">
             <p>{{ Lexicon.ending_negotiation_intro }}</p>
@@ -182,13 +182,15 @@
             </ul>
         </div>
 
+        <br>
         <h3>{{ Lexicon.options_summary_heading }}</h3>
         <div style="background-color: rgb(249, 249, 249); padding: 10px;">
             <p>{{ Lexicon.options_summary_intro }}</p>
             <ol>
                 <li>{{ Lexicon.option_submit_price }}</li>
+                <li>{{ Lexicon.option_accept }}</li>
                 <li>{{ Lexicon.option_terminate }} {{ Lexicon.termination_explanation_costs }}</li>
-                <li>{{ Lexicon.option_accept }} {{ Lexicon.random_termination_explanation_costs }}</li>
+                
             </ol>
         </div>
         <br>
@@ -263,9 +265,8 @@
 
         <hr>
 
-        <h2 style="text-decoration: underline;">{{ Lexicon.payment_heading }}</h2>
+        <h3>{{ Lexicon.payment_heading }}</h3>
 
-        <hr>
         <div style="background-color: rgb(249, 249, 249); padding: 10px;">
             <p>{{ Lexicon.payment_info }}</p>
             {% if transaction_costs > 0 %}
@@ -283,7 +284,7 @@
         
             {% if transaction_costs > 0 %}
 
-            <p>{{ Lexicon.buyer_payoff_example_intro }}</p>
+            <p>{{ Lexicon.buyer_payoff_example_intro_transaction_costs }}</p>
 
             <p>
             <div class="statement">
@@ -339,13 +340,13 @@
             <div class="line"></div>
             <div>{{ Lexicon.seller_payoff_trade_gains }}<span class="amount">20</span></div>
             <div class="line"></div>
-            <div>{{ Lexicon.seller_payoff_transaction_costs }}<span class="amount">0.05€/s * 20s = -10€</span></div>
+            <div>{{ Lexicon.seller_payoff_transaction_costs }}<span class="amount">0.05€/s * 20s = -1€</span></div>
             <div class="line"></div>
-            <div>{{ Lexicon.seller_payoff_match }}<span class="amount">10</span></div>
+            <div>{{ Lexicon.seller_payoff_match }}<span class="amount">19</span></div>
             <div class="line"></div>
             <div>{{ Lexicon.seller_payoff_participation_fee }}<span class="amount">+10</span></div>
             <div class="double-line"></div>
-            <div>{{ Lexicon.seller_payoff_total }}<span class="amount">20</span></div>
+            <div>{{ Lexicon.seller_payoff_total }}<span class="amount">29</span></div>
         </div>
         </p>
 
@@ -397,19 +398,21 @@
 
     {% if player_role == "Buyer" %}
     <p>
-    
-    {{ Lexicon.strategy_question_buyer }}
+        <div class="question" style="max-width: 800px; margin: auto;">
+            {{ Lexicon.strategy_question_buyer }}
+        </div>
     </p>
     {% else %}
     <p>
-    {{ Lexicon.strategy_question_seller }}
+        <div class="question" style="max-width: 800px; margin: auto;">
+            {{ Lexicon.strategy_question_seller }}
+        </div>
     </p>
     {% endif %}
 
+    <div class="question" style="max-width: 800px; margin: auto;">
         {{ form.question_strategy }}
-
-    <hr>
-
+    </div>
     <br>
 
     <div style="max-width: 800px; margin: auto;">
@@ -417,7 +420,7 @@
     </div>
 
     <div style="position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: grey;">
-        Code Version 9.6
+        Code Version 9.7
     </div>
 
 

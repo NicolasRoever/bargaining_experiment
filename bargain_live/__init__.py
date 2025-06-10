@@ -129,6 +129,10 @@ class Player(BasePlayer):
         blank=False
     )
 
+    comprehension_2 = models.IntegerField(
+        blank=False
+    )
+
 
     question_strategy = models.LongStringField(
         blank=False
@@ -351,7 +355,8 @@ class Consent(TranslationTemplate):
 
 class BargainInstructions(Page):
     form_model = 'player'
-    form_fields = ['comprehension_1', 'question_strategy']
+
+    form_fields = ['comprehension_1','comprehension_2', 'question_strategy']
     @staticmethod
     def vars_for_template(player: Player):
 
@@ -775,19 +780,19 @@ class BargainReal(Page):
 
 
 
-page_sequence = [#Consent, 
-                 #BargainInstructions,
-                 #PracticeRoundsIntro,
-                #  BargainPracticeOneIntro,
-                #  BargainPracticeTwoIntro,
-                #  BargainPracticeThreeIntro,
-                #  BargainInfoRealGame,
-                #  BargainWaitPage,
-                #  BargainPracticeOne,
-                #  BargainPracticeTwo,
-                #  BargainPracticeThree,
-                #  BargainReal, 
-                #  RoundResults, 
+page_sequence = [Consent, 
+                 BargainInstructions,
+                 PracticeRoundsIntro,
+                 BargainPracticeOneIntro,
+                 BargainPracticeTwoIntro,
+                 BargainPracticeThreeIntro,
+                 BargainInfoRealGame,
+                 BargainWaitPage,
+                 BargainPracticeOne,
+                 BargainPracticeTwo,
+                 BargainPracticeThree,
+                 BargainReal, 
+                 RoundResults, 
                  DemographicsPreferences,
-                 #FinalResults
+                 FinalResults
                  ]

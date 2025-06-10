@@ -107,10 +107,31 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
+- WHATEVER HAPPENS FOR 4 GROUPS IS COMPLETELY OFF. BUT WHY?
+
+- ROUND RESULTS IF CLAUSE IS NOT WRITTEN CORRECTLY!!!
+
+- Application error (500)
+TypeError: group.accepted_by is None. Accessing a null field is generally considered an error. Or, if this is intentional, use field_maybe_none()
+File bargain_live/RoundResults.html, line 43, in if
+
+40.
+
+41. {% if group.terminated == False %}
+
+42.
+
+43.     {% if group.accepted_by == player.id_in_group %}
+
+44.
+
+45.     <p>
+
+46.     {{ Lexicon.acceptance_1 }} {{ deal_price }} {{ Lexicon.acceptance_3 }}
+
 - There is a mistake in the screen for the information what is shown for the payoffs if there is accepatce in the beginning (undefined variable)
 
 - Implement automatic acceptance for seller as well (relevant for two-sided asymmetry)
-
 
 - Also, there seems to be "Keine Eingigung", obwohl angenommen wurde. I guess it is a mistake in the if-clause? 
 - Can you see where the outliers in bargaining time are coming from?

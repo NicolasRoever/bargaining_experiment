@@ -28,18 +28,19 @@ class Lexicon:
 
 
     welcome_message = "Die Auszahlung, die Sie aus diesem Experiment erhalten, hängt teilweise von Ihren Entscheidungen, teilweise von den Entscheidungen anderer und teilweise vom Zufall ab. Den Betrag, den Sie verdienen, erhalten Sie via "
-    experiment_structure = "Das Experiment besteht aus 30 Runden. Zu Beginn des Experiments wird den Teilnehmenden zufällig die Rolle des Käufers oder des Verkäufers zugewiesen. Die Rolle bleibt <b>über alle 30 Runden hinweg gleich</b>. Zu Beginn jeder Runde werden Sie zufällig einer anderen Person mit der anderen Rolle zugeordnet. Nach jeder Runde werden neue Paare gebildet."
+    experiment_structure = "Das Experiment besteht aus 30 Runden, in denen Sie mit einer anderen Person verhandeln. Zu Beginn des Experiments wird den Teilnehmenden zufällig die Rolle des Käufers oder des Verkäufers zugewiesen. Die Rolle bleibt <b>über alle 30 Runden hinweg gleich</b>. Zu Beginn jeder Runde werden Sie zufällig einer anderen Person mit der anderen Rolle zugeordnet. Nach jeder Runde werden neue Paare gebildet."
     negotiation_intro = "In jeder Runde verhandeln Käufer und Verkäufer über ein Objekt:"
 
-    buyer_value = "Der Wert des Objekts ist jede Runde eine neue Zufallszahl zwischen 0 und 30 Euro."
+    buyer_value_one_sided = "Der Wert des Objekts für den Käufer ist jede Runde eine neue Zufallszahl zwischen 0 und 30 Euro."
+    buyer_value_two_sided = "Der Wert des Objekts für den Käufer ist jede Runde eine neue Zufallszahl zwischen 0 und 60 Euro."
     seller_value_one_sided = "Der Wert des Objekts für den Verkäufer <b>beträgt immer 0 Euro</b>."
-    seller_value_two_sided = "Der Wert des Objekts für den Verkäufer ist auch eine Zufallszahl zwischen 0 und 30 Euro."
-    information_one_sided = "Das bedeutet, der Verkäufer kennt den Wert des Objekts für den Käufer <b>nicht</b>."
-    information_two_sided = "Das bedeutet, keiner in der Verhandlung kennt den Wert des Objekts vom anderen."
+    seller_value_two_sided = "Der Wert des Objekts für den Verkäufer ist auch eine Zufallszahl zwischen 0 und 60 Euro."
+    information_one_sided = "Der Verkäufer kennt den Wert des Objekts für den Käufer <b>nicht</b>."
+    information_two_sided = "Keiner in der Verhandlung kennt den Wert des Objekts vom anderen."
     
     price_negotiation_heading = "Preisverhandlung"
     price_negotiation_intro = "Der Käufer und der Verkäufer verhandeln über den Preis:"
-    price_submission = "Beide Teilnehmer können Preise vorschlagen, indem sie einen Wert auf einem Schieberegler auswählen und auf \"Absenden\" klicken. Der übermittelte Preis wird auf dem Bildschirm der anderen Person angezeigt."
+    price_submission = "Beide Teilnehmer können Preise vorschlagen, indem sie einen Wert auf einem Schieberegler auswählen und auf \"Absenden\" klicken."
     price_update = "Sie können während der Verhandlung jederzeit neue Preise vorschlagen. Wenn ein neuer Preis vorgeschlagen wird, wird der vorherige ungültig."
     costs_heading = "Kosten durch Verzögerung"
     costs_intro = "Während der Preisverhandlung entstehen zwei Arten von Kosten: Verhandlungskosten und Kosten durch Verzögerung."
@@ -54,11 +55,11 @@ class Lexicon:
 
     ending_negotiation_heading = "Die Verhandlung beenden"
     ending_negotiation_intro = "Die Verhandlung kann auf drei Arten enden:"
-    acceptance_rule = "Ein Teilnehmer das Preisangebot des anderen annimmt. Sie können ein Angebot auch durch ein \"dummes\" eigenes Angebot akzeptieren. Das bedeutet, wenn der Käufer ein Angebot macht, das unter dem des Verkäufers liegt, wird dies als Annahme gewertet. Ebenso gilt: Wenn der Verkäufer ein Angebot macht, das über dem des Käufers liegt, wird dies ebenfalls als Annahme gewertet."
-    terminate_rule = "Ein Teilnehmer auf \"Beenden\" klickt, wodurch die Verhandlung ohne Handelsgewinne für beide endet."
+    acceptance_rule = "Wenn ein Teilnehmer das Preisangebot des anderen annimmt. Sie können ein Angebot auch durch ein \"dummes\" eigenes Angebot akzeptieren. Das bedeutet, wenn der Käufer ein Angebot macht, das über dem des Verkäufers liegt, wird dies als Annahme gewertet. Ebenso gilt: Wenn der Verkäufer ein Angebot macht, das unter dem des Käufers liegt, wird dies ebenfalls als Annahme gewertet."
+    terminate_rule = "Wenn ein Teilnehmer auf \"Beenden\" klickt, wodurch die Verhandlung ohne Handelsgewinne für beide endet."
     
     termination_explanation_costs = "Bereits angefallene Verhandlungskosten bleiben jedoch bestehen."
-    random_termination_rule = "Die Verhandlung zufällig beendet wird, wodurch die Runde ohne Handelsgewinne für beide endet."
+    random_termination_rule = "Wenn die Verhandlung zufällig durch den Computer beendet wird, wodurch die Runde ohne Handelsgewinne für beide endet."
     random_termination_explanation_costs = "Bereits angefallene Verhandlungskosten bleiben jedoch bestehen."
 
     options_summary_heading = "Zusammenfassung der Optionen"
@@ -70,10 +71,10 @@ class Lexicon:
     example_seller_screen = "Beispiel für die Verkäuferansicht"
     payment_heading = "Bezahlung"
     payment_info = "Am Ende des Experiments wird eine Runde zufällig für die Auszahlung ausgewählt. Ihre Auszahlung ergibt sich auf folgende Weise:"
-    final_payoff_formula_ta_costs = "Endgültige Auszahlung = Teilnahmevergütung (10€) + Handelsgewinne – Gesamte Verhandlungskosten"
+    final_payoff_formula_ta_costs = "Endgültige Auszahlung = Teilnahmevergütung (10€) + Handelsgewinne – Verhandlungskosten"
     final_payoff_formula_no_ta_costs = "Endgültige Auszahlung = Teilnahmevergütung (10€) + Handelsgewinne"
 
-    buyer_payoff_example_intro_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Asuzahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 31€ beträgt und die Bewertung 38€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
+    buyer_payoff_example_intro_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Asuzahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 31€ beträgt, der Wert 38€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
     buyer_payoff_example_intro_no_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Asuzahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 31€ beträgt, der Wert 38€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
     buyer_payoff_value = "Wert des Objekts: "
     buyer_payoff_price = "Preis: "
@@ -94,7 +95,7 @@ class Lexicon:
     seller_payoff_total = "Gesamtauszahlung: "
 
     comprehension_question_1 = "Frage: Bitte wählen Sie die falsche Aussage"
-    comprehension_question_2 = "Frage: Die Verhandlungskosten betragen 0,05€ pro Sekunde. Die Verhandlung dauert 30 Sekunden, als der Computer die Verhandlung beendet. Was sind die Verhandlungskosten für den Käufer?"
+    comprehension_question_2 = "Frage: Die Verhandlungskosten betragen 0,05€ pro Sekunde. Die Verhandlung dauert 20 Sekunden, als der Computer die Verhandlung beendet. Was sind die Verhandlungskosten für den Käufer in Euro?"
   
 
     section_overview = "Übersicht"
@@ -107,7 +108,7 @@ class Lexicon:
     practice_round_2_text = "In dieser Übungsrunde verhandeln Sie mit dem Computer. Der Computer macht nach 10 Sekunden ein zufälliges Angebot und verbessert es alle 10 Sekunden. Sie können das Angebot annehmen, es ablehnen, ein Gegenangebot machen oder die Verhandlung beenden. Allerdings wird der Computer keines Ihrer Angebote akzeptieren. Die Verhandlung endet automatisch nach 60 Sekunden."
 
     practice_round_3_title = "Übungsrunde 3 / 3"
-    practice_round_3_text = "In dieser Übungsrunde macht der Computer nach 10 Sekunden ein zufälliges Angebot und verbessert es alle 10 Sekunden. Sie können das Angebot annehmen, es ablehnen, ein Gegenangebot machen oder die Verhandlung beenden. Der Computer wird Ihr zweites Angebot akzeptieren. Falls gemäß der gegebenen Regeln keine Einigung erzielt wird, endet die Verhandlung automatisch nach 120 Sekunden."
+    practice_round_3_text = "In dieser Übungsrunde macht der Computer nach 10 Sekunden ein zufälliges Angebot und verbessert es alle 10 Sekunden. Sie können das Angebot annehmen, es ablehnen, ein Gegenangebot machen oder die Verhandlung beenden. Der Computer wird Ihr zweites Angebot akzeptieren."
 
 
     minimum_payoff_text_1 = "Hinweis: Die minimale Auszahlung in diesem Experiment beträgt "
@@ -120,17 +121,12 @@ class Lexicon:
     comprehension_question_1_choice_3 = "In manchen Runden haben Sie die Rolle des Verkäufers und in anderen Runden die Rolle des Käufers."
     comprehension_question_1_choice_4 = "Zu Beginn jeder Runde werden ein Käufer und ein Verkäufer zufällig gepaart."
 
-    comprehension_question_2_choice_1 = "Alle Teilnehmer können jederzeit Angebote abgeben."
-    comprehension_question_2_choice_2 = "Der Wert des Objekts für den Verkäufer beträgt 0 Euro."
-    comprehension_question_2_choice_3 = "Der Wert des Objekts für den Käufer wird zufällig zwischen 0 und 30 Euro festgelegt."
-    comprehension_question_2_choice_4 = "Der Verkäufer kennt den Wert des Objekts für den Käufer."
-
-    comprehension_question_3_choice_1 = "Die angesammelten Verhandlungskosten werden nicht von der Teilnahmevergütung abgezogen."
-    comprehension_question_3_choice_2 = "Die angesammelten Verhandlungskosten werden von der Teilnahmevergütung abgezogen."
+    comprehension_question_2_choice_1 = "Die angesammelten Verhandlungskosten werden nicht von der Teilnahmevergütung abgezogen."
+    comprehension_question_2_choice_2 = "Die angesammelten Verhandlungskosten werden von der Teilnahmevergütung abgezogen."
 
     intro_practice_rounds_title = "Beginn der Übungsrunden"
     intro_practice_rounds_1 = "In diesem Experiment sind Sie"
-    intro_practice_rounds_2 = "und diese Rolle bleibt während des gesamten Experiments gleich. Bevor das Experiment beginnt, werden Sie drei Übungsrunden durchführen. Der Hauptzweck dieser Übungsrunden ist es, Sie mit der Umgebung vertraut zu machen. Keine Übungsrunde trägt zu Ihrer endgültigen Auszahlung bei."
+    intro_practice_rounds_2 = "und diese Rolle bleibt während des gesamten Experiments gleich. Bevor das Experiment beginnt, werden Sie drei Übungsrunden durchführen. Der Zweck dieser Übungsrunden ist es, Sie mit der Umgebung vertraut zu machen. Keine Übungsrunde trägt zu Ihrer endgültigen Auszahlung bei."
 
     intro_real_game_title = "Ende der Übungsrunden"
     intro_real_game = "Jetzt beginnt das eigentliche Experiment. Sie werden mit anderen Experimentteilnehmern für insgesamt 30 Runden verhandeln. Wir werden eine dieser Runden zufällig auswählen, um Ihre endgültige Auszahlung zu berechnen."
@@ -322,7 +318,7 @@ class Lexicon:
     gender_label = "Was ist Ihr Geschlecht?"
 
     
-    time_preference_label = "Stellen Sie sich vor, sie erhalten Geld geschenkt. Sie können wählen, ob sie eine Summe eintweder jetzt, oder eine andere Summe in 6 Monaten erhalten. Für die folgenden 6 Optionen, sagen Sie uns, welche Sie bevorzugen."
+    time_preference_label = "Stellen Sie sich vor, sie erhalten Geld geschenkt. Sie können wählen, ob sie eine Summe eintweder jetzt, oder eine andere Summe in 6 Monaten erhalten. Für die folgenden 6 Optionen, sagen Sie uns jeweils, welche Sie bevorzugen."
 
 
 

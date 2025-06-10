@@ -40,13 +40,13 @@
 
 {% if group.terminated == False %}
 
-    {% if group.accepted_by == player.id_in_group %}
+    {% if group.field_maybe_none('accepted_by') == player.id_in_group %}
 
     <p>
     {{ Lexicon.acceptance_1 }} {{ deal_price }} {{ Lexicon.acceptance_3 }}
     </p>
     
-    {% elif group.accepted_by != player.id_in_group %}
+    {% elif group.field_maybe_none('accepted_by') != player.id_in_group %}
     <p>
         {{ Lexicon.acceptance_4 }} {{ deal_price }} {{ Lexicon.acceptance_6 }}
     </p>
@@ -203,7 +203,7 @@
     {% else %}
     <p>
         <div class="statement">
-            <div>{{ Lexicon.price_label }}<span class="amount">0</span></div>
+            <div>{{ Lexicon.price_label }}<span class="amount">{{ Lexicon.no_deal_text }}</span></div>
             <div>{{ Lexicon.value_of_object }}<span class="amount"> 0</span></div>
             <div class="line"></div>
             <div>{{ Lexicon.gains_from_trade_label }}<span class="amount">0</span></div>
