@@ -158,10 +158,14 @@
             {% if information_asymmetry == "one-sided" %}
                 {{ Lexicon.value_of_object_for_seller_0 }}
             {% else %}
-                {{ Lexicon.value_of_object_for_seller_random }}
+                {{ Lexicon.value_of_object_for_seller_random_60 }}
             {% endif %}
             {% else %}
-                {{ Lexicon.value_of_object_for_buyer }}
+            {% if information_asymmetry == "one-sided" %}
+                {{ Lexicon.value_of_object_for_buyer_30 }}
+            {% else %}
+                {{ Lexicon.value_of_object_for_buyer_random_60 }}
+            {% endif %}
             {% endif %}
         </p>
     </div>
@@ -316,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
     startCountdown(overlayId='countdown-overlay', js_vars=js_vars);
 
     initializeElements();  
-    initializeSliders();
+    initializeSliders(js_vars.slider_max_value);
 
 });
 

@@ -929,6 +929,11 @@ def create_dictionary_with_js_variables_for_bargain_page(player: Any, C: Any, pr
         else:
             dictionary['other_valuation'] = np.nan
 
+    if player.group.subsession.session.config['information_asymmetry'] == "one-sided":
+        dictionary['slider_max_value'] = 30.000000000001
+    else:
+        dictionary['slider_max_value'] = 60.000000000001
+
     dictionary["language_code"] = language_code
 
     return dictionary

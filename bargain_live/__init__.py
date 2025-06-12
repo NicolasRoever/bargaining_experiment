@@ -79,6 +79,9 @@ class Player(BasePlayer):
         widget=widgets.CheckboxInput,
         blank=False)
 
+    experiment_start_time = models.FloatField()
+    experiment_end_time = models.FloatField()
+
     proposal_made = models.BooleanField(initial=False)
     amount_proposed = models.FloatField()#
     amount_accepted = models.IntegerField()#
@@ -344,13 +347,18 @@ class TranslationTemplate(Page):
 
 #--Short Static Pages--#
 
-class Consent(TranslationTemplate):
+class Consent(Page):
     form_model = 'player'
     form_fields = ['consent_form']
 
     @staticmethod
     def is_displayed(player):
         return player.subsession.round_number == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        player.experiment_start_time = time.time()
+        return dict(Lexicon=Lexicon, **which_language)
 
 
 class BargainInstructions(Page):
@@ -464,6 +472,8 @@ class DemographicsPreferences(TranslationTemplate):
 class FinalResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
+
+        experiment_end_time = time.time()
 
         dictionary_with_results = create_payoff_dictionary(player=player)
 
