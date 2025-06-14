@@ -189,7 +189,7 @@
             <ol>
                 <li>{{ Lexicon.option_submit_price }}</li>
                 <li>{{ Lexicon.option_accept }}</li>
-                <li>{{ Lexicon.option_terminate }} {{ Lexicon.termination_explanation_costs }}</li>
+                <li>{{ Lexicon.option_terminate }} {% if transaction_costs > 0 %}{{ Lexicon.termination_explanation_costs }}{% endif %}</li>
                 
             </ol>
         </div>

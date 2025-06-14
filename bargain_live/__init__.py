@@ -133,7 +133,7 @@ class Player(BasePlayer):
     )
 
     comprehension_2 = models.IntegerField(
-        blank=False
+        blank=True
     )
 
 
