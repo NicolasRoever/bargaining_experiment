@@ -473,7 +473,7 @@ class FinalResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
 
-        experiment_end_time = time.time()
+        player.experiment_end_time = time.time()
 
         dictionary_with_results = create_payoff_dictionary(player=player)
 

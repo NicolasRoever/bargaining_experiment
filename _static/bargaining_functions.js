@@ -126,7 +126,7 @@ function needsWarning(offerValue, role, threshold) {
 function sendOffer({ buttonId, slider, startTime, myId, myRole }) {
     const button = document.getElementById(buttonId);
     button.classList.add('active');
-    const startTimeInSeconds = new Date(startTime).getTime() / 1000;
+    const startTimeInSeconds = new Date(startTime).getTime();
 
     const offerDetails = {
         type: 'propose',
@@ -184,7 +184,7 @@ function sendAccept({ payoffElement, startTime, myId }) {
 
     console.log("Payoff inside acceppt function",payoff);
 
-    const startTimeInSeconds = new Date(startTime).getTime() / 1000;
+    const startTimeInSeconds = new Date(startTime).getTime();
 
     // Prepare the data to be sent via liveSend
     const data = {
@@ -200,7 +200,7 @@ function sendAccept({ payoffElement, startTime, myId }) {
 
 // This function is called when the player clicks the "Terminate" button to terminate the game.
 function sendTerminate({ startTime, myId }) {
-    const startTimeInSeconds = new Date(startTime).getTime() / 1000;
+    const startTimeInSeconds = new Date(startTime).getTime();
     liveSend({
         type: 'terminate',
         termination_time: Math.floor(Date.now() / 1000 - startTimeInSeconds),
