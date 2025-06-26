@@ -82,6 +82,8 @@ def update_broadcast_dict_with_basic_values(
     bargaining_time_elapsed = round(
         time.time() - group.bargain_start_time
     )
+
+    player.current_second = bargaining_time_elapsed
     
     # Set variables based on elapsed time
     if bargaining_time_elapsed < 0:
@@ -173,6 +175,14 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     if offer_time is not None:
         offer_time_list.append(float(offer_time))
     player.offer_time_list = json.dumps(offer_time_list)
+
+    # Update the offer_time_unix_list field
+    offer_time_unix_list = json.loads(player.offer_time_unix_list)
+    offer_time_unix = time.time()
+    if offer_time_unix is not None:
+        offer_time_unix_list.append(float(offer_time_unix))
+    player.offer_time_unix_list = json.dumps(offer_time_unix_list)
+
     player.proposal_made = True
 
 
@@ -191,6 +201,7 @@ def update_group_database_upon_acceptance(group: Any, data: Dict[str, Any]) -> N
     group.deal_price = float(re.sub(r'[^\d.]', '', str(data.get('amount')))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
     group.acceptance_time = data.get('acceptance_time')
     group.accepted_by = data.get('accepted_by')
+    group.acceptance_time_unix = time.time()
 
 
 
@@ -211,6 +222,7 @@ def update_group_database_upon_termination(group, data):
     group.deal_price = None
     group.terminated = True
     group.termination_mode = 'Player'
+    group.termination_time_unix = time.time()
 
 def update_group_database_upon_random_termination(group: Any) -> None:
     """
@@ -228,6 +240,7 @@ def update_group_database_upon_random_termination(group: Any) -> None:
     group.termination_mode = 'Random_Termination'
     group.deal_price = None
     group.terminated = True
+    group.termination_time_unix = time.time()
 
 
 def setup_player_valuation(player: Any) -> None:

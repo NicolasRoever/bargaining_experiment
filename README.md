@@ -107,9 +107,7 @@ While some of the functions are quite long as they carry special functionalities
 
 This section is only for me as a developer. You can ignore it. 
 
-- WHATEVER HAPPENS FOR 4 GROUPS IS COMPLETELY OFF. BUT WHY?
-
-- ROUND RESULTS IF CLAUSE IS NOT WRITTEN CORRECTLY!!!
+- I need to change all time calculations to the server! I unfortunately have issues with the time calculations on the client side if they are not in sync!
 
 - Application error (500)
 TypeError: group.accepted_by is None. Accessing a null field is generally considered an error. Or, if this is intentional, use field_maybe_none()

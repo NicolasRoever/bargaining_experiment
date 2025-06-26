@@ -72,6 +72,10 @@ class Group(BaseGroup):
     random_termination_time_current_round = models.IntegerField()
     termination_mode = models.StringField()
 
+    #Time Safety
+    acceptance_time_unix = models.FloatField()
+    termination_time_unix = models.FloatField()
+
 
 class Player(BasePlayer):
 
@@ -81,6 +85,7 @@ class Player(BasePlayer):
 
     experiment_start_time = models.FloatField()
     experiment_end_time = models.FloatField()
+    current_second = models.FloatField()
 
     proposal_made = models.BooleanField(initial=False)
     amount_proposed = models.FloatField()#
@@ -89,11 +94,11 @@ class Player(BasePlayer):
 
     amount_proposed_list = models.LongStringField(default="[]")
     offer_time_list = models.LongStringField(default="[]")
+    offer_time_unix_list = models.LongStringField(default="[]")
 
     valuation = models.FloatField()#
     current_deal_accept = models.IntegerField()#
     current_payoff_accept = models.FloatField()#
-
 
     current_deal_other_accepts = models.IntegerField()#
     current_payoff_other_accepts = models.FloatField()#
@@ -119,6 +124,8 @@ class Player(BasePlayer):
     y_axis_maximum_delay_graph = models.FloatField()
 
     termination_probabilities_list = models.LongStringField()
+
+
 
     #Comprehension questions
     comprehension_1 = models.IntegerField(
