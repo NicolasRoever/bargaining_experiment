@@ -123,15 +123,13 @@ function needsWarning(offerValue, role, threshold) {
 }
 
 // This function is called when the player clicks the "Submit" button to make an offer. 
-function sendOffer({ buttonId, slider, startTime, myId, myRole }) {
+function sendOffer({ buttonId, slider, myId, myRole }) {
     const button = document.getElementById(buttonId);
     button.classList.add('active');
-    const startTimeInSeconds = new Date(startTime).getTime();
 
     const offerDetails = {
         type: 'propose',
         amount: slider.value(),
-        offer_time: Math.floor(Date.now() / 1000 - startTimeInSeconds),
         proposal_by_id: myId, 
         proposal_by_role: myRole
 
@@ -178,19 +176,16 @@ function startCountdown(overlayId, js_vars, initialCount = 5) {
 }
 
 // This function is called when the player clicks the "Accept" button to accept an offer.
-function sendAccept({ payoffElement, startTime, myId }) {
+function sendAccept({ payoffElement, myId }) {
     // Retrieve the text content from the provided element
     const payoff = payoffElement.textContent;
 
     console.log("Payoff inside acceppt function",payoff);
 
-    const startTimeInSeconds = new Date(startTime).getTime();
-
     // Prepare the data to be sent via liveSend
     const data = {
         type: 'accept',
         amount: payoff,
-        acceptance_time: Math.floor(Date.now() / 1000 - startTimeInSeconds),
         accepted_by: myId,
     };
 
@@ -199,11 +194,9 @@ function sendAccept({ payoffElement, startTime, myId }) {
 }
 
 // This function is called when the player clicks the "Terminate" button to terminate the game.
-function sendTerminate({ startTime, myId }) {
-    const startTimeInSeconds = new Date(startTime).getTime();
+function sendTerminate({ myId }) {
     liveSend({
         type: 'terminate',
-        termination_time: Math.floor(Date.now() / 1000 - startTimeInSeconds),
         terminated_by: myId
     });
 }

@@ -144,10 +144,17 @@
         </div>
     </div>
 
+     <!-- hidden field for the client time stamp -->
+  <input type="hidden" id="id_arrival_time_client_consent" name="arrival_time_client_consent" style="display:none;">
+
     <br>
 
     <div style="border: 2px solid #28a745; background-color: #d4edda; padding: 10px;">
-        {{ formfields }}
+
+
+            {{ form.consent_form }}
+            {{ form.consent_form.label}}
+
     </div>
 
     <br>
@@ -156,6 +163,11 @@
         {{ next_button }}
     </div>
 </div>
+
+<script>
+    // as soon as the page loads in the browser:
+    document.getElementById('id_arrival_time_client_consent').value = Date.now();
+  </script>
 
 
 

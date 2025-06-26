@@ -52,14 +52,14 @@ class Group(BaseGroup):
     deal_price = models.FloatField()
     is_finished = models.BooleanField(initial=False)
 
-    acceptance_time = models.IntegerField()
+    acceptance_time = models.FloatField()
     accepted_by = models.IntegerField()
 
     first_proposal_by = models.IntegerField()
     latest_proposal_by = models.IntegerField()
 
     terminated = models.BooleanField(initial=False)
-    termination_time = models.IntegerField()
+    termination_time = models.FloatField()
     terminated_by = models.IntegerField()
 
     bargain_start_time = models.FloatField()
@@ -86,6 +86,9 @@ class Player(BasePlayer):
     experiment_start_time = models.FloatField()
     experiment_end_time = models.FloatField()
     current_second = models.FloatField()
+
+    arrival_time_client_consent = models.FloatField()
+    arrival_time_server_consent = models.FloatField()
 
     proposal_made = models.BooleanField(initial=False)
     amount_proposed = models.FloatField()#
@@ -356,7 +359,7 @@ class TranslationTemplate(Page):
 
 class Consent(Page):
     form_model = 'player'
-    form_fields = ['consent_form']
+    form_fields = ['consent_form', 'arrival_time_client_consent']
 
     @staticmethod
     def is_displayed(player):
@@ -365,6 +368,7 @@ class Consent(Page):
     @staticmethod
     def vars_for_template(player: Player):
         player.experiment_start_time = time.time()
+        player.arrival_time_server_consent = time.time()
         return dict(Lexicon=Lexicon, **which_language)
 
 

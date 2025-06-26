@@ -354,7 +354,6 @@ document.getElementById('btn-accept').addEventListener('click', function() {
 
     sendAccept({
         payoffElement: msgOtherProposal,
-        startTime: js_vars.start_time,
         myId: js_vars.my_id
     });
 });
@@ -363,7 +362,6 @@ document.getElementById('btn-accept').addEventListener('click', function() {
 // Send terminate information to server if terminate button is clicked
 document.getElementById('btn-terminate').addEventListener('click', function() {
     sendTerminate({
-        startTime: js_vars.start_time,
         myId: js_vars.my_id
     });
 });

@@ -170,7 +170,7 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
 
     # Update the offer_time_list field
     offer_time_list = json.loads(player.offer_time_list)
-    offer_time = data.get('offer_time')
+    offer_time = time.time() - player.group.bargain_start_time 
     print("Here is the offer time: ", offer_time)
     if offer_time is not None:
         offer_time_list.append(float(offer_time))
@@ -199,7 +199,7 @@ def update_group_database_upon_acceptance(group: Any, data: Dict[str, Any]) -> N
     """
 
     group.deal_price = float(re.sub(r'[^\d.]', '', str(data.get('amount')))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
-    group.acceptance_time = data.get('acceptance_time')
+    group.acceptance_time = time.time() - group.bargain_start_time
     group.accepted_by = data.get('accepted_by')
     group.acceptance_time_unix = time.time()
 
@@ -217,7 +217,7 @@ def update_group_database_upon_termination(group, data):
     Returns:
         None
     """
-    group.termination_time = data.get('termination_time')
+    group.termination_time = time.time() - group.bargain_start_time
     group.terminated_by = data.get('terminated_by')
     group.deal_price = None
     group.terminated = True
@@ -234,7 +234,7 @@ def update_group_database_upon_random_termination(group: Any) -> None:
     Returns:
         None
     """
-    bargaining_time_elapsed = round(time.time() - group.bargain_start_time)
+    bargaining_time_elapsed = time.time() - group.bargain_start_time
     group.is_finished = True
     group.termination_time = bargaining_time_elapsed
     group.termination_mode = 'Random_Termination'
@@ -751,7 +751,8 @@ def calculate_round_results(player: Any, practice_round: bool) -> Dict[str, Any]
         TA_treatment = player.group.subsession.session.vars['TA_treatment'],
         round_number = round_number,
         practice_round = practice_round, 
-        role_in_game = role_in_game
+        role_in_game = role_in_game,
+        termination_time = round_or_fallback(player.group.field_maybe_none('termination_time'), fallback=0)
     )
 
 
