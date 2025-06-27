@@ -198,7 +198,7 @@ def update_group_database_upon_acceptance(group: Any, data: Dict[str, Any]) -> N
         None
     """
 
-    group.deal_price = float(re.sub(r'[^\d.]', '', str(data.get('amount')))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
+    group.deal_price = float(data.get('amount', '').replace('€','').strip()) # This removes the euro sign and any whitespace from the amount casting it to a float.
     group.acceptance_time = time.time() - group.bargain_start_time
     group.accepted_by = data.get('accepted_by')
     group.acceptance_time_unix = time.time()
