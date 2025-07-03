@@ -307,7 +307,7 @@ function enableButton(buttonId) {
 
 function updateTimeChangingElements(js_vars, data) {
     // Update text elements
-    updateElementText('time_spent', data.bargaining_time_elapsed);
+    updateElementText('time_spent', Math.round(data.bargaining_time_elapsed));
 
     // Update currency elements 
     if (js_vars.TA_treatment) {

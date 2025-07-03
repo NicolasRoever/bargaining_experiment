@@ -594,7 +594,7 @@ class BargainPracticeTwo(Page):
         #Initialize variables
         group = player.group
         broadcast = {}
-        bargaining_time_elapsed = round(time.time() - group.bargain_start_time)
+        bargaining_time_elapsed = time.time() - group.bargain_start_time
 
         broadcast = update_broadcast_dict_with_basic_values(
             player=player,
@@ -667,7 +667,7 @@ class BargainPracticeThree(Page):
         #Initialize variables
         group = player.group
         broadcast = {}
-        bargaining_time_elapsed = round(time.time() - group.bargain_start_time)
+        bargaining_time_elapsed = time.time() - group.bargain_start_time
         amount_proposed_list = json.loads(player.amount_proposed_list)
 
         broadcast = update_broadcast_dict_with_basic_values(

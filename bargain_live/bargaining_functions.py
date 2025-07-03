@@ -79,11 +79,9 @@ def update_broadcast_dict_with_basic_values(
         Dict[int, Dict[str, Any]]: The updated broadcast dictionary.
     """
     # Calculate elapsed bargaining time
-    bargaining_time_elapsed = round(
-        time.time() - group.bargain_start_time
-    )
-
+    bargaining_time_elapsed = time.time() - group.bargain_start_time
     player.current_second = bargaining_time_elapsed
+    bargain_time_round = round(bargaining_time_elapsed)
     
     # Set variables based on elapsed time
     if bargaining_time_elapsed < 0:
@@ -92,12 +90,12 @@ def update_broadcast_dict_with_basic_values(
         cumulated_TA_costs = None
         total_cost_y_values = []
     else:
-        total_cost_y_values = json.loads(player.total_costs_list)[:bargaining_time_elapsed]
+        total_cost_y_values = json.loads(player.total_costs_list)[:bargain_time_round]
         termination_probabilities_list = json.loads(player.termination_probabilities_list)
-        current_transaction_costs = json.loads(player.current_costs_list)[bargaining_time_elapsed]
-        current_termination_probability = termination_probabilities_list[bargaining_time_elapsed]
+        current_transaction_costs = json.loads(player.current_costs_list)[bargain_time_round]
+        current_termination_probability = termination_probabilities_list[bargain_time_round]
         current_survival_probability = 1 - current_termination_probability
-        cumulated_TA_costs = total_cost_y_values[bargaining_time_elapsed - 1] if total_cost_y_values else None
+        cumulated_TA_costs = total_cost_y_values[bargain_time_round - 1] if total_cost_y_values else None
 
     # Update player attributes if values exist and are valid
     if total_cost_y_values and bargaining_time_elapsed > 0 and cumulated_TA_costs is not None:
@@ -172,14 +170,14 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     offer_time_list = json.loads(player.offer_time_list)
     offer_time = time.time() - player.group.bargain_start_time 
     if offer_time is not None:
-        offer_time_list.append(float(offer_time))
+        offer_time_list.append(offer_time)
     player.offer_time_list = json.dumps(offer_time_list)
 
     # Update the offer_time_unix_list field
     offer_time_unix_list = json.loads(player.offer_time_unix_list)
     offer_time_unix = time.time()
     if offer_time_unix is not None:
-        offer_time_unix_list.append(float(offer_time_unix))
+        offer_time_unix_list.append(offer_time_unix)
     player.offer_time_unix_list = json.dumps(offer_time_unix_list)
 
     player.proposal_made = True
@@ -197,7 +195,7 @@ def update_group_database_upon_acceptance(group: Any, data: Dict[str, Any]) -> N
         None
     """
     print("Value coming in for acceptance: ", data.get('amount'))
-    group.deal_price = float(data.get('amount', '').replace('€','').strip()) # This removes the euro sign and any whitespace from the amount casting it to a float.
+    group.deal_price = float(str(data.get('amount', '')).replace('€','').strip()) # This removes the euro sign and any whitespace from the amount casting it to a float.
     print("Value saved for acceptance: ", group.deal_price)
     group.acceptance_time = time.time() - group.bargain_start_time
     group.accepted_by = data.get('accepted_by')
@@ -1039,7 +1037,7 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
         broadcast["finished"] = True
 
     # Update database and finish bargaining if random termination time is reached
-    bargaining_time_elapsed = round(time.time() - group.bargain_start_time)
+    bargaining_time_elapsed = time.time() - group.bargain_start_time
 
     if bargaining_time_elapsed >= group.random_termination_time_current_round:
 
@@ -1080,7 +1078,7 @@ def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], 
     """
 
     # Bot gives initial offer after 10 seconds
-    if np.isclose(bargaining_time_elapsed, 10, atol=1):
+    if np.isclose(bargaining_time_elapsed, 10, atol=2):
         set_bot_offer(broadcast=broadcast, 
                       player=player, 
                       group=group, 
@@ -1089,8 +1087,11 @@ def write_bot_giving_offer_and_improving(broadcast: Dict, data: Dict[str, Any], 
     #Calculate the nearest 10 seconde
     nearest_round_second = round(bargaining_time_elapsed / 10) * 10
 
+    print(f"nearest_round_second: {nearest_round_second}")
+    print(f"bargaining_time_elapsed - nearest_round_seconf: {bargaining_time_elapsed - nearest_round_second}")
+
     # Bot improves offer every 10 seconds after the initial offer
-    if abs(bargaining_time_elapsed - nearest_round_second) <= 1 and nearest_round_second > 10:
+    if abs(bargaining_time_elapsed - nearest_round_second) <= 2 and nearest_round_second > 10:
 
         improvement_index = nearest_round_second // 10 - 1 
 
@@ -1166,7 +1167,7 @@ def accept_deal_as_bot(broadcast: Dict, player: Any, group: Any, data: Dict[str,
     data['proposal_by_role'] = player.participant.vars['role_in_game']
     data['proposal_by_id'] = player.id_in_group
     data['amount'] = player.current_amount_proposed 
-    data['acceptance_time'] = round(time.time() - group.bargain_start_time)
+    data['acceptance_time'] = time.time() - group.bargain_start_time
     data['accepted_by'] = player.id_in_group + 1
 
     update_group_database_upon_acceptance(
@@ -1181,11 +1182,6 @@ def accept_deal_as_bot(broadcast: Dict, player: Any, group: Any, data: Dict[str,
 
 
     
-
-
-    
-
-
 
 def set_bot_offer(broadcast: Dict, player: Any, group: Any, offer_from_bot: float) -> Dict:
     """
@@ -1253,10 +1249,10 @@ def treat_buyer_offer_larger_than_seller_as_acceptance(broadcast: Dict, player: 
     data['proposal_by_role'] = player.participant.vars['role_in_game']
     data['proposal_by_id'] = player.id_in_group
     data['amount'] = group.current_seller_offer
-    data['acceptance_time'] = round(time.time() - group.bargain_start_time)
+    data['acceptance_time'] = time.time() - group.bargain_start_time
     data['accepted_by'] = player.id_in_group
 
-    group.deal_price = float(re.sub(r'[^\d.]', '', str(group.current_seller_offer))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
+    group.deal_price = float(str(data.get('amount', '')).replace('€','').strip()) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
     group.acceptance_time = data.get('acceptance_time')
     group.accepted_by = data.get('accepted_by')
 
@@ -1275,10 +1271,10 @@ def treat_seller_offer_lower_than_buyer_as_acceptance(broadcast: Dict, player: A
     data['proposal_by_role'] = player.participant.vars['role_in_game']
     data['proposal_by_id'] = player.id_in_group
     data['amount'] = group.current_buyer_offer
-    data['acceptance_time'] = round(time.time() - group.bargain_start_time)
+    data['acceptance_time'] = time.time() - group.bargain_start_time
     data['accepted_by'] = player.id_in_group
 
-    group.deal_price = float(re.sub(r'[^\d.]', '', str(group.current_buyer_offer))) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
+    group.deal_price = float(str(data.get('amount', '')).replace('€','').strip()) # This converts e.g. "$1.10" into 1.10, and ensures that it also works for the practice rounds where amount is a float.
     group.acceptance_time = data.get('acceptance_time')
     group.accepted_by = data.get('accepted_by')
 
