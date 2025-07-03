@@ -49,7 +49,7 @@ class Subsession(BaseSubsession):
 
 
 class Group(BaseGroup):
-    deal_price = models.FloatField()
+    deal_price = models.CurrencyField()
     is_finished = models.BooleanField(initial=False)
 
     acceptance_time = models.FloatField()

@@ -171,7 +171,6 @@ def update_player_database_with_proposal(player: Any, data: Dict[str, Any]) -> N
     # Update the offer_time_list field
     offer_time_list = json.loads(player.offer_time_list)
     offer_time = time.time() - player.group.bargain_start_time 
-    print("Here is the offer time: ", offer_time)
     if offer_time is not None:
         offer_time_list.append(float(offer_time))
     player.offer_time_list = json.dumps(offer_time_list)
@@ -197,8 +196,9 @@ def update_group_database_upon_acceptance(group: Any, data: Dict[str, Any]) -> N
     Returns:
         None
     """
-
+    print("Value coming in for acceptance: ", data.get('amount'))
     group.deal_price = float(data.get('amount', '').replace('€','').strip()) # This removes the euro sign and any whitespace from the amount casting it to a float.
+    print("Value saved for acceptance: ", group.deal_price)
     group.acceptance_time = time.time() - group.bargain_start_time
     group.accepted_by = data.get('accepted_by')
     group.acceptance_time_unix = time.time()
@@ -970,6 +970,7 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
 
     # Update database and broadcast if a proposal was made
     if data.get('type') == 'propose':
+        print("Sending offer:", data)
 
         if player.id_in_group == data.get('proposal_by_id'):
 
@@ -1013,7 +1014,7 @@ def update_broadcast_dict_based_on_actions(broadcast: Dict, data: Dict[str, Any]
                     data=data
                 )
 
-                return broadcast
+            return broadcast
 
     # Update database and finish bargaining if a deal was accepted
     elif data.get('type') == 'accept':
