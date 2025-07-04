@@ -315,6 +315,8 @@ class Lexicon:
     ultimatum_proposer_instruction = 'Welchen Vorschlag würden Sie abgeben? (0€ - 50€)'
     ultimatum_other_label = "Der andere Spieler erhält:"
 
+    offer_timing_question = "Wie haben Sie entschieden, <strong>zu welchem Zeitpunkt</strong> Sie Ihre Angebote in den Verhandlungen abgeben?"
+
     age_label = "Wie alt sind Sie?"
     gender_label = "Was ist Ihr Geschlecht?"
 

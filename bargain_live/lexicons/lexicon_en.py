@@ -319,6 +319,8 @@ class Lexicon:
     ultimatum_proposer_instruction = 'What offer would you make?'
     ultimatum_other_label = "The other player receives:"
 
+    offer_timing_question = "How did you decide when to submit your offers during the negotiation?"
+
     age_label = "How old are you?"
     gender_label = "What is your gender?"
     perceived_time_pressure_label = "How much time pressure did you feel during the bargaining? (0 = no time pressure, 100 = high time pressure)"

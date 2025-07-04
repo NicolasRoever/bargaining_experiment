@@ -36,7 +36,7 @@ class C(BaseConstants):
     NAME_IN_URL = 'live_bargaining'
     PLAYERS_PER_GROUP = 2
     NUM_PRACTICE_ROUNDS = 3
-    NUM_REAL_ROUNDS = 30
+    NUM_REAL_ROUNDS = 10
     NUM_ROUNDS = NUM_PRACTICE_ROUNDS + NUM_REAL_ROUNDS
     SELLER_ROLE = 'Seller'
     BUYER_ROLE = 'Buyer'
@@ -211,6 +211,10 @@ class Player(BasePlayer):
             [2, "B"],  # "130 (in t₂)"
         ], 
           blank=False
+    )
+
+    offer_timing_question = models.LongStringField(
+        blank=False
     )
 
 
@@ -470,7 +474,7 @@ class DemographicsPreferences(TranslationTemplate):
         'time_row_3',
         'time_row_4',
         'time_row_5',
-        'time_row_6', 'age', 'gender']
+        'time_row_6', 'offer_timing_question', 'age', 'gender']
 
 
 
