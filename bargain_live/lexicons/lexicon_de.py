@@ -74,8 +74,8 @@ class Lexicon:
     final_payoff_formula_ta_costs = "Endgültige Auszahlung = Teilnahmevergütung (10€) + Handelsgewinne – Verhandlungskosten"
     final_payoff_formula_no_ta_costs = "Endgültige Auszahlung = Teilnahmevergütung (10€) + Handelsgewinne"
 
-    buyer_payoff_example_intro_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Auszahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 31€ beträgt, der Wert 38€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
-    buyer_payoff_example_intro_no_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Auszahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 31€ beträgt, der Wert 38€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
+    buyer_payoff_example_intro_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Auszahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 21€ beträgt, der Wert 28€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
+    buyer_payoff_example_intro_no_transaction_costs = "Hier ist ein Beispiel dafür, wie die endgültige Auszahlung des Käufers berechnet wird: Wenn der ausgehandelte Preis 21€ beträgt, der Wert 28€ ist und Sie nach 20 Sekunden eine Einigung erzielen, ergibt sich folgende Auszahlung:"
     buyer_payoff_value = "Wert des Objekts: "
     buyer_payoff_price = "Preis: "
     buyer_payoff_trade_gains = "Handelsgewinne: "

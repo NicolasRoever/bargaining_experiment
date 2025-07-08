@@ -70,8 +70,8 @@ class Lexicon:
     final_payoff_formula_ta_costs = "Final Payoff = Show-Up Fee (10€) + Gains from Trade – Total negotiation costs"
     final_payoff_formula_no_ta_costs = "Final Payoff = Show-Up Fee (10€) + Gains from Trade"
 
-    buyer_payoff_example_intro_transaction_costs  = "Here is an example for how buyer's final payoff is calculated: If the price you negotiated is 31€ and the valuation is 38€, and you reach the agreement after 20 seconds, which results in transaction costs (in this example 0.05€ per second), the payoff is:"
-    buyer_payoff_example_intro_no_transaction_costs = "Here is an example for how buyer's final payoff is calculated: If the price you negotiated is 31€ and the valuation is 38€, and you reach the agreement after 20 seconds, the payoff is:"
+    buyer_payoff_example_intro_transaction_costs  = "Here is an example for how buyer's final payoff is calculated: If the price you negotiated is 21€ and the valuation is 28€, and you reach the agreement after 20 seconds, which results in transaction costs (in this example 0.05€ per second), the payoff is:"
+    buyer_payoff_example_intro_no_transaction_costs = "Here is an example for how buyer's final payoff is calculated: If the price you negotiated is 21€ and the valuation is 28€, and you reach the agreement after 20 seconds, the payoff is:"
     buyer_payoff_value = "Value of the Object: "
     buyer_payoff_price = "Price: "
     buyer_payoff_trade_gains = "Gains from Trade: "
