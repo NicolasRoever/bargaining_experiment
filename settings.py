@@ -46,7 +46,7 @@ ROOMS = [
     dict(
         name='bargain_live',
         display_name='Bargain Live',
-        participant_label_file='participant_labels/generated_labels_for_42_participants_tuesday.txt'
+        participant_label_file='participant_labels/generated_labels_for_38_participants_july_8.txt'
     )
 ]
 
