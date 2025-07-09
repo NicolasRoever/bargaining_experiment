@@ -11,7 +11,7 @@ SESSION_CONFIGS = [
     app_sequence = ["clerpay_start", "bargain_live", "clerpay_end"],
     num_demo_participants=8,
     number_of_groups = 1, 
-    information_asymmetry = "one-sided", # either "one-sided" or "two-sided", in case of one-sided, the buyer knows the seller's valuation, in case of two-sided, both players dont know each other's valuation
+    information_asymmetry = "two-sided", # either "one-sided" or "two-sided", in case of one-sided, the buyer knows the seller's valuation, in case of two-sided, both players dont know each other's valuation
     treatment_communication = False,
     termination_treatment = "low_prob", # either "low_prob" or "high_prob"
     transaction_costs =0.05,
@@ -46,7 +46,7 @@ ROOMS = [
     dict(
         name='bargain_live',
         display_name='Bargain Live',
-        participant_label_file='participant_labels/generated_labels_for_38_participants_july_8.txt'
+        participant_label_file='participant_labels/generated_labels_for_39_participants_july_9.txt'
     )
 ]
 
