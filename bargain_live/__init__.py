@@ -86,6 +86,7 @@ class Player(BasePlayer):
     experiment_start_time = models.FloatField()
     experiment_end_time = models.FloatField()
     current_second = models.FloatField()
+    server_update_seconds = models.LongStringField(default="[]")
 
     arrival_time_client_consent = models.FloatField()
     arrival_time_server_consent = models.FloatField()

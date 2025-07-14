@@ -81,6 +81,9 @@ def update_broadcast_dict_with_basic_values(
     # Calculate elapsed bargaining time
     bargaining_time_elapsed = time.time() - group.bargain_start_time
     player.current_second = bargaining_time_elapsed
+    server_update_second_list = json.loads(player.server_update_seconds)
+    server_update_second_list.append(bargaining_time_elapsed)
+    player.server_update_seconds = json.dumps(server_update_second_list)
     bargain_time_round = round(bargaining_time_elapsed)
     
     # Set variables based on elapsed time
